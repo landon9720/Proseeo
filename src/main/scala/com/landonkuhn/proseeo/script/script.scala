@@ -129,7 +129,10 @@ case class Invalid(message: String) extends Statement {
   def dsl: String = null
 }
 case class Set(key: String, inlineValue: Option[String]) extends Statement with Value {
-  def dsl: String = "set %s \"%s\"".format(key, inlineValue.getOrElse("??"))
+  def dsl: String = value.indexOf("\n") match {
+    case -1 => "set %s \"%s\"".format(key, value)
+    case _ => "set %s\n".format(key) + value.split("\n").mkString("  ", "\n  ", "\n")
+  }
 }
 
 case class Created() extends Statement {
@@ -141,5 +144,8 @@ case class RouteTo(user: String, next: Seq[String]) extends Statement {
 }
 
 case class Say(inlineValue: Option[String]) extends Statement with Value {
-  def dsl: String = "say \"%s\"".format(inlineValue.getOrElse("??"))
+  def dsl: String = value.indexOf("\n") match {
+    case -1 => "say \"%s\"".format(value)
+    case _ => "say\n" + value.split("\n").mkString("  ", "\n  ", "\n")
+  }
 }
