@@ -1,0 +1,80 @@
+steve> proseeo open story -title "bug?"
+Created stories/<guid>.proseeo
+steve> cd <guid>
+steve> comment "i just talked to etc..."
+steve> forward to anthony
+Forwarded to user anthony (Anthony A)
+dupre> proseeo create report -title "mine"
+Created reports/<guid>.report
+dupre> echo "{open: true}" > reports/<guid>.report
+dupre> proseeo report -title "mine"
+stories/<guid>.proseeo
+  created by steve (Steve A) on xx/xx/xx
+  "i just talked to etc..."
+dupre> cd <guid>.proseeo
+dupre> proseeo ask steve "i need a screenshot"
+
+steve> proseeo report
+stories/<guid>.proseeo
+  asked by adupre (Anthony A) on xx/xx/xx
+  "i need a screenshot!"
+
+
+
+
+steve notes """
+  i just talked to abc in and their xyg feature isnot working,
+  please look into this
+"""
+steve forwards with feedback to user anthony
+anthony comments "yes i can duplicate this. we will fix it."
+anthony sets template to bug
+anthony sets bug.fix_version = 1.0.2.3
+anthony forwards to engineering
+pinned by landon
+pinned by zach
+zach comments "i think i know what caused this...."
+landon comments "found and fixed"
+landon sets bug.fixed = true
+chris sets bug.tested = true
+
+...
+
+this doesn't even wrap git
+it's just a collection of command line tools for
+  parsing these documents
+  updating these documents
+  indexing them
+  providing querying and reporting services
+  later: signing and encryption!!!!
+stores these as a plain-text document right on the file system
+filenames in the format: guid.proseeo -- it's a directory! inside is the script, and attachments!
+an indexer can crawl all these documents to build a reportable index
+  using mongo
+  but don't checkin the mongo database! no need. :) the tools can
+  rebuild when needed
+report query language..maybe native mongo queries at first
+there needs to be conf files
+  ./.proseeo.conf
+    users
+      listed so that user references can be validated
+    groups
+      listed for the same reason
+    basically anything that might need to be referenced should be configured
+    with metadata (name, email address, etc.) which will allow tools
+    to annotate those references, send emails, etc.
+  ~/.proseeo.conf
+    smtp.setting1 =
+    smpt.setting2 = etc ... allows tools to send messages on user's behalf
+
+Welcome to Proseeo
+Here I am building a platform to help groups get stuff done. This is distributed process structure. DPS.
+This is a new way for groups to communicate, to organize, and to get stuff done.
+I am starting with business of making software. This is the work I know, and the
+first who will use this.
+
+it really has no dependencies on git all all
+any source control will do! ha!
+
+going to need it to be an sbt probject
+going to need to publish a brew formula
