@@ -2,7 +2,7 @@ package com.landonkuhn.proseeo.document
 
 import java.io.File
 import org.apache.commons.io.FileUtils._
-import org.apache.commons.lang.StringUtils._
+import org.apache.commons.lang3.StringUtils._
 import collection.JavaConversions._
 
 object DocumentIo {

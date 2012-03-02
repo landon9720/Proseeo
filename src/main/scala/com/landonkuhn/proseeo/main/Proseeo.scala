@@ -7,7 +7,7 @@ import org.apache.commons.io.FileUtils._
 import com.landonkuhn.proseeo.document.DocumentIo
 import java.util.UUID
 import collection.JavaConversions._
-import org.apache.commons.lang.StringUtils._
+import org.apache.commons.lang3.StringUtils._
 
 object Proseeo {
 
@@ -26,6 +26,7 @@ object Proseeo {
       case Init() => init
       case Info() => info
       case Start() => start
+      case Tell() => tell
     }
   }
 
@@ -36,7 +37,10 @@ object Proseeo {
   private def init {
     println("Proseeo init!")
 //    forceMkdir(new File(".proseeo"))
-    touch(conf)
+    //touch(conf)
+    writeStringToFile(conf, """name: new-project
+uuid: %s
+""".format(UUID.randomUUID.toString))
   }
 
   private def info {
@@ -53,6 +57,15 @@ object Proseeo {
     touch(script)
   }
 
+  private def tell {
+    val file = new File("script")
+    if (!file.isFile) sys.error("not file: %s".format(file))
+    val script = ScriptParser.parseScript(readLines(file).toSeq)
+    println("script: " + script)
+    println(Play.play(script).document)
+
+  }
+
   def parseCommandLine(args: String): Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {
     case parser.Success(command, _) => command
     case e: parser.NoSuccess => Error("Failed parsing [%s]: %s".format(args, e.msg))
@@ -61,11 +74,11 @@ object Proseeo {
   private val parser = new StandardTokenParsers {
 
     override val lexical = new StdLexical {
-      reserved += ("help", "init", "info", "start")
+      reserved += ("help", "init", "info", "start", "tell")
       delimiters ++= List()
     }
 
-    def command: Parser[Command] = help | init | info | start
+    def command: Parser[Command] = help | init | info | start | tell
 
     def help: Parser[Help] = "help" ^^ {
       case _ => Help()
@@ -82,6 +95,10 @@ object Proseeo {
     def start: Parser[Start] = "start" ^^ {
       case _ => Start()
     }
+
+    def tell: Parser[Tell] = "tell" ^^ {
+      case _ => Tell()
+    }
   }
 }
 
@@ -92,3 +109,4 @@ case class Help() extends Command
 case class Init() extends Command
 case class Info() extends Command
 case class Start() extends Command
+case class Tell() extends Command

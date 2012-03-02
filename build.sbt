@@ -8,6 +8,6 @@ scalaVersion := "2.9.1"
 
 seq(assemblySettings: _*)
 
-libraryDependencies += "commons-lang" % "commons-lang" % "2.5"
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.1"
 
-libraryDependencies += "commons-io" % "commons-io" % "1.4"
+libraryDependencies += "commons-io" % "commons-io" % "2.1"
