@@ -6,6 +6,8 @@ import collection.mutable.ListBuffer
 import org.apache.commons.lang3.StringUtils._
 import org.apache.commons.io.FileUtils._
 import java.io.File
+import java.util.Date
+import com.landonkuhn.proseeo.Util
 
 object ScriptParser {
   def parseScript(script: Seq[String]): Seq[Statement] = {
@@ -35,7 +37,7 @@ object ScriptParser {
   }
 
   def append(file: File, statement: Statement) {
-    writeStringToFile(file, "\n" + statement.dsl, true)
+    writeStringToFile(file, "\nat \"%s\" by %s %s".format(statement.at.get, statement.by.get, statement.dsl), true)
   }
 }
 
@@ -53,7 +55,9 @@ object ScriptStatementParser {
 
     override val lexical = new StdLexical {
       reserved += (
-        "created", "by",
+        "at",
+        "by",
+        "created",
         "set",
         "route", "to", "then",
         "say"
@@ -75,10 +79,24 @@ object ScriptStatementParser {
       override def identChar = letter | elem('_') | elem('.')
     }
 
-    def statement: Parser[Statement] = created_by | set | route_to | say
+    def statement: Parser[Statement] = opt(at) ~ opt(by) ~ (created | set | route_to | say) ^^ {
+      case at ~ by ~ statement => {
+        statement.at = at
+        statement.by = by
+        statement
+      }
+    }
 
-    def created_by: Parser[CreatedBy] = "created" ~> "by" ~> ident ^^ {
-      case user => CreatedBy(user)
+    def at: Parser[String] = "at" ~> stringLit ^^ {
+      case at => at
+    }
+
+    def by: Parser[String] = "by" ~> ident ^^ {
+      case by => by
+    }
+
+    def created: Parser[Created] = "created" ^^ {
+      case user => Created()
     }
 
     def set: Parser[Set] = "set" ~> ident ~ opt(stringLit) ^^ {
@@ -95,8 +113,9 @@ object ScriptStatementParser {
   }
 }
 
-
 trait Statement {
+  var at: Option[String] = None
+  var by: Option[String] = None
   def dsl: String
 }
 
@@ -109,12 +128,12 @@ trait Value {
 case class Invalid(message: String) extends Statement {
   def dsl: String = null
 }
-case class Set(key2: String, inlineValue: Option[String]) extends Statement with Value {
-  def dsl: String = null
+case class Set(key: String, inlineValue: Option[String]) extends Statement with Value {
+  def dsl: String = "set %s \"%s\"".format(key, inlineValue.getOrElse("??"))
 }
 
-case class CreatedBy(user: String) extends Statement {
-  def dsl: String = null
+case class Created() extends Statement {
+  def dsl: String = "created"
 }
 
 case class RouteTo(user: String, next: Seq[String]) extends Statement {

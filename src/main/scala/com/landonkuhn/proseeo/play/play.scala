@@ -14,7 +14,7 @@ object Play {
     val comments = new ListBuffer[String]
 
     for (statement <- script) statement match {
-      case c @ CreatedBy(user) => {
+      case c @ Created() => {
         
       }
       case set @ Set(key, _) => document += key -> set.value
