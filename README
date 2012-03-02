@@ -1,4 +1,4 @@
-.h1 Proseeo
+.h1 com.landonkuhn.proseeo.main.Proseeo
 
 _pro see oh_
 
@@ -105,7 +105,7 @@ there needs to be conf files
     smtp.setting1 =
     smpt.setting2 = etc ... allows tools to send messages on user's behalf
 
-Welcome to Proseeo
+Welcome to com.landonkuhn.proseeo.main.Proseeo
 Here I am building a platform to help groups get stuff done. This is distributed process structure. DPS.
 This is a new way for groups to communicate, to organize, and to get stuff done.
 I am starting with business of making software. This is the work I know, and the

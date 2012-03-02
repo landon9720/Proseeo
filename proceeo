@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar target/Proseeo-assembly-0.1.jar
+java -jar target/com.landonkuhn.proseeo.main.Proseeo-assembly-0.1.jar "$@"
