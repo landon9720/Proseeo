@@ -61,8 +61,12 @@ uuid: %s
     val file = new File("script")
     if (!file.isFile) sys.error("not file: %s".format(file))
     val script = ScriptParser.parseScript(readLines(file).toSeq)
-    println("script: " + script)
-    println(Play.play(script).document)
+    println("script: " + script.mkString("\n"))
+    val state = Play.play(script)
+    println("document: " + state.document)
+    println("stack: " + state.stack)
+    println("current: " + state.current)
+//    println(state.route)
 
   }
 

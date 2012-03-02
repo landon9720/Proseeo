@@ -34,7 +34,7 @@ case class Script(statements: List[Statement])
 
 object ScriptStatementParser {
   def parseStatement(statement: String): Statement = parser.phrase(parser.statement)(new parser.lexical.Scanner(statement)) match {
-    case parser.Success(statement, _) => statement
+    case parser.Success(statement, _) => println("parsed statement: " + statement); statement
     case e: parser.NoSuccess => Invalid("Failed understanding statement [%s]: %s".format(statement, e.msg))
   }
 
@@ -46,7 +46,7 @@ object ScriptStatementParser {
       reserved += (
         "created", "by",
         "set",
-        "route", "to"
+        "route", "to", "then"
       )
       delimiters ++= List()
 
@@ -75,8 +75,8 @@ object ScriptStatementParser {
       case key ~ value => Set(key, value)
     }
 
-    def route_to: Parser[RouteTo] = "route" ~> "to" ~> ident ^^ {
-      case user => RouteTo(user)
+    def route_to: Parser[RouteTo] = "route" ~> "to" ~> ident ~ rep("then" ~> ident) ^^ {
+      case user ~ next => RouteTo(user, next)
     }
   }
 }
@@ -86,4 +86,4 @@ trait Statement
 case class Invalid(message: String) extends Statement
 case class Set(key2: String, value: Option[String]) extends Statement
 case class CreatedBy(user: String) extends Statement
-case class RouteTo(user: String) extends Statement
+case class RouteTo(user: String, next: Seq[String]) extends Statement
