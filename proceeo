@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar target/com.landonkuhn.proseeo.main.Proseeo-assembly-0.1.jar "$@"
+java -jar `dirname $0`/target/com.landonkuhn.proseeo.main.Proseeo-assembly-0.1.jar "$@"
