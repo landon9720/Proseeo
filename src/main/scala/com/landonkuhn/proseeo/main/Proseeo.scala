@@ -27,6 +27,7 @@ object Proseeo {
       case Info() => info
       case Start() => start
       case Tell() => tell
+      case Say(message) => say(message)
     }
   }
 
@@ -66,8 +67,15 @@ uuid: %s
     println("document: " + state.document)
     println("stack: " + state.stack)
     println("current: " + state.current)
+    println(state.comments.mkString("comments:\n\t", "\n\t", ""))
 //    println(state.route)
 
+  }
+
+  private def say(message: String) {
+    val file = new File("script")
+    if (!file.isFile) sys.error("not file: %s".format(file))
+    ScriptParser.append(file, SayStatement(Some(message)))
   }
 
   def parseCommandLine(args: String): Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {
@@ -78,11 +86,11 @@ uuid: %s
   private val parser = new StandardTokenParsers {
 
     override val lexical = new StdLexical {
-      reserved += ("help", "init", "info", "start", "tell")
+      reserved += ("help", "init", "info", "start", "tell", "say")
       delimiters ++= List()
     }
 
-    def command: Parser[Command] = help | init | info | start | tell
+    def command: Parser[Command] = help | init | info | start | tell | say
 
     def help: Parser[Help] = "help" ^^ {
       case _ => Help()
@@ -103,6 +111,10 @@ uuid: %s
     def tell: Parser[Tell] = "tell" ^^ {
       case _ => Tell()
     }
+
+    def say: Parser[Say] = "say" ~> stringLit ^^ {
+      case message => Say(message)
+    }
   }
 }
 
@@ -114,3 +126,4 @@ case class Init() extends Command
 case class Info() extends Command
 case class Start() extends Command
 case class Tell() extends Command
+case class Say(message: String) extends Command

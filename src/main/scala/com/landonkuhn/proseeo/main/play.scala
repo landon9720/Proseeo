@@ -10,22 +10,23 @@ object Play {
     val history = new ListBuffer[String]
     var current: Option[RouteTo] = None
 
+    val comments = new ListBuffer[String]
+
     for (statement <- script) statement match {
-//      case c @ CreatedBy(user) => {
-//        if (route.isDefined) sys.error("invalid created by: " + c)
-//        route = Some(Route(user))
-//      }
+      case c @ CreatedBy(user) => {
+        
+      }
+      case set @ Set(key, _) => document += key -> set.value
       case routeTo @ RouteTo(user, next) => {
-        println("history +- " + user)
         history += user
         current = Some(routeTo)
       }
-      case Set(key, Some(value)) => document += key -> value
+      case say: SayStatement => comments += say.value
       case x => println("I don't know about: " + x)
     }
 
-    ScriptState(document, history, current)
+    ScriptState(document, history, current, comments)
   }
 }
 
-case class ScriptState(document: Document, stack: Seq[String], current: Option[RouteTo])
+case class ScriptState(document: Document, stack: Seq[String], current: Option[RouteTo], comments: Seq[String])
