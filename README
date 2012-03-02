@@ -1,10 +1,11 @@
-.h1 com.landonkuhn.proseeo.main.Proseeo
+Proseeo
 
-_pro see oh_
+pro see oh !
 
 tools:
 one program: proseeo
 talk to it like you talk to siri
+proseeo init
 proseeo start story
 proseeo use <guid>
 proseeo comment ipsum
