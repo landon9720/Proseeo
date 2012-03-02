@@ -1,36 +1,45 @@
 package com.landonkuhn.proseeo.main
 
-import util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.lexical.StdLexical
+import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object Proseeo {
   def main(args: Array[String]) {
-    println(parseCommandLine(args.mkString(" ")))
+    parseCommandLine(args.mkString(" ")) match {
+      case Error(message) => System.err.println(message)
+      case Help() => help
+      case Init() => init
+    }
   }
 
-  def parseCommandLine(args: String): Command = parser.parseAll(parser.command, args) match {
+  private def help {
+    println("Proseeo help!")
+  }
+
+  private def init {
+    println("Processo init!")
+  }
+
+  def parseCommandLine(args: String): Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {
     case parser.Success(command, _) => command
     case e: parser.NoSuccess => Error("Failed parsing [%s]: %s".format(args, e.msg))
   }
 
-  private val parser = new RegexParsers {
+  private val parser = new StandardTokenParsers {
 
-    private implicit def string_to_regex(s: String) = s.r
+    override val lexical = new StdLexical {
+      reserved += ("help", "init")
+      delimiters ++= List()
+    }
 
-    def command = help | init
+    def command: Parser[Command] = help | init
 
-    def help = regex("""\?|-\?|-h|help|-help|--help""") ^^ {
+    def help: Parser[Help] = "help" ^^ {
       case _ => Help()
     }
 
-    def init = init1 | init2
-
-    def init1 = "init" ^^ {
-      case _ => Init(None)
-    }
-
-    def init2 = "init" ~ " " ~ regex(""".+""") ^^ {
-      case "init" ~ " " ~ x => Init(Some(x))
-      case _ => sys.error("foo")
+    def init: Parser[Init] = "init" ^^ {
+      case _ => Init()
     }
   }
 }
@@ -39,4 +48,4 @@ trait Command
 
 case class Error(message: String) extends Command
 case class Help() extends Command
-case class Init(dir: Option[String]) extends Command
+case class Init() extends Command
