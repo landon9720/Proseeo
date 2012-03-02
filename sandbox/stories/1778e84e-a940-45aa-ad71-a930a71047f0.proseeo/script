@@ -1,0 +1,9 @@
+at "2012-03-02T22:39:28.943Z" by lkuhn created
+at "2012-03-02T22:40:46.573Z" by lkuhn say "hi"
+at "2012-03-02T22:41:01.667Z" by lkuhn say "hi2"
+at "2012-03-02T22:50:41.478Z" by lkuhn say "hi3"
+at "2012-03-02T22:58:35.269Z" by lkuhn set foo "bar"
+at "2012-03-02T22:58:47.036Z" by lkuhn set foo "bar2"
+at "2012-03-02T22:58:52.088Z" by lkuhn set foo2 "bar2"
+at "2012-03-02T23:01:04.040Z" by lkuhn set bug.releaseNote "lalala"
+at "2012-03-02T23:01:27.683Z" by lkuhn set bug.fixVersion "1.2.3.4"
