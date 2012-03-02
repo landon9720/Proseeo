@@ -1,18 +1,27 @@
+.h1 Proseeo
+
+_pro see oh_
+
 tools:
 one program: proseeo
 talk to it like you talk to siri
 proseeo start story
+proseeo use <guid>
 proseeo comment ipsum
 proseeo forward to ipsuser
 proseeo report
 
 lower level. what are the tools:
+command line language parser and syntax tree
+command line execution engine
 story language parser and syntax tree
 story execution engine to arrive at current document state
   including the important (but easy??) active chain & tip algorithm
 indexer (push all stories into mongo)
 reporter pass user defined mongo queries to mongo and handle results (no custom dsl for now, but in future)
 appender writes to story
+configuration file format, parser, writer
+  some commands (like the use command) will need to store state there
 
 steve> proseeo open story -title "bug?"
 Created stories/<guid>.proseeo
@@ -110,6 +119,7 @@ going to need to publish a brew formula
 
 at some point worry about: 
   story file encoding
+  story archiving
 
 active chain and tip:
 created by user A
@@ -140,3 +150,7 @@ pro-see-oh
 
 signing: a way to sign a story to assert authorship from this point back to the previous signing
 encryption: a way to encrypt parts of the document?? i don't know. this is less interesting to me because i value building an open system. ideally with a slick front end that allows full text searching --- this data should be a repo for information.
+
+git is clunky, that's ok, this is for the hardcore, a web interface can come later, a IOS interface too
+
+could it work for the mongo database to actually live on the network and be shared? i think perhaps it is so!
