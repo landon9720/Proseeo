@@ -110,3 +110,33 @@ going to need to publish a brew formula
 
 at some point worry about: 
   story file encoding
+
+active chain and tip:
+created by user A
+A assigned to user B
+B asked of user A
+A responded
+B assigned to group C
+user D closed
+
+pretty simple. just follow the arrows:
+   created by establsihes the starting point
+   assigned to user is a 1:1 arrow with no implied next destination
+   ask of user is a 1:1 arrow with implied return to sender on "respond"
+   assigned to group is a 1:* arrow with no implied next destination
+   ask of group is a 1:* arrow with implied return to sender on "respond" by any 1 group member
+
+we can now report on:
+   stories that i am in the active chain
+   stories that i am at the tip of the active chain
+   stories that i am at the tip of the active chain and i am being asked something
+   ditto for the last two, but due to group membership
+these are reports against the story state itself, not the document state
+they are built on built-in concepts in the story model
+described above is the "routing" for stories
+
+
+pro-see-oh
+
+signing: a way to sign a story to assert authorship from this point back to the previous signing
+encryption: a way to encrypt parts of the document?? i don't know. this is less interesting to me because i value building an open system. ideally with a slick front end that allows full text searching --- this data should be a repo for information.
