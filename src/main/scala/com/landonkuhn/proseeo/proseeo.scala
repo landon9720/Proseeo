@@ -1,5 +1,6 @@
-package com.landonkuhn.proseeo.main
+package com.landonkuhn.proseeo
 
+import play.Play
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import java.io.File
@@ -8,6 +9,7 @@ import com.landonkuhn.proseeo.document.DocumentIo
 import java.util.UUID
 import collection.JavaConversions._
 import org.apache.commons.lang3.StringUtils._
+import script.{Say, ScriptParser}
 
 object Proseeo {
 
@@ -37,8 +39,6 @@ object Proseeo {
 
   private def init {
     println("Proseeo init!")
-//    forceMkdir(new File(".proseeo"))
-    //touch(conf)
     writeStringToFile(conf, """name: new-project
 uuid: %s
 """.format(UUID.randomUUID.toString))
@@ -68,14 +68,12 @@ uuid: %s
     println("stack: " + state.stack)
     println("current: " + state.current)
     println(state.comments.mkString("comments:\n\t", "\n\t", ""))
-//    println(state.route)
-
   }
 
   private def say(message: String) {
     val file = new File("script")
     if (!file.isFile) sys.error("not file: %s".format(file))
-    ScriptParser.append(file, SayStatement(Some(message)))
+    ScriptParser.append(file, script.Say(Some(message)))
   }
 
   def parseCommandLine(args: String): Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {

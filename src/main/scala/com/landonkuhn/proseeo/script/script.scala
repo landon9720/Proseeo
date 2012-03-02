@@ -1,4 +1,4 @@
-package com.landonkuhn.proseeo.main
+package com.landonkuhn.proseeo.script
 
 import util.parsing.combinator.syntactical.StandardTokenParsers
 import util.parsing.combinator.lexical.StdLexical
@@ -89,8 +89,8 @@ object ScriptStatementParser {
       case user ~ next => RouteTo(user, next)
     }
 
-    def say: Parser[SayStatement] = "say" ~> opt(stringLit) ^^ {
-      case message => SayStatement(message)
+    def say: Parser[Say] = "say" ~> opt(stringLit) ^^ {
+      case message => Say(message)
     }
   }
 }
@@ -121,6 +121,6 @@ case class RouteTo(user: String, next: Seq[String]) extends Statement {
   def dsl: String = null
 }
 
-case class SayStatement(inlineValue: Option[String]) extends Statement with Value {
+case class Say(inlineValue: Option[String]) extends Statement with Value {
   def dsl: String = "say \"%s\"".format(inlineValue.getOrElse("??"))
 }

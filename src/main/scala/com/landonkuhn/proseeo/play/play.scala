@@ -1,7 +1,8 @@
-package com.landonkuhn.proseeo.main
+package com.landonkuhn.proseeo.play
 
 import com.landonkuhn.proseeo.document.Document
 import collection.mutable.ListBuffer
+import com.landonkuhn.proseeo.script._
 
 object Play {
   def play(script: Seq[Statement]): ScriptState = {
@@ -21,7 +22,7 @@ object Play {
         history += user
         current = Some(routeTo)
       }
-      case say: SayStatement => comments += say.value
+      case say: Say => comments += say.value
       case x => println("I don't know about: " + x)
     }
 
