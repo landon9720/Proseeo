@@ -1,26 +1,55 @@
+tools:
+one program: proseeo
+talk to it like you talk to siri
+proseeo start story
+proseeo comment ipsum
+proseeo forward to ipsuser
+proseeo report
+
+lower level. what are the tools:
+story language parser and syntax tree
+story execution engine to arrive at current document state
+  including the important (but easy??) active chain & tip algorithm
+indexer (push all stories into mongo)
+reporter pass user defined mongo queries to mongo and handle results (no custom dsl for now, but in future)
+appender writes to story
+
 steve> proseeo open story -title "bug?"
 Created stories/<guid>.proseeo
 steve> cd <guid>
 steve> comment "i just talked to etc..."
 steve> forward to anthony
 Forwarded to user anthony (Anthony A)
-dupre> proseeo create report -title "mine"
+anthony> proseeo create report -title "mine"
 Created reports/<guid>.report
-dupre> echo "{open: true}" > reports/<guid>.report
-dupre> proseeo report -title "mine"
+anthony> echo "{open: true}" > reports/<guid>.report
+anthony> proseeo report -title "mine"
 stories/<guid>.proseeo
   created by steve (Steve A) on xx/xx/xx
   "i just talked to etc..."
-dupre> cd <guid>.proseeo
-dupre> proseeo ask steve "i need a screenshot"
+anthony> cd <guid>.proseeo
+anthony> proseeo ask steve "i need a screenshot"
 
 steve> proseeo report
 stories/<guid>.proseeo
   asked by adupre (Anthony A) on xx/xx/xx
   "i need a screenshot!"
+steve> cd <guid>
+steve> proseeo attach screenshot1.png
+Attached screenshot1.png
+steve> proseeo 
 
 
+need a way to report on what is mine.
+stories in which i am in the active chain
+the critical question i have not answered here is
+  "how do i view my in-box?"
+  "well there is no in-box."
+  "well i want an in-box."
 
+in the above use cases the story should have been in anthony's, and then engineerings's, "in boxes"
+because: at the time, they were at the tip of the active chain
+so every story: evaluate to find active chain and active tip
 
 steve notes """
   i just talked to abc in and their xyg feature isnot working,
@@ -78,3 +107,6 @@ any source control will do! ha!
 
 going to need it to be an sbt probject
 going to need to publish a brew formula
+
+at some point worry about: 
+  story file encoding
