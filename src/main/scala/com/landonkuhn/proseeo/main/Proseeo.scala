@@ -2,6 +2,8 @@ package com.landonkuhn.proseeo.main
 
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+import java.io.File
+import org.apache.commons.io.FileUtils
 
 object Proseeo {
   def main(args: Array[String]) {
@@ -18,6 +20,8 @@ object Proseeo {
 
   private def init {
     println("Processo init!")
+    FileUtils.forceMkdir(new File(".proseeo"))
+
   }
 
   def parseCommandLine(args: String): Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {
