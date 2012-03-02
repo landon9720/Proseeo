@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar target/Proseeo-assembly-0.1.jar
