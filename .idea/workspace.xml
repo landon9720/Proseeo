@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sandbox/stories/1778e84e-a940-45aa-ad71-a930a71047f0.proseeo/script" afterPath="$PROJECT_DIR$/sandbox/stories/1778e84e-a940-45aa-ad71-a930a71047f0.proseeo/script" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/script/script.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/script/script.scala" />
-    </list>
+    <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="" />
     <ignored path="Proseeo.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
