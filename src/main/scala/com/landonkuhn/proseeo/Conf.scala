@@ -34,7 +34,10 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     debug("Saved configuration file [%s]:\n%s".format(file, toString.indent("  ")))
   }
 
-  private def toStrings: Seq[String] = (for (k <- keys.toSeq.sorted) yield "%-20s: %s".format(k, apply(k))).toSeq
+  private def toStrings: Seq[String] = {
+    val width = keys.map(_.length).max
+		(for (k <- keys.toSeq.sorted) yield "%s: %s".format(rightPad(k, width, ' '), apply(k))).toSeq
+  }
   override def toString: String = toStrings.mkString("\n")
 
   private val conf: Map[String, String] = {
