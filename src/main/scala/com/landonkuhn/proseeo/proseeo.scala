@@ -6,12 +6,10 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import org.apache.commons.io.FileUtils._
 import com.landonkuhn.proseeo.document.DocumentIo
 import collection.JavaConversions._
-import org.apache.commons.lang3.StringUtils._
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTimeZone, DateTime}
 import java.util.{Date, UUID}
-import java.io.{FileWriter, BufferedWriter, File}
-import io.Source
+import java.io.File
 import org.apache.commons.io.FileUtils
 
 import Logging._
@@ -51,7 +49,7 @@ object Proseeo {
     println("Proseeo init!")
     writeStringToFile(conf, """name: new-project
 uuid: %s
-""".format(UUID.randomUUID.toString))
+""".format(Util.id))
   }
 
   private def doinfo {
@@ -61,7 +59,7 @@ uuid: %s
 
   private def start {
     println("Proseeo start!")
-    val uuid = UUID.randomUUID.toString
+    val uuid = Util.id
     val stories = new File("stories")
     val story = new File(stories, "%s.proseeo".format(uuid))
     val scriptFile = new File(story, "script")
@@ -198,6 +196,8 @@ object Util {
 //    in.close
 //    result
   }
+
+  def id: String = java.util.UUID.randomUUID.toString.replace("-", "")
 }
 
 object Ansi {

@@ -5,6 +5,7 @@
       <configuration>
         <option name="compilerLibraryLevel" value="Project" />
         <option name="compilerLibraryName" value="scala-2.9.1" />
+        <option name="fsc" value="true" />
       </configuration>
     </facet>
   </component>
@@ -24,7 +25,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.scala-lang_scala-library_2.9.1" level="project" />
-    <orderEntry type="library" name="commons-io-2.1.jar" level="project" />
+    <orderEntry type="library" name="org.apache.commons_commons-lang3_3.1" level="project" />
+    <orderEntry type="library" name="commons-io_commons-io_2.1" level="project" />
+    <orderEntry type="library" name="org.joda_joda-convert_1.2" level="project" />
+    <orderEntry type="library" name="joda-time_joda-time_2.1" level="project" />
   </component>
 </module>
 
