@@ -71,16 +71,16 @@ object CommandLineParser {
 			case key ~ value => Set(key, value)
 		}
 	}
+
+	trait Command
+
+	case class Error(message: String) extends Command
+	case class Help() extends Command
+	case class Init(name:String) extends Command
+	case class Use(storyId:String) extends Command
+	case class Info() extends Command
+	case class Start() extends Command
+	case class Tell() extends Command
+	case class Say(message: Option[String]) extends Command
+	case class Set(key: String, value: Option[String]) extends Command
 }
-
-trait Command
-
-case class Error(message: String) extends Command
-case class Help() extends Command
-case class Init(name:String) extends Command
-case class Use(storyId:String) extends Command
-case class Info() extends Command
-case class Start() extends Command
-case class Tell() extends Command
-case class Say(message: Option[String]) extends Command
-case class Set(key: String, value: Option[String]) extends Command

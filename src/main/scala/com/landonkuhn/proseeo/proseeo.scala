@@ -1,6 +1,5 @@
 package com.landonkuhn.proseeo
 
-import play.Play
 import collection.JavaConversions._
 import java.util.Date
 import java.io.File
@@ -11,7 +10,7 @@ import Util._
 
 import Logging._
 import Ansi.to_ansi_string
-import CommandLineParser.parseCommandLine
+import com.landonkuhn.proseeo.CommandLineParser.{Help, parseCommandLine}
 
 object Proseeo {
 
@@ -49,15 +48,15 @@ object Proseeo {
 		userConf += "stats.last" -> formatDateTime(now)
 
 		parseCommandLine(args.mkString(" ")) match {
-			case Error(message) => die(message)
-			case Help() => doHelp
-			case Init(name) => doInit(name)
-			case Info() => doInfo
-			case Use(storyId) => doUse(storyId)
-			case Start() => doStart
-			case Tell() => doTell
-			case Say(message) => doSay(message.getOrElse(Util.editor.get))
-			case Set(key, value) => doSet(key, value.getOrElse(Util.editor.get))
+			case CommandLineParser.Error(message) => die(message)
+			case CommandLineParser.Help() => doHelp
+			case CommandLineParser.Init(name) => doInit(name)
+			case CommandLineParser.Info() => doInfo
+			case CommandLineParser.Use(storyId) => doUse(storyId)
+			case CommandLineParser.Start() => doStart
+			case CommandLineParser.Tell() => doTell
+			case CommandLineParser.Say(message) => doSay(message.getOrElse(Util.editor.get))
+			case CommandLineParser.Set(key, value) => doSet(key, value.getOrElse(Util.editor.get))
 		}
 
 		userConf.save
@@ -90,15 +89,15 @@ object Proseeo {
 		val storyId = Util.id
 		val story = new File(new File("stories"), storyId)
 		val scriptFile = new File(story, "script")
-		val created = script.Created()
+		val created = Created()
 		created.at = Some(formatDateTime(new Date))
 		created.by = Some(user)
-		script.ScriptParser.append(scriptFile, created)
+		ScriptParser.append(scriptFile, created)
 		doUse(storyId)
 	}
 
 	def doTell {
-		val scriptObj = script.ScriptParser.parseScript(readLines(scriptFile).toSeq)
+		val scriptObj = ScriptParser.parseScript(readLines(scriptFile).toSeq)
 		info("script: " + scriptObj.mkString("\n"))
 		val state = Play.play(scriptObj)
 		info("document: " + state.document)
@@ -108,16 +107,16 @@ object Proseeo {
 	}
 
 	def doSay(message:String) {
-		val say = script.Say(Some(message))
+		val say = Say(Some(message))
 		say.at = Some(Util.formatDateTime(new Date))
 		say.by = Some(user)
-		script.ScriptParser.append(scriptFile, say)
+		ScriptParser.append(scriptFile, say)
 	}
 
 	def doSet(key:String, value:String) {
-		val set = script.Set(key, Some(value))
+		val set = Set(key, Some(value))
 		set.at = Some(Util.formatDateTime(new Date))
 		set.by = Some(user)
-		script.ScriptParser.append(scriptFile, set)
+		ScriptParser.append(scriptFile, set)
 	}
 }
