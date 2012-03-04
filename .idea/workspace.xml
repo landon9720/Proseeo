@@ -2,15 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Files.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Ansi.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Implicits.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/commons_io_commons_io_1_4.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/commons_lang_commons_lang_2_5.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/.proseeo/.proseeo.conf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea_modules/default-699d3f.iml" afterPath="$PROJECT_DIR$/.idea_modules/default-699d3f.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" />
     </list>
     <ignored path="Proseeo.iws" />
@@ -69,28 +68,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="proseeo.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="243" column="31" selection-start="7592" selection-end="7592" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="DocumentIo.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/DocumentIo.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="56" selection-start="327" selection-end="524" vertical-scroll-proportion="0.0">
+            <state line="19" column="0" selection-start="548" selection-end="548" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Conf.scala" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Conf.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="3" selection-start="578" selection-end="578" vertical-scroll-proportion="0.59972864">
+            <state line="38" column="59" selection-start="1105" selection-end="1105" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -99,7 +89,43 @@
       <file leaf-file-name="Files.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Files.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="126" selection-end="126" vertical-scroll-proportion="0.0">
+            <state line="8" column="43" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Implicits.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Implicits.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="0" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="proseeo.scala" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="69" column="3" selection-start="1905" selection-end="1905" vertical-scroll-proportion="1.3589165">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Logging.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="29" column="14" selection-start="509" selection-end="509" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Ansi.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Ansi.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="1" selection-start="1121" selection-end="1121" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -129,9 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/main/Proseeo.scala" />
-        <option value="$PROJECT_DIR$/sandbox/.proseeo/.proseeo.conf" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/Tree.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/Document.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/DocumentIo.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/main/play.scala" />
@@ -142,9 +165,12 @@
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/play/play.scala" />
         <option value="$PROJECT_DIR$/sandbox/stories/1778e84e-a940-45aa-ad71-a930a71047f0.proseeo/script" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/script/script.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Files.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Ansi.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Implicits.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" />
       </list>
     </option>
   </component>
@@ -218,6 +244,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="org.apache.commons_commons-lang3_3.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="commons-lang3-3.1.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Proseeo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="Proseeo" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -234,6 +278,36 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Proseeo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Proseeo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="proseeo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="proseeo.scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -406,24 +480,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sandbox" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value=".proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Favorites" />
@@ -434,7 +490,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.General" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -611,15 +667,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="822" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14503817" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35006434" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32792208" sideWeight="0.8549618" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30113637" sideWeight="0.64993566" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -691,21 +747,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/play/play.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="16" selection-start="450" selection-end="450" vertical-scroll-proportion="0.3392857" />
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/io/File.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="127" column="31" selection-start="4862" selection-end="4862" vertical-scroll-proportion="0.41345093" />
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/TraversableOnce.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="264" column="6" selection-start="8932" selection-end="8932" vertical-scroll-proportion="0.33296582" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sandbox/stories/1778e84e-a940-45aa-ad71-a930a71047f0.proseeo/script">
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="0" selection-start="954" selection-end="954" vertical-scroll-proportion="0.0" />
@@ -716,21 +757,9 @@
         <state line="14" column="12" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/sys/package.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="6" selection-start="1123" selection-end="1123" vertical-scroll-proportion="0.33333334" />
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.ivy2/cache/commons-io/commons-io/srcs/commons-io-2.1-sources.jar!/org/apache/commons/io/FileUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1791" column="23" selection-start="74045" selection-end="74045" vertical-scroll-proportion="1.128901">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Files.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="126" selection-end="126" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -768,23 +797,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/DocumentIo.scala">
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/sys/package.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="56" selection-start="327" selection-end="524" vertical-scroll-proportion="0.0">
+        <state line="32" column="6" selection-start="1123" selection-end="1123" vertical-scroll-proportion="0.5272727">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/document/DocumentIo.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="243" column="31" selection-start="7592" selection-end="7592" vertical-scroll-proportion="0.0">
+        <state line="19" column="0" selection-start="548" selection-end="548" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Ansi.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="1" selection-start="1121" selection-end="1121" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Files.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="43" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Implicits.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="0" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Conf.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="3" selection-start="578" selection-end="578" vertical-scroll-proportion="0.59972864">
+        <state line="38" column="59" selection-start="1105" selection-end="1105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="14" selection-start="509" selection-end="509" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="3" selection-start="1905" selection-end="1905" vertical-scroll-proportion="1.3589165">
           <folding />
         </state>
       </provider>

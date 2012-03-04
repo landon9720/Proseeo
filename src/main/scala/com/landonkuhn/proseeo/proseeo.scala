@@ -1,38 +1,49 @@
 package com.landonkuhn.proseeo
 
+import document.{Document, DocumentIo}
 import play.Play
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
-import org.apache.commons.io.FileUtils._
-import com.landonkuhn.proseeo.document.DocumentIo
 import collection.JavaConversions._
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTimeZone, DateTime}
-import java.util.{Date, UUID}
+import java.util.Date
 import java.io.File
 import org.apache.commons.io.FileUtils
+import FileUtils._
+import Implicits._
 
 import Logging._
-import Ansi._
+import Ansi.to_ansi_string
 
 object Proseeo {
 
-  private lazy val userConf = new File(new File(System.getProperty("user.home")), ".proseeo.conf")
-  debug("userConf: " + userConf)
-  private lazy val userConfDocument = DocumentIo.read(userConf)
-  debug("userConfDocument:\n" + userConfDocument)
-  val user = userConfDocument.get("user").getOrElse(sys.error("missing user"))
-  debug("user: " + user)
+  val userConf = {
+    val f = new File(getUserDirectory, ".proseeo.conf")
+    val c = new Conf(f)
+    debug("User configuration [%s]:\n%s".format(f, c.toString.tab("  ")))
+    c
+  }
 
-  private lazy val conf = new File(new File(".proseeo"), ".proseeo.conf")
-  debug("conf: " + conf)
+  val user = userConf.required("user")
+
+  val projectConf = {
+    val f = new File(new File("."), ".proseeo.conf")
+    val c = new Conf(f)
+    debug("Project configuration [%s]:\n%s".format(f, c.toString.tab("  ")))
+    c
+  }
 
   def main(args: Array[String]) {
-    info("Proseeo v0.1")
+    info("Proseeo v0.1".cyan)
+
+    userConf += "count" -> (userConf.get("count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
+    userConf.save
+
     parseCommandLine(args.mkString(" ")) match {
       case Error(message) => System.err.println(message)
       case Help() => help
-      case Init() => init
+      case Init(name) => init(name)
       case Info() => doinfo
       case Start() => start
       case Tell() => tell
@@ -45,16 +56,17 @@ object Proseeo {
     println("Proseeo help!")
   }
 
-  private def init {
+  private def init(name:String) {
     println("Proseeo init!")
-    writeStringToFile(conf, """name: new-project
-uuid: %s
-""".format(Util.id))
+    if (projectConf.file.exists) die("Project configuration already exists")
+    projectConf += "name" -> name
+    projectConf += "id" -> Util.id
+    projectConf.save
   }
 
   private def doinfo {
     println("Proseeo info!")
-    println(DocumentIo.read(conf))
+//    println(DocumentIo.read(conf))
   }
 
   private def start {
@@ -134,8 +146,8 @@ uuid: %s
       case _ => Help()
     }
 
-    def init: Parser[Init] = "init" ^^ {
-      case _ => Init()
+    def init: Parser[Init] = "init" ~> ident ^^ {
+      case name => Init(name)
     }
 
     def info: Parser[Info] = "info" ^^ {
@@ -164,7 +176,7 @@ trait Command
 
 case class Error(message: String) extends Command
 case class Help() extends Command
-case class Init() extends Command
+case class Init(name:String) extends Command
 case class Info() extends Command
 case class Start() extends Command
 case class Tell() extends Command
@@ -198,59 +210,9 @@ object Util {
   }
 
   def id: String = java.util.UUID.randomUUID.toString.replace("-", "")
+
+  def tab(s: String, tab: String): String = s.split("\n").map(tab + _).mkString("\n")
 }
 
-object Ansi {
-	implicit def to_ansi_string(s: String) = new {
-		def bold = ansi(Console.BOLD, s)
-		def underscore = ansi(Console.UNDERLINED, s)
-		def blink = ansi(Console.BLINK, s)
-		def reverse = ansi(Console.REVERSED, s)
-		def conceal = ansi(Console.INVISIBLE, s)
 
-		def black = ansi(Console.BLACK, s)
-		def red = ansi(Console.RED, s)
-		def green = ansi(Console.GREEN, s)
-		def yellow = ansi(Console.YELLOW, s)
-		def blue = ansi(Console.BLUE, s)
-		def magenta = ansi(Console.MAGENTA, s)
-		def cyan = ansi(Console.CYAN, s)
-		def white = ansi(Console.WHITE, s)
 
-		def bgblack = ansi(Console.BLACK_B, s)
-		def bgred = ansi(Console.RED_B, s)
-		def bggreen = ansi(Console.GREEN_B, s)
-		def bgyellow = ansi(Console.YELLOW_B, s)
-		def bgblue = ansi(Console.BLUE_B, s)
-		def bgmagenta = ansi(Console.MAGENTA_B, s)
-		def bgcyan = ansi(Console.CYAN_B, s)
-		def bgwhite = ansi(Console.WHITE_B, s)
-	}
-
-	private def ansi(code: String, s: String) = {
-		if (System.getenv("TERM") != null) {
-			"%s%s%s".format(code, s, Console.RESET)
-		} else s
-	}
-}
-
-object Logging {
-
-	def error(s: String) {
-    println(s.white.bold.bgred)
-  }
-
-	def error(s: String, t: Throwable) {
-		println(s.white.bold.bgred)
-		println("%s: %s\n%s".format(t.getClass.getName, t.getMessage, t.getStackTraceString.lines.mkString("  ", "\n  ", "")).yellow)
-	}
-
-	def info(s: String) {
-    println(s)
-  }
-
-	def debug(s: String) {
-    // if (verbose) // TODO
-    println(s.cyan)
-  }
-}
