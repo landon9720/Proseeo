@@ -16,7 +16,10 @@ object CommandLineParser {
 
 			import scala.util.parsing.input.CharArrayReader.EofCh
 
-			reserved += ("help", "init", "info", "start", "tell", "say", "set")
+			reserved += (
+				"help", "init", "info", "use",
+				"start", "tell", "say", "set"
+			)
 			delimiters ++= List()
 
 			override def token: Parser[Token] =
@@ -34,7 +37,7 @@ object CommandLineParser {
 			override def identChar = letter | elem('_') | elem('.')
 		}
 
-		def command: Parser[Command] = help | init | info | start | tell | say | set
+		def command: Parser[Command] = help | init | info | use | start | tell | say | set
 
 		def help: Parser[Help] = "help" ^^ {
 			case _ => Help()
@@ -46,6 +49,10 @@ object CommandLineParser {
 
 		def info: Parser[Info] = "info" ^^ {
 			case _ => Info()
+		}
+
+		def use: Parser[Use] = "use" ~> ident ^^ {
+			case storyId => Use(storyId)
 		}
 
 		def start: Parser[Start] = "start" ^^ {
@@ -71,6 +78,7 @@ trait Command
 case class Error(message: String) extends Command
 case class Help() extends Command
 case class Init(name:String) extends Command
+case class Use(storyId:String) extends Command
 case class Info() extends Command
 case class Start() extends Command
 case class Tell() extends Command

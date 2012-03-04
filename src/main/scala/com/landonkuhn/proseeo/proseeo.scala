@@ -1,14 +1,13 @@
 package com.landonkuhn.proseeo
 
 import play.Play
-import scala.util.parsing.combinator.lexical.StdLexical
-import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import collection.JavaConversions._
 import java.util.Date
 import java.io.File
 import org.apache.commons.io.FileUtils
 import FileUtils._
 import Implicits._
+import Util._
 
 import Logging._
 import Ansi.to_ansi_string
@@ -22,8 +21,8 @@ object Proseeo {
     debug("User configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
     c
   }
-
-  lazy val user = userConf.required("user")
+  lazy val user = userConf.required("user.name")
+  lazy val storyId = userConf.required("projects.%s.using".format(projectId))
 
   lazy val projectConf = {
     val f = new File(new File("."), ".proseeo.conf")
@@ -31,31 +30,53 @@ object Proseeo {
     debug("Project configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
     c
   }
+  lazy val projectName = projectConf.required("project.name")
+  lazy val projectId = projectConf.required("project.id")
+
+	lazy val projectDir = new File(".")
+	lazy val storiesDir = {
+		val f = new File(projectDir, "stories")
+		if (! f.isDirectory) die("Missing stories directory [%s]".format(f))
+		f
+	}
+	lazy val storyDir = {
+		val f = new File(storiesDir, storyId)
+		if (! f.isDirectory) die("Missing story directory [%s]".format(f))
+		f
+	}
+	lazy val scriptFile = {
+		val f = new File(storyDir, "script")
+		if (! f.isFile) die("Missing script file [%s]".format(f))
+		f
+	}
 
   def main(args: Array[String]) {
     info("Proseeo v0.1".cyan)
 
-    userConf += "count" -> (userConf.get("count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
-    userConf.save
+    userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
+    userConf += "stats.last" -> formatDateTime(now)
 
     parseCommandLine(args.mkString(" ")) match {
-      case Error(message) => System.err.println(message)
-      case Help() => help
-      case Init(name) => init(name)
+      case Error(message) => die(message)
+      case Help() => dohelp
+      case Init(name) => doinit(name)
       case Info() => doinfo
+      case Use(storyId) => douse(storyId)
       case Start() => start
       case Tell() => tell
       case Say(message) => say(message.getOrElse(Util.editor.get))
       case Set(key, value) => set(key, value.getOrElse(Util.editor.get))
     }
+
+	  userConf.save
   }
 
-  private def help {
-    println("Proseeo help!")
+  private def dohelp {
+    println("Proseeo dohelp!")
   }
 
-  private def init(name:String) {
-    println("Proseeo init!")
+  private def doinit(name:String) {
+    println("Proseeo doinit!")
     if (projectConf.file.exists) die("Project configuration already exists")
     projectConf += "project.name" -> name
     projectConf += "project.id" -> Util.id
@@ -68,45 +89,44 @@ object Proseeo {
 //    println(DocumentIo.read(conf))
   }
 
+  private def douse(storyId:String) {
+    info("Proseeo use %s".format(storyId))
+    userConf += "projects.%s.using".format(projectId) -> storyId // TODO check it
+  }
+
   private def start {
-    println("Proseeo start!")
-    val uuid = Util.id
-    val stories = new File("stories")
-    val story = new File(stories, "%s.proseeo".format(uuid))
+    info("Proseeo start")
+    val storyId = Util.id
+    val story = new File(new File("stories"), storyId)
     val scriptFile = new File(story, "script")
     val created = script.Created()
-    created.at = Some(Util.formatDateTime(new Date))
+    created.at = Some(formatDateTime(new Date))
     created.by = Some(user)
     script.ScriptParser.append(scriptFile, created)
+    douse(storyId)
   }
 
   private def tell {
-    val file = new File("script")
-    if (!file.isFile) sys.error("not file: %s".format(file))
-    val scriptObj = script.ScriptParser.parseScript(readLines(file).toSeq)
-    println("script: " + scriptObj.mkString("\n"))
+    val scriptObj = script.ScriptParser.parseScript(readLines(scriptFile).toSeq)
+    info("script: " + scriptObj.mkString("\n"))
     val state = Play.play(scriptObj)
-    println("document: " + state.document)
-    println("stack: " + state.stack)
-    println("current: " + state.current)
-    println(state.comments.mkString("comments:\n\t", "\n\t", ""))
+    info("document: " + state.document)
+    info("stack: " + state.stack)
+    info("current: " + state.current)
+    info(state.comments.mkString("comments:\n\t", "\n\t", ""))
   }
 
   private def say(message: String) {
-    val file = new File("script")
-    if (!file.isFile) sys.error("not file: %s".format(file))
     val say = script.Say(Some(message))
     say.at = Some(Util.formatDateTime(new Date))
     say.by = Some(user)
-    script.ScriptParser.append(file, say)
+    script.ScriptParser.append(scriptFile, say)
   }
 
   private def set(key: String, value: String) {
-    val file = new File("script")
-    if (!file.isFile) sys.error("not file: %s".format(file))
     val set = script.Set(key, Some(value))
     set.at = Some(Util.formatDateTime(new Date))
     set.by = Some(user)
-    script.ScriptParser.append(file, set)
+    script.ScriptParser.append(scriptFile, set)
   }
 }

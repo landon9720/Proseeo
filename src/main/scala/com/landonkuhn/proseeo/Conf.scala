@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils
 import StringUtils._
 import collection.mutable.{ListBuffer, Map, HashMap}
 
+import Implicits._
+
 class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, String] {
 
   def iterator: Iterator[(String, String)] = conf.iterator
@@ -29,9 +31,10 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
 
   def save {
     write(file, toStrings)
+    debug("Saved configuration file [%s]:\n%s".format(file, toString.indent("  ")))
   }
 
-  private def toStrings: Seq[String] = (for ((k, v) <- this) yield "%s: %s".format(k, v)).toSeq
+  private def toStrings: Seq[String] = (for (k <- keys.toSeq.sorted) yield "%-20s: %s".format(k, apply(k))).toSeq
   override def toString: String = toStrings.mkString("\n")
 
   private val conf: Map[String, String] = {
@@ -45,9 +48,9 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
       }
       conf += trim(kv(0)) -> trim(kv(1))
     }
-    debug("Read %d value(s) from configuration file [%s]".format(conf.size, file))
     conf
   }
+	debug("Read configuration file [%s]:\n%s".format(file, toString.indent("  ")))
   
   private val files: Seq[File] = {
     val result = new ListBuffer[File]

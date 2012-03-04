@@ -7,6 +7,7 @@ import java.io.File
 import org.apache.commons.io.FileUtils
 
 object Util {
+	def now:Date = new Date
   def formatDateTime(date: Date): String = ISODateTimeFormat.dateTime.print(new DateTime(date, DateTimeZone.UTC))
   def parseDateTime(s: String): Date = (new DateTime(s)).toDate
 
