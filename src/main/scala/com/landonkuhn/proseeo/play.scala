@@ -7,7 +7,7 @@ object Play {
 		val document = new Document
 
 		val history = new ListBuffer[String]
-		var current:Option[RouteTo] = None
+		var current:Option[Route] = None
 
 		val comments = new ListBuffer[String]
 
@@ -16,7 +16,7 @@ object Play {
 
 			}
 			case set@Set(key, _) => document += key -> set.value
-			case routeTo@RouteTo(user, next) => {
+			case routeTo@Route(user, next) => {
 				history += user
 				current = Some(routeTo)
 			}
@@ -28,4 +28,4 @@ object Play {
 	}
 }
 
-case class ScriptState(document:Document, stack:Seq[String], current:Option[RouteTo], comments:Seq[String])
+case class ScriptState(document:Document, stack:Seq[String], current:Option[Route], comments:Seq[String])

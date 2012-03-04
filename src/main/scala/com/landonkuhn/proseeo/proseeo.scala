@@ -10,7 +10,7 @@ import Util._
 
 import Logging._
 import Ansi.to_ansi_string
-import com.landonkuhn.proseeo.CommandLineParser.{Help, parseCommandLine}
+import com.landonkuhn.proseeo.CommandLineParser.parseCommandLine
 
 object Proseeo {
 
@@ -89,34 +89,35 @@ object Proseeo {
 		val storyId = Util.id
 		val story = new File(new File("stories"), storyId)
 		val scriptFile = new File(story, "script")
+		touch(scriptFile)
+		val script = new Script(scriptFile)
 		val created = Created()
 		created.at = Some(formatDateTime(new Date))
 		created.by = Some(user)
-		ScriptParser.append(scriptFile, created)
+		script.append(created).save
 		doUse(storyId)
 	}
 
 	def doTell {
-		val scriptObj = ScriptParser.parseScript(readLines(scriptFile).toSeq)
-		info("script: " + scriptObj.mkString("\n"))
-		val state = Play.play(scriptObj)
-		info("document: " + state.document)
-		info("stack: " + state.stack)
-		info("current: " + state.current)
-		info(state.comments.mkString("comments:\n\t", "\n\t", ""))
+		val script = new Script(scriptFile)
+//		val state = Play.play(script)
+//		info("document: " + state.document)
+//		info("stack: " + state.stack)
+//		info("current: " + state.current)
+//		info(state.comments.mkString("comments:\n\t", "\n\t", ""))
 	}
 
 	def doSay(message:String) {
 		val say = Say(Some(message))
 		say.at = Some(Util.formatDateTime(new Date))
 		say.by = Some(user)
-		ScriptParser.append(scriptFile, say)
+//		ScriptParser.append(scriptFile, say)
 	}
 
 	def doSet(key:String, value:String) {
 		val set = Set(key, Some(value))
 		set.at = Some(Util.formatDateTime(new Date))
 		set.by = Some(user)
-		ScriptParser.append(scriptFile, set)
+//		ScriptParser.append(scriptFile, set)
 	}
 }
