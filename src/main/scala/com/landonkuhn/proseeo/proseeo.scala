@@ -15,25 +15,17 @@ import CommandLineParser.parseCommandLine
 
 object Proseeo {
 
-	lazy val userConf = {
-		val f = new File(getUserDirectory, ".proseeo.conf")
-		val c = new Conf(f)
-		debug("User configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
-		c
-	}
+	lazy val projectDir = new File(".")
+	lazy val projectFile = new File(projectDir, ".proseeo.conf")
+
+	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.required("user.name")
 	lazy val storyId = userConf.required("projects.%s.using".format(projectId))
 
-	lazy val projectConf = {
-		val f = new File(new File("."), ".proseeo.conf")
-		val c = new Conf(f)
-		debug("Project configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
-		c
-	}
+	lazy val projectConf = new Conf(projectFile)
 	lazy val projectName = projectConf.required("project.name")
 	lazy val projectId = projectConf.required("project.id")
 
-	lazy val projectDir = new File(".")
 	lazy val storiesDir = {
 		val f = new File(projectDir, "stories")
 		if (!f.isDirectory) die("Missing stories directory [%s]".format(f))
