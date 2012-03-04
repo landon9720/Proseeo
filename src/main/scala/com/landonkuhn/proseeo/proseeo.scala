@@ -16,16 +16,16 @@ import CommandLineParser.parseCommandLine
 
 object Proseeo {
 
-  val userConf = {
+  lazy val userConf = {
     val f = new File(getUserDirectory, ".proseeo.conf")
     val c = new Conf(f)
     debug("User configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
     c
   }
 
-  val user = userConf.required("user")
+  lazy val user = userConf.required("user")
 
-  val projectConf = {
+  lazy val projectConf = {
     val f = new File(new File("."), ".proseeo.conf")
     val c = new Conf(f)
     debug("Project configuration [%s]:\n%s".format(f, c.toString.indent("  ")))
@@ -57,8 +57,9 @@ object Proseeo {
   private def init(name:String) {
     println("Proseeo init!")
     if (projectConf.file.exists) die("Project configuration already exists")
-    projectConf += "name" -> name
-    projectConf += "id" -> Util.id
+    projectConf += "project.name" -> name
+    projectConf += "project.id" -> Util.id
+    debug("Writing project [%s] configuration:\n%s".format(name, projectConf.toString.indent("  ")))
     projectConf.save
   }
 

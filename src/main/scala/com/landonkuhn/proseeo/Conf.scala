@@ -36,7 +36,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
 
   private val conf: Map[String, String] = {
     val conf = new HashMap[String, String]
-    for (line <- read(file).map(trim) if line.length >0 && ! startsWith(line, "#")) {
+    for (line <- readIfExists(file).getOrElse(List()).map(trim) if line.length > 0 && ! startsWith(line, "#")) {
       val kv = split(line, "=:", 2)
       if (kv.length != 2) {
         error("Invalid line in configuration file [%s]:")
