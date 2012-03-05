@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils
 import StringUtils._
 import collection.mutable.{ListBuffer, Map, HashMap}
 
-import Implicits._
+import Util._
 
 class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, String] {
 

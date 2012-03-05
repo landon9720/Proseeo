@@ -1,7 +1,7 @@
 package com.landonkuhn.proseeo
 
 import Ansi._
-import Implicits._
+import Util._
 
 object Logging {
 

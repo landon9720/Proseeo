@@ -4,7 +4,6 @@ import java.util.Date
 import java.io.File
 import org.apache.commons.io.FileUtils
 import FileUtils._
-import Implicits._
 import Util._
 
 import Logging._
@@ -45,7 +44,7 @@ object Proseeo {
 		info("Proseeo v0.1".cyan)
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
-		userConf += "stats.last" -> formatDateTime(now)
+		userConf += "stats.last" -> now.format
 
 		parseCommandLine(args.mkString(" ")) match {
 			case CommandLineParser.Help() => doHelp
@@ -85,10 +84,7 @@ object Proseeo {
 		val scriptFile = new File(story, "script")
 		touch(scriptFile)
 		val script = new Script(scriptFile)
-		val created = script.Created()
-		created.at = Some(formatDateTime(new Date))
-		created.by = Some(user)
-		script.append(created).save
+		script.append(ScriptStatementParser.Created(user, now)).save
 		doUse(storyId)
 	}
 
@@ -98,24 +94,19 @@ object Proseeo {
 	}
 
 	def doTell {
-		val state = script.play
-		info("document: " + state.document)
-		info("stack: " + state.stack)
-		info("current: " + state.current)
-		info(state.comments.mkString("comments:\n\t", "\n\t", ""))
+		script.play
+//		val state = script.play
+//		info("document: " + state.document)
+//		info("stack: " + state.stack)
+//		info("current: " + state.current)
+//		info(state.comments.mkString("comments:\n\t", "\n\t", ""))
 	}
 
 	def doSay(message:String) {
-		val say = script.Say(message)
-		say.at = Some(Util.formatDateTime(new Date))
-		say.by = Some(user)
-		script.append(say).save
+		script.append(ScriptStatementParser.Say(message, user, now)).save
 	}
 
 	def doSet(key:String, value:String) {
-		val set = script.Set(key, value)
-		set.at = Some(Util.formatDateTime(new Date))
-		set.by = Some(user)
-		script.append(set).save
+		script.append(ScriptStatementParser.Set(key, value, user, now)).save
 	}
 }

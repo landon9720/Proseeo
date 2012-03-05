@@ -7,9 +7,20 @@ import java.io.File
 import org.apache.commons.io.FileUtils
 
 object Util {
+
+	implicit def rich_string(s: String) = new {
+		def indent(chars: String):String = s.split("\n").map(chars + _).mkString("\n")
+		def optLong:Option[Long] = try { Some(s.toLong) } catch { case _ => None }
+		def isDate:Boolean = try { new DateTime(s); true } catch { case _ => false }
+		def toDate:Date = (new DateTime(s)).toDate
+		def optDate:Option[Date] = try { Some(toDate) } catch { case _ => None }
+	}
+
+	implicit def rich_date(d: Date) = new {
+		def format: String = ISODateTimeFormat.dateTime.print(new DateTime(d, DateTimeZone.UTC))
+	}
+
 	def now:Date = new Date
-  def formatDateTime(date: Date): String = ISODateTimeFormat.dateTime.print(new DateTime(date, DateTimeZone.UTC))
-  def parseDateTime(s: String): Date = (new DateTime(s)).toDate
 
   def editor(): Option[String] = {
     val f = File.createTempFile("proceeo_", ".value")
@@ -35,6 +46,4 @@ object Util {
   }
 
   def id: String = java.util.UUID.randomUUID.toString.replace("-", "")
-
-  def indent(s: String, chars: String): String = s.split("\n").map(chars + _).mkString("\n")
 }
