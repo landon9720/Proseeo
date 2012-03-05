@@ -18,6 +18,14 @@ object Util {
 
 	implicit def rich_date(d: Date) = new {
 		def format: String = ISODateTimeFormat.dateTime.print(new DateTime(d, DateTimeZone.UTC))
+
+		def diff(d2: Date): String = {
+			val interval = (d.getTime - d2.getTime).abs
+			if (interval < 60000) "just now"
+			else if (interval < 60000 * 60) "%d minute(s)".format(interval / 60000)
+			else if (interval < 60000 * 60 * 24) "%d hour(s)".format(interval / (60000 * 60))
+			else "%d day(s)".format(interval / (60000 * 60 * 24))
+		}
 	}
 
 	def now:Date = new Date
