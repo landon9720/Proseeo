@@ -1,38 +1,31 @@
 package com.landonkuhn.proseeo
 
 import Ansi._
+import Implicits._
 
 object Logging {
 
-	def die(s:String): Nothing = {
-		error(s)
-		sys.exit
+	def ok(s:String) {
+		println(s.white.bggreen.bold)
 	}
 
-	def error(s:String) {
-		println(s.white.bold.bgred)
-	}
-
-	def die(s:String, t:Throwable) {
-		error(s, t)
-		sys.exit
-	}
-
-	def error(s:String, t:Throwable) {
-		println(s.white.bold.bgred)
-		println("%s: %s\n%s".format(t.getClass.getName, t.getMessage, t.getStackTraceString.lines.mkString("  ", "\n  ", "")).yellow)
+	def debug(s:String) {
+		// if (verbose) // later
+		println(s.cyan)
 	}
 
 	def info(s:String) {
 		println(s)
 	}
 
-	def debug(s:String) {
-		// if (verbose) // TODO
-		println(s.cyan)
+	def error(s:String, sd:String = "") {
+		println(s.white.bold.bgred)
+		if (sd != "") debug(sd.indent("  "))
 	}
 
-	def ok(s:String) {
-		println(s.green.bold)
+	def die(s:String, sd:String = ""): Nothing = {
+		error(s)
+		if (sd != "") debug(sd.indent("  "))
+		sys.exit
 	}
 }

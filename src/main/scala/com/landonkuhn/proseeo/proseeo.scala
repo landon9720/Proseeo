@@ -1,6 +1,5 @@
 package com.landonkuhn.proseeo
 
-import collection.JavaConversions._
 import java.util.Date
 import java.io.File
 import org.apache.commons.io.FileUtils
@@ -108,14 +107,14 @@ object Proseeo {
 	}
 
 	def doSay(message:String) {
-		val say = script.Say(Some(message))
+		val say = script.Say(message)
 		say.at = Some(Util.formatDateTime(new Date))
 		say.by = Some(user)
 		script.append(say).save
 	}
 
 	def doSet(key:String, value:String) {
-		val set = script.Set(key, Some(value))
+		val set = script.Set(key, value)
 		set.at = Some(Util.formatDateTime(new Date))
 		set.by = Some(user)
 		script.append(set).save

@@ -10,14 +10,14 @@ import Logging._
 import Files._
 import com.landonkuhn.proseeo.CommandLineParser.Say
 
-class Script(file: File) {
+class Script(file:File) {
 
-	def append(statement: Statement): Script = {
+	def append(statement:Statement):Script = {
 		statements += statement
 		this
 	}
 
-	def save: Script = {
+	def save:Script = {
 		write(file, statements.map(_.toString))
 		this
 	}
@@ -49,42 +49,30 @@ class Script(file: File) {
 	trait Statement {
 		var by:Option[String] = None
 		var at:Option[String] = None
-		protected def byat: String = "" + by.map(" by " + _).getOrElse("") + at.map(" at \"" + _ + "\"").getOrElse("")
-	}
-
-	trait Value {
-		def value = inlineValue.getOrElse(multilineValue.getOrElse(die("No inline or multiline value")))
-		val inlineValue:Option[String]
-		var multilineValue:Option[String] = None
+		protected def byat:String = "" + by.map(" by " + _).getOrElse("") + at.map(" at \"" + _ + "\"").getOrElse("")
 	}
 
 	case class Created() extends Statement {
 		override def toString:String = "created" + byat
 	}
 
-	case class Set(key:String, inlineValue:Option[String]) extends Statement with Value {
-		override def toString:String = value.indexOf("\n") match {
-			case -1 => "set %s \"%s\"".format(key, value)
-			case _ => "set %s\n".format(key) + value.split("\n").mkString("  ", "\n  ", "\n")
-		}
+	case class Set(key:String, value:String) extends Statement {
+		override def toString:String = "set %s \"%s\"".format(key, value) + byat
 	}
 
 	case class Route(user:String, next:Seq[String]) extends Statement {
-		override def toString:String = null
+		override def toString:String = "route to %s" + next.map(" then " + _).mkString(" ")
 	}
 
-	case class Say(inlineValue:Option[String]) extends Statement with Value {
-		override def toString:String = value.indexOf("\n") match {
-			case -1 => "say \"%s\"".format(value)
-			case _ => "say\n" + value.split("\n").mkString("  ", "\n  ", "\n")
-		}
+	case class Say(value:String) extends Statement {
+		override def toString:String = "say \"%s\"".format(value)
 	}
 
 	private val parser = new StandardTokenParsers {
 
 		def parseStatement(line:String):Statement = phrase(statement)(new lexical.Scanner(line)) match {
 			case Success(statement, _) => statement
-			case e:NoSuccess => die("I don't understand statement [%s] in file [%s]:\n  %s".format(line, file, e.msg))
+			case e:NoSuccess => die("I don't understand statement [%s] in file [%s]".format(line, file), e.msg)
 		}
 
 		override val lexical = new StdLexical {
@@ -123,7 +111,7 @@ class Script(file: File) {
 			override def identChar = letter | elem('_') | elem('.')
 		}
 
-		def statement:Parser[Statement] = (created | set | route | say) ~ opt(by) ~ opt(at) ^^ {
+		def statement = (created | set | route | say) ~ opt(by) ~ opt(at) ^^ {
 			case statement ~ by ~ at => {
 				statement.by = by
 				statement.at = at
@@ -131,73 +119,36 @@ class Script(file: File) {
 			}
 		}
 
-		def by:Parser[String] = "by" ~> ident ^^ {
+		def by = "by" ~> ident ^^ {
 			case by => by
 		}
 
-		def at:Parser[String] = "at" ~> stringLit ^^ {
+		def at = "at" ~> stringLit ^^ {
 			case at => at
 		}
 
-		def created:Parser[Created] = "created" ^^ {
+		def created = "created" ^^ {
 			case user => Created()
 		}
 
-		def set:Parser[Set] = "set" ~> ident ~ opt(stringLit) ^^ {
+		def set = "set" ~> ident ~ stringLit ^^ {
 			case key ~ value => Set(key, value)
 		}
 
-		def route:Parser[Route] = "route" ~> "to" ~> ident ~ rep("then" ~> ident) ^^ {
+		def route = "route" ~> "to" ~> ident ~ rep("then" ~> ident) ^^ {
 			case user ~ next => Route(user, next)
 		}
 
-		def say:Parser[Say] = "say" ~> opt(stringLit) ^^ {
+		def say = "say" ~> stringLit ^^ {
 			case message => Say(message)
 		}
 	}
 
-	private val statements: ListBuffer[Statement] = {
+	private val statements:ListBuffer[Statement] = {
 		val result = new ListBuffer[Statement]
-		for (line <- read(file).map(trim) if line.length > 0 && ! startsWith(line, "#")) {
-			val statement = parser.parseStatement(line)
-			result += statement
-		}
+		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
+			parser.parseStatement(line)
+		})
 		result
 	}
 }
-
-//object ScriptParser {
-//	def parseScript(script:Seq[String]):Seq[Statement] = {
-//		val result = new ListBuffer[Statement]
-//		var i = 0
-//		while (i < script.length) {
-//			val line = script(i)
-//			var statement = ScriptStatementParser.parseStatement(line)
-//			statement match {
-//				case value:Value if value.inlineValue.isEmpty => {
-//
-//					val buf = new StringBuilder
-//					while (i + 1 < script.length && startsWith(script(i + 1), "  ")) {
-//						i = i + 1
-//						buf.append(script(i))
-//						buf.append("\n")
-//					}
-//					value.multilineValue = Some(buf.toString)
-//				}
-//				case _ =>
-//			}
-//			i = i + 1
-//			println("parsed statement: " + statement)
-//			result += statement
-//		}
-//		result
-//	}
-//
-//	def append(file:File, statement:Statement) {
-//		writeStringToFile(file, "\nat \"%s\" by %s %s".format(statement.at.get, statement.by.get, statement.dsl), true)
-//	}
-//}
-
-
-
-
