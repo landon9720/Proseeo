@@ -1,7 +1,6 @@
 package com.landonkuhn.proseeo
 
 import Logging._
-import util.parsing.combinator.RegexParsers
 
 object CommandLineParser {
 
@@ -12,7 +11,7 @@ object CommandLineParser {
     }
   }
 
-  val parser = new RegexParsers {
+  val parser = new Parser {
     def command = (
         "help"              ^^^ Help()
       | "status"            ^^^ Status()
@@ -22,10 +21,9 @@ object CommandLineParser {
       | "tell"              ^^^ Tell()
       | "say" ~> text       ^^ { case text => Say(text) }
       | "set" ~> key ~ text ^^ { case key ~ text => Set(key, text) }
+	    | route
       )
-    def id = "[0-9a-f]{32}".r
-    def text = ".+".r
-    def key = "[a-zA-Z0-9._]+".r
+	  def route = "route" ~> "to" ~> name ~ rep("then" ~> name) ^^ { case name ~ then => RouteTo(name, then) }
   }
 
 	trait Command
@@ -37,4 +35,7 @@ object CommandLineParser {
 	case class Tell() extends Command
 	case class Say(message:String) extends Command
 	case class Set(key:String, value:String) extends Command
+
+	trait Route extends Command
+	case class RouteTo(name:String, then:Seq[String]) extends Route
 }

@@ -14,16 +14,16 @@ object ScriptStatementParser {
     }
   }
 
-	val parser = new RegexParsers {
+	val parser = new Parser {
 		def statement = (
 			  "created" ~> by ~ at                ^^ { case by ~ at => Created(by, at) }
 			| "say" ~> quotedText ~ by ~ at       ^^ { case quotedText ~ by ~ at => Say(quotedText, by, at) }
 			| "set" ~> key ~ quotedText ~ by ~ at ^^ { case key ~ quotedText ~ by ~ at => Set(key, quotedText, by, at) }
+			| route
 		)
-		def by         = "by" ~> "[a-zA-Z0-9]+".r   ^^ { case x => x }
-		def at         = "@" ~> "[\\S]+".r          ^? { case x if x.isDate => x.toDate }
-		def quotedText = "\"" ~> "[^\"]+".r <~ "\"" ^^ { case x => x }
-		def key        = "[a-zA-Z0-9._]+".r
+		def by = "by" ~> name
+		def at = "@" ~> "[\\S]+".r ^? { case x if x.isDate => x.toDate }
+		def route = "route" ~> "to" ~> name ~ rep("then" ~> name) ~ by ~ at ^^ { case name ~ then ~ by ~ at => RouteTo(name, then, by, at) }
 	}
 
 	trait Statement
@@ -35,5 +35,8 @@ object ScriptStatementParser {
 	}
 	case class Set(key:String, value:String, by:String, at:Date) extends Statement {
 		override def toString = "set %s \"%s\" by %s @ %s".format(key, value, by, at.format)
+	}
+	case class RouteTo(name:String, then:Seq[String], by:String, at:Date) extends Statement {
+		override def toString = "route to %s%s by %s @ %s".format(name, then.map(" then " + _).mkString(""), by, at.format)
 	}
 }

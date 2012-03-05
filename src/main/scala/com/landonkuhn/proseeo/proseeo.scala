@@ -55,6 +55,7 @@ object Proseeo {
 			case CommandLineParser.Tell() => doTell
 			case CommandLineParser.Say(message) => doSay(message)
 			case CommandLineParser.Set(key, value) => doSet(key, value)
+			case CommandLineParser.RouteTo(name, then) => doRouteTo(name, then)
 		}
 
 		userConf.save
@@ -108,5 +109,9 @@ object Proseeo {
 
 	def doSet(key:String, value:String) {
 		script.append(ScriptStatementParser.Set(key, value, user, now)).save
+	}
+
+	def doRouteTo(name:String, then:Seq[String]) {
+		script.append(ScriptStatementParser.RouteTo(name, then, user, now)).save
 	}
 }
