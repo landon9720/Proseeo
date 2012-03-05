@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils
 object Util {
 
 	implicit def rich_string(s: String) = new {
+		def indent:String = indent("  ")
 		def indent(chars: String):String = s.split("\n").map(chars + _).mkString("\n")
 		def optLong:Option[Long] = try { Some(s.toLong) } catch { case _ => None }
 		def isDate:Boolean = try { new DateTime(s); true } catch { case _ => false }

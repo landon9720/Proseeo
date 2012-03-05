@@ -54,29 +54,6 @@ class Document(map:collection.mutable.Map[String, String] = new collection.mutab
 	val tree = new Tree(this)
 }
 
-object Document {
-	def apply():Document = apply(Map[String, String]())
-
-	def apply(map:Map[String, String]):Document = {
-		val _map = new scala.collection.mutable.HashMap[String, String]
-		_map ++= map
-		new Document(_map)
-	}
-
-	def apply(document:Document):Document = apply(document.toMap)
-
-	def apply(values:(String, String)*):Document = apply(values.toMap)
-
-	def fromJavaMap(map:java.util.Map[String, String]):Document = collection.JavaConversions.mapAsScalaMap(map) match {
-		case document:Document => document
-		case map:collection.mutable.Map[String, String] => new Document(map)
-	}
-
-	implicit def map_to_document(map:Map[String, String]):Document = Document(map)
-
-	implicit def document_to_map(document:Document):Map[String, String] = document.toMap
-}
-
 class ScopeDocument[T <: Document](_parent:T, _scope:String) extends Document {
 	override def get(key:String) = parent.get(_scope + key)
 
@@ -122,7 +99,7 @@ class ViewDocument[T <: Document](val parent:T, val f:(String, String) => Boolea
 	}
 }
 
-sealed class Tree(val document:Document = Document()) extends scala.collection.mutable.Map[String, Either[String, Tree]] {
+sealed class Tree(val document:Document = new Document()) extends scala.collection.mutable.Map[String, Either[String, Tree]] {
 
 	private val cache = new collection.mutable.HashMap[String, Tree]
 
@@ -207,8 +184,4 @@ sealed class Tree(val document:Document = Document()) extends scala.collection.m
 		clear
 		this ++= tree
 	}
-}
-
-object Tree {
-
 }

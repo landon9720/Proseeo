@@ -30,7 +30,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
 
   def save {
     write(file, toStrings)
-    debug("Saved configuration file [%s]:\n%s".format(file, toString.indent("  ")))
+    debug("Saved configuration file [%s]:\n%s".format(file, toString.indent))
   }
 
   private def toStrings: Seq[String] = {
@@ -52,7 +52,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     }
     conf
   }
-	debug("Read configuration file [%s]:%s".format(file, if (conf.isEmpty) " (empty)" else "\n" + toString.indent("  ")))
+	debug("Read configuration file [%s]:%s".format(file, if (conf.isEmpty) " (empty)" else "\n" + toString.indent))
   
   private val files: Seq[File] = {
     val result = new ListBuffer[File]
