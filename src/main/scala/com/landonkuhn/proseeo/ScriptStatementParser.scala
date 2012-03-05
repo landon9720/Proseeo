@@ -27,7 +27,13 @@ object ScriptStatementParser {
 	}
 
 	trait Statement
-	case class Created(by:String, at:Date) extends Statement
-	case class Say(text:String, by:String, at:Date) extends Statement
-	case class Set(key:String, value:String, by:String, at:Date) extends Statement
+	case class Created(by:String, at:Date) extends Statement {
+		override def toString = "created by %s @ %s".format(by, at.format)
+	}
+	case class Say(text:String, by:String, at:Date) extends Statement {
+		override def toString = "say \"%s\" by %s @ %s".format(text, by, at.format)
+	}
+	case class Set(key:String, value:String, by:String, at:Date) extends Statement {
+		override def toString = "set %s \"%s\" by %s @ %s".format(key, value, by, at.format)
+	}
 }

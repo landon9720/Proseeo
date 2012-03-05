@@ -17,11 +17,7 @@ class Script(file:File) {
 	}
 
 	def save:Script = {
-		write(file, statements.map({
-			case ScriptStatementParser.Created(by, at) => "created by %s @ %s".format(by, at.format)
-			case ScriptStatementParser.Say(text, by, at) => "say \"%s\" by %s @ %s".format(text, by, at.format)
-			case ScriptStatementParser.Set(key, text, by, at) => "set %s \"%s\" by %s @ %s".format(key, text, by, at.format)
-		}))
+		write(file, statements.map(_.toString))
 		this
 	}
 
