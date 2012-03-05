@@ -18,14 +18,16 @@ object Logging {
 		println(s)
 	}
 
-	def error(s:String, sd:String = "") {
+	def error(s:String, sd:String) { error(s, Some(sd)) }
+	def error(s:String, sd:Option[String] = None) {
 		println(s.white.bold.bgred)
-		if (sd != "") debug(sd.indent("  "))
+		for (sd <- sd) debug(sd.indent("  "))
 	}
 
-	def die(s:String, sd:String = ""): Nothing = {
+	def die(s:String, sd:String): Nothing = die(s, Some(sd))
+	def die(s:String, sd:Option[String] = None): Nothing = {
 		error(s)
-		if (sd != "") debug(sd.indent("  "))
+		for (sd <- sd) debug(sd.indent("  "))
 		sys.exit
 	}
 }

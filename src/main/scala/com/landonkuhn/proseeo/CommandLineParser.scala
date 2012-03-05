@@ -3,11 +3,13 @@ package com.landonkuhn.proseeo
 import util.parsing.combinator.syntactical.StandardTokenParsers
 import util.parsing.combinator.lexical.StdLexical
 
+import Logging._
+
 object CommandLineParser {
 
 	def parseCommandLine(args:String):Command = parser.phrase(parser.command)(new parser.lexical.Scanner(args)) match {
 		case parser.Success(command, _) => command
-		case e:parser.NoSuccess => Error("Failed parsing [%s]: %s".format(args, e.msg))
+		case e:parser.NoSuccess => die("I don't understand [%s]".format(args), e.msg)
 	}
 
 	private val parser = new StandardTokenParsers {
@@ -71,18 +73,16 @@ object CommandLineParser {
 			case _ => Tell()
 		}
 
-		def say:Parser[Say] = "say" ~> success ^^ {
+		def say:Parser[Say] = "say" ~> success("message") ^^ {
 			case message => Say(message)
 		}
 
-		def set = "set" ~> ident ~ success ^^ {
+		def set = "set" ~> ident ~ stringLit ^^ {
 			case key ~ value => Set(key, value)
 		}
 	}
 
 	trait Command
-
-	case class Error(message:String) extends Command
 
 	case class Help() extends Command
 
