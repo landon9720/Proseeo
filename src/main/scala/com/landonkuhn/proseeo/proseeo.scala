@@ -51,6 +51,7 @@ object Proseeo {
 			case CommandLineParser.Status() => doStatus
       case CommandLineParser.Init(name) => doInit(name)
       case CommandLineParser.Start() => doStart
+      case CommandLineParser.End() => doEnd
       case CommandLineParser.Use(storyId) => doUse(storyId)
 			case CommandLineParser.Tell() => doTell
 			case CommandLineParser.Say(message) => doSay(message)
@@ -89,18 +90,23 @@ object Proseeo {
 		doUse(storyId)
 	}
 
+	def doEnd {
+		info("Proseeo end")
+		script.append(ScriptStatementParser.Ended(user, now))save
+	}
+
 	def doUse(storyId:String) {
 		info("Proseeo use %s".format(storyId))
 		userConf += "projects.%s.using".format(projectId) -> storyId // TODO check it
 	}
 
 	def doTell {
-		script.play
-//		val state = script.play
-//		info("document: " + state.document)
-//		info("stack: " + state.stack)
-//		info("current: " + state.current)
-//		info(state.comments.mkString("comments:\n\t", "\n\t", ""))
+		val state = script.play
+		info("created: " + state.created)
+		info("ended: " + state.ended)
+		info("says:\n" + state.says.mkString("\n").indent("  "))
+		info("document:\n" + state.document.toString.indent("  "))
+		info("where: " + state.where)
 	}
 
 	def doSay(message:String) {

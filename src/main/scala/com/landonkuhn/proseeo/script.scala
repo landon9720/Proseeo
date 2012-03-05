@@ -6,8 +6,8 @@ import java.io.File
 
 import Logging._
 import Files._
-import com.landonkuhn.proseeo.ScriptStatementParser.Statement
 import Util._
+import com.landonkuhn.proseeo.ScriptStatementParser._
 
 class Script(file:File) {
 
@@ -21,34 +21,25 @@ class Script(file:File) {
 		this
 	}
 
-	def play {
-		info("play")
-		for (statement <- statements) info(statement.toString)
+	def play:State = {
+		var created:Option[Created] = None
+		var ended:Option[Ended] = None
+		val says = new ListBuffer[Say]
+		val document = new Document
+		var where: Option[String] = None
+
+		for (statement <- statements) statement match {
+			case c:Created => if (created.isDefined) die("More than one created") else created = Some(c)
+			case e:Ended => if (ended.isDefined) die("More than one ended") else ended = Some(e)
+			case s:Say => says += s
+			case Set(key, value, _, _) => document += key -> value
+			case RouteTo(name, _, _, _) => where = Some(name)
+		}
+
+		State(created, ended, says, document, where)
 	}
 
-//	def play:State = {
-//		val document = new Document
-//		val history = new ListBuffer[String]
-//		var current:Option[Route] = None
-//		val comments = new ListBuffer[String]
-//
-//		for (statement <- statements) statement match {
-//			case c@Created() => {
-//
-//			}
-//			case set@Set(key, _) => document += key -> set.value
-//			case route@Route(user, next) => {
-//				history += user
-//				current = Some(route)
-//			}
-//			case say:Say => comments += say.value
-//			case x => die("I don't know about: " + x)
-//		}
-
-//		State(document, history, current, comments)
-//	}
-
-//	case class State(document:Document, stack:Seq[String], current:Option[Route], comments:Seq[String])
+	case class State(created:Option[Created], ended:Option[Ended], says:Seq[Say], document:Document, where:Option[String])
 
 	private val statements:ListBuffer[Statement] = {
 		val result = new ListBuffer[Statement]

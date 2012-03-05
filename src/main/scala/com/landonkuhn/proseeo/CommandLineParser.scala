@@ -17,6 +17,7 @@ object CommandLineParser {
       | "status"            ^^^ Status()
       | "init" ~> ".+".r    ^^ { case name => Init(name) }
       | "start"             ^^^ Start()
+	    | "end"               ^^^ End()
       | "use" ~> id         ^^ { case id => Use(id) }
       | "tell"              ^^^ Tell()
       | "say" ~> text       ^^ { case text => Say(text) }
@@ -31,6 +32,7 @@ object CommandLineParser {
 	case class Status() extends Command
 	case class Init(name:String) extends Command
 	case class Start() extends Command
+	case class End() extends Command
 	case class Use(storyId:String) extends Command
 	case class Tell() extends Command
 	case class Say(message:String) extends Command
