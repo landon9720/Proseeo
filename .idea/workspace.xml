@@ -2,25 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Parser.scala" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/.proseeo.conf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/2063ed012c7a40e7b5097a3122f16378/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/324259f286fa493b92589ebc95fdd9bf/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/33035f8547944a07bcfebce83cc0b429/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/588fffd1e30a49dc92e5aad77e53e601/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/84d44cd6b4514dba857484870dcb065a/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/b128440d4e3a43c9b0f9d9a91bd7094d/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/bca686143c1d41b38eee2710c11a57b9/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/c55fbcf9841e43719a2bbd4c313c3a33/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/e56a06bfa4824853a653e0eb5cb976de/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/e74cfdeb7bad4a12b542d90db8b1d515/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/eaaba68d20a74b56acf8b672fbaac150/script" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sandbox/stories/fc6e6995954c4f3cbaf0bc01de80bd73/script" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/CommandLineParser.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/CommandLineParser.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala" />
     </list>
     <ignored path="Proseeo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -103,19 +86,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScriptStatementParser.scala" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ScriptStatementParser.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="103" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="7" selection-start="15" selection-end="15" vertical-scroll-proportion="0.02464332">
+            <state line="25" column="103" selection-start="997" selection-end="997" vertical-scroll-proportion="0.5175097">
               <folding />
             </state>
           </provider>
@@ -660,16 +634,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="103" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+        <state line="1" column="8" selection-start="16" selection-end="16" vertical-scroll-proportion="0.02464332">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="7" selection-start="15" selection-end="15" vertical-scroll-proportion="0.02464332">
+        <state line="25" column="103" selection-start="997" selection-end="997" vertical-scroll-proportion="0.5175097">
           <folding />
         </state>
       </provider>
