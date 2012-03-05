@@ -49,10 +49,10 @@ object Proseeo {
 
 		parseCommandLine(args.mkString(" ")) match {
 			case CommandLineParser.Help() => doHelp
-			case CommandLineParser.Init(name) => doInit(name)
-			case CommandLineParser.Info() => doInfo
-			case CommandLineParser.Use(storyId) => doUse(storyId)
-			case CommandLineParser.Start() => doStart
+			case CommandLineParser.Status() => doStatus
+      case CommandLineParser.Init(name) => doInit(name)
+      case CommandLineParser.Start() => doStart
+      case CommandLineParser.Use(storyId) => doUse(storyId)
 			case CommandLineParser.Tell() => doTell
 			case CommandLineParser.Say(message) => doSay(message)
 			case CommandLineParser.Set(key, value) => doSet(key, value)
@@ -65,7 +65,11 @@ object Proseeo {
 		info("Proseeo help!")
 	}
 
-	def doInit(name:String) {
+	def doStatus {
+		info("Proseeo status!")
+	}
+
+  def doInit(name:String) {
 		info("Proseeo doinit!")
 		if (projectConf.file.exists) die("Project configuration already exists")
 		projectConf += "project.name" -> name
@@ -74,16 +78,7 @@ object Proseeo {
 		projectConf.save
 	}
 
-	def doInfo {
-		info("Proseeo info!")
-	}
-
-	def doUse(storyId:String) {
-		info("Proseeo use %s".format(storyId))
-		userConf += "projects.%s.using".format(projectId) -> storyId // TODO check it
-	}
-
-	def doStart {
+  def doStart {
 		info("Proseeo start")
 		val storyId = Util.id
 		val story = new File(new File("stories"), storyId)
@@ -95,6 +90,11 @@ object Proseeo {
 		created.by = Some(user)
 		script.append(created).save
 		doUse(storyId)
+	}
+
+	def doUse(storyId:String) {
+		info("Proseeo use %s".format(storyId))
+		userConf += "projects.%s.using".format(projectId) -> storyId // TODO check it
 	}
 
 	def doTell {

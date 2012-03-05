@@ -34,7 +34,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
   }
 
   private def toStrings: Seq[String] = {
-    val width = keys.map(_.length).max
+    val width = if (keys.isEmpty) 0 else keys.map(_.length).max
 		(for (k <- keys.toSeq.sorted) yield "%s : %s".format(rightPad(k, width, ' '), apply(k))).toSeq
   }
   override def toString: String = toStrings.mkString("\n")
@@ -52,7 +52,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     }
     conf
   }
-	debug("Read configuration file [%s]:\n%s".format(file, toString.indent("  ")))
+	debug("Read configuration file [%s]:%s".format(file, if (conf.isEmpty) " (empty)" else "\n" + toString.indent("  ")))
   
   private val files: Seq[File] = {
     val result = new ListBuffer[File]
