@@ -36,7 +36,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
 
   private def toStrings: Seq[String] = {
     val width = keys.map(_.length).max
-		(for (k <- keys.toSeq.sorted) yield "%s: %s".format(rightPad(k, width, ' '), apply(k))).toSeq
+		(for (k <- keys.toSeq.sorted) yield "%s : %s".format(rightPad(k, width, ' '), apply(k))).toSeq
   }
   override def toString: String = toStrings.mkString("\n")
 

@@ -8,6 +8,7 @@ import java.io.File
 
 import Logging._
 import Files._
+import com.landonkuhn.proseeo.CommandLineParser.Say
 
 class Script(file: File) {
 
@@ -21,17 +22,75 @@ class Script(file: File) {
 		this
 	}
 
+	def play:State = {
+		val document = new Document
+		val history = new ListBuffer[String]
+		var current:Option[Route] = None
+		val comments = new ListBuffer[String]
+
+		for (statement <- statements) statement match {
+			case c@Created() => {
+
+			}
+			case set@Set(key, _) => document += key -> set.value
+			case route@Route(user, next) => {
+				history += user
+				current = Some(route)
+			}
+			case say:Say => comments += say.value
+			case x => die("I don't know about: " + x)
+		}
+
+		State(document, history, current, comments)
+	}
+
+	case class State(document:Document, stack:Seq[String], current:Option[Route], comments:Seq[String])
+
+	trait Statement {
+		var by:Option[String] = None
+		var at:Option[String] = None
+		protected def byat: String = "" + by.map(" by " + _).getOrElse("") + at.map(" at \"" + _ + "\"").getOrElse("")
+	}
+
+	trait Value {
+		def value = inlineValue.getOrElse(multilineValue.getOrElse(die("No inline or multiline value")))
+		val inlineValue:Option[String]
+		var multilineValue:Option[String] = None
+	}
+
+	case class Created() extends Statement {
+		override def toString:String = "created" + byat
+	}
+
+	case class Set(key:String, inlineValue:Option[String]) extends Statement with Value {
+		override def toString:String = value.indexOf("\n") match {
+			case -1 => "set %s \"%s\"".format(key, value)
+			case _ => "set %s\n".format(key) + value.split("\n").mkString("  ", "\n  ", "\n")
+		}
+	}
+
+	case class Route(user:String, next:Seq[String]) extends Statement {
+		override def toString:String = null
+	}
+
+	case class Say(inlineValue:Option[String]) extends Statement with Value {
+		override def toString:String = value.indexOf("\n") match {
+			case -1 => "say \"%s\"".format(value)
+			case _ => "say\n" + value.split("\n").mkString("  ", "\n  ", "\n")
+		}
+	}
+
 	private val parser = new StandardTokenParsers {
 
 		def parseStatement(line:String):Statement = phrase(statement)(new lexical.Scanner(line)) match {
 			case Success(statement, _) => statement
-			case e:NoSuccess => die("I don't understand statement [%s] in file [%s]".format(line, file))
+			case e:NoSuccess => die("I don't understand statement [%s] in file [%s]:\n  %s".format(line, file, e.msg))
 		}
 
 		override val lexical = new StdLexical {
 			reserved +=(
-				"at",
 				"by",
+				"at",
 				"created",
 				"set",
 				"route", "to", "then",
@@ -76,7 +135,7 @@ class Script(file: File) {
 			case by => by
 		}
 
-		def at:Parser[String] = "@" ~> stringLit ^^ {
+		def at:Parser[String] = "at" ~> stringLit ^^ {
 			case at => at
 		}
 
@@ -140,37 +199,5 @@ class Script(file: File) {
 //}
 
 
-trait Statement {
-	var by:Option[String] = None
-	var at:Option[String] = None
-	abstract override def toString:String = super.toString + by.map(" by " + _) + at.map(" @ \"" + _ + "\"")
-}
 
-trait Value {
-	def value = inlineValue.getOrElse(multilineValue.getOrElse("??"))
 
-	val inlineValue:Option[String]
-	var multilineValue:Option[String] = None
-}
-
-case class Set(key:String, inlineValue:Option[String]) extends Statement with Value {
-	override def toString:String = value.indexOf("\n") match {
-		case -1 => "set %s \"%s\"".format(key, value)
-		case _ => "set %s\n".format(key) + value.split("\n").mkString("  ", "\n  ", "\n")
-	}
-}
-
-case class Created() extends Statement {
-	override def toString:String = "created"
-}
-
-case class Route(user:String, next:Seq[String]) extends Statement {
-	override def toString:String = null
-}
-
-case class Say(inlineValue:Option[String]) extends Statement with Value {
-	override def toString:String = value.indexOf("\n") match {
-		case -1 => "say \"%s\"".format(value)
-		case _ => "say\n" + value.split("\n").mkString("  ", "\n  ", "\n")
-	}
-}
