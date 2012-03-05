@@ -25,8 +25,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
   }
   
   def required(key: String): String = getOrElse(key, {
-    error("Missing required configuration key [%s] from files:\n%s".format(key, files.mkString("\n  ")))
-    sys.exit
+    die("I can't find the configuration value for [%s]".format(key), files.mkString("\n"))
   })
 
   def save {

@@ -48,15 +48,14 @@ object Proseeo {
 		userConf += "stats.last" -> formatDateTime(now)
 
 		parseCommandLine(args.mkString(" ")) match {
-			case CommandLineParser.Error(message) => die(message)
 			case CommandLineParser.Help() => doHelp
 			case CommandLineParser.Init(name) => doInit(name)
 			case CommandLineParser.Info() => doInfo
 			case CommandLineParser.Use(storyId) => doUse(storyId)
 			case CommandLineParser.Start() => doStart
 			case CommandLineParser.Tell() => doTell
-			case CommandLineParser.Say(message) => doSay(message.getOrElse(Util.editor.get))
-			case CommandLineParser.Set(key, value) => doSet(key, value.getOrElse(Util.editor.get))
+			case CommandLineParser.Say(message) => doSay(message)
+			case CommandLineParser.Set(key, value) => doSet(key, value)
 		}
 
 		userConf.save
