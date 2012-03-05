@@ -28,6 +28,9 @@ object Logging {
 	def die(s:String, sd:Option[String] = None): Nothing = {
 		error(s)
 		for (sd <- sd) debug(sd.indent("  "))
-		sys.exit
+		if (doNotDie) sys.error(s)
+    else sys.exit
 	}
+
+  var doNotDie = false
 }
