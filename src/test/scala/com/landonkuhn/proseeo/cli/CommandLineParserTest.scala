@@ -1,4 +1,4 @@
-package com.landonkuhn.proseeo.climodel
+package com.landonkuhn.proseeo.cli
 
 import org.junit._
 import org.junit.Assert._

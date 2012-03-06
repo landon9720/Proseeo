@@ -1,6 +1,5 @@
 package com.landonkuhn.proseeo.scriptmodel
 
-import com.landonkuhn.proseeo._
 import java.util.Date
 
 import com.landonkuhn.proseeo._

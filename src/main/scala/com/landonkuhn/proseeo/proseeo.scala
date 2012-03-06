@@ -54,17 +54,17 @@ object Proseeo {
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
 		userConf += "stats.last" -> now.format
 
-		climodel.CommandLineParser.parseCommandLine(args.mkString(" ")) match {
-			case climodel.Help() => doHelp
-			case climodel.Status() => doStatus
-			case climodel.Init(name) => doInit(name)
-			case climodel.Start() => doStart
-			case climodel.End() => doEnd
-			case climodel.Use(storyId) => doUse(storyId)
-			case climodel.Tell() => doTell
-			case climodel.Say(message) => doSay(message)
-			case climodel.Set(key, value) => doSet(key, value)
-			case climodel.RouteTo(name, then) => doRouteTo(name, then)
+		cli.CommandLineParser.parseCommandLine(args.mkString(" ")) match {
+			case cli.Help() => doHelp
+			case cli.Status() => doStatus
+			case cli.Init(name) => doInit(name)
+			case cli.Start() => doStart
+			case cli.End() => doEnd
+			case cli.Use(storyId) => doUse(storyId)
+			case cli.Tell() => doTell
+			case cli.Say(message) => doSay(message)
+			case cli.Set(key, value) => doSet(key, value)
+			case cli.RouteTo(name, then) => doRouteTo(name, then)
 		}
 
 		userConf.save

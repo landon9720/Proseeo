@@ -1,4 +1,4 @@
-package com.landonkuhn.proseeo.climodel
+package com.landonkuhn.proseeo.cli
 
 import com.landonkuhn.proseeo._
 import Logging._
