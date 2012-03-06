@@ -16,7 +16,7 @@ object CommandLineParser {
     def command = (
         "help"              ^^^ Help()
       | "status"            ^^^ Status()
-      | "init" ~> ".+".r    ^^ { case name => Init(name) }
+      | "init" ~> name      ^^ { case name => Init(name) }
       | "start"             ^^^ Start()
       | "end"               ^^^ End()
       | "use" ~> id         ^^ { case id => Use(id) }
@@ -24,6 +24,7 @@ object CommandLineParser {
       | "say" ~> text       ^^ { case text => Say(text) }
       | "set" ~> key ~ text ^^ { case key ~ text => Set(key, text) }
       | route
+      | "plan" ~> name      ^^ { case name => Plan(name) }
      )
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
   }
@@ -42,3 +43,5 @@ case class Set(key:String, value:String) extends Command
 
 trait Route extends Command
 case class RouteTo(name:Actor, then:Seq[Actor]) extends Route
+
+case class Plan(name:String) extends Command

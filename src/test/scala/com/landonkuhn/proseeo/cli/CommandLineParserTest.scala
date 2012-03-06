@@ -20,8 +20,8 @@ class CommandLineParserTest {
 
 	@Test
 	def init {
-		parseCommandLine("init a b c") match {
-			case Init("a b c") =>
+		parseCommandLine("init a") match {
+			case Init("a") =>
 			case _ => fail
 		}
 	}

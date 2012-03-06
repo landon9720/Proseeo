@@ -26,7 +26,8 @@ class Script(file:File) {
 		var ended:Option[Ended] = None
 		val says = new ListBuffer[Say]
 		val document = new Document
-		var where: Option[Actor] = None
+		var where:Option[Actor] = None
+		var plan:Option[String] = None
 
 		for (statement <- statements) statement match {
 			case c:Created => if (created.isDefined) die("More than one created") else created = Some(c)
@@ -34,12 +35,20 @@ class Script(file:File) {
 			case s:Say => says += s
 			case Set(key, value, _, _) => document += key -> value
 			case RouteTo(actor, _, _, _) => where = Some(actor)
+			case Plan(name, _, _) => plan = Some(name)
 		}
 
-		State(created, ended, says, document, where)
+		State(created, ended, says, document, where, plan)
 	}
 
-	case class State(created:Option[Created], ended:Option[Ended], says:Seq[Say], document:Document, where:Option[Actor])
+	case class State(
+		created:Option[Created],
+		ended:Option[Ended],
+		says:Seq[Say],
+		document:Document,
+		where:Option[Actor],
+		plan:Option[String]
+	)
 
 	private val statements:ListBuffer[Statement] = {
 		val result = new ListBuffer[Statement]

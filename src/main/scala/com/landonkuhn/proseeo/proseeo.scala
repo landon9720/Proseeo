@@ -48,6 +48,8 @@ object Proseeo {
 	}
 	lazy val script = new scriptmodel.Script(scriptFile)
 
+
+
 	def main(args:Array[String]) {
 		info("Proseeo v0.1".cyan)
 
@@ -65,6 +67,7 @@ object Proseeo {
 			case cli.Say(message) => doSay(message)
 			case cli.Set(key, value) => doSet(key, value)
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
+			case cli.Plan(name) => doPlan(name)
 		}
 
 		userConf.save
@@ -118,6 +121,7 @@ object Proseeo {
 		info("says:\n" + state.says.mkString("\n").indent)
 		info("document:\n" + state.document.toString.indent)
 		info("where: " + state.where)
+		info("plan: " + state.plan)
 	}
 
 	def doSay(message:String) {
@@ -130,5 +134,10 @@ object Proseeo {
 
 	def doRouteTo(name:Actor, then:Seq[Actor]) {
 		script.append(scriptmodel.RouteTo(name, then, user, now)).save
+	}
+
+	def doPlan(name:String) {
+		info("Planning [%s]".format(name))
+		script.append(scriptmodel.Plan(name, user, now)).save
 	}
 }

@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/template/template.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/template/TemplateParserTest.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala" />
     </list>
     <ignored path="Proseeo.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,10 +64,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="template.scala" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="template.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/template/template.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="25" selection-start="300" selection-end="300" vertical-scroll-proportion="0.0">
+            <state line="11" column="8" selection-start="223" selection-end="223" vertical-scroll-proportion="0.21818182">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Proseeo.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="123" column="31" selection-start="3887" selection-end="3887" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="script" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="0" selection-start="419" selection-end="419" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -76,16 +94,25 @@
       <file leaf-file-name="CommandLineParser.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="11" selection-start="1151" selection-end="1151" vertical-scroll-proportion="0.0">
+            <state line="18" column="24" selection-start="504" selection-end="504" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Proseeo.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
+      <file leaf-file-name="CommandLineParserTest.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="7" selection-start="1942" selection-end="1942" vertical-scroll-proportion="-0.18181819">
+            <state line="23" column="18" selection-start="374" selection-end="374" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ScriptStatementParser.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="68" selection-start="922" selection-end="922" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -103,7 +130,7 @@
       <file leaf-file-name="Script.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="0" selection-start="1226" selection-end="1412" vertical-scroll-proportion="0.0">
+            <state line="37" column="26" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -139,16 +166,16 @@
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/ScriptStatementParser.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/climodel/CommandLineParser.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala" />
-        <option value="$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Parser.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala" />
         <option value="$PROJECT_DIR$/README" />
         <option value="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/template/TemplateParserTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/template/template.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala" />
+        <option value="$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala" />
       </list>
     </option>
   </component>
@@ -452,40 +479,6 @@
               <option name="myItemId" value="scriptmodel" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ScriptStatementParser.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="proseeo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scriptmodel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -515,10 +508,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="cli" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CommandLineParser.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -938,20 +927,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="26" selection-start="108" selection-end="108" vertical-scroll-proportion="0.17333333">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="322" selection-end="322" vertical-scroll-proportion="0.21428572">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README">
       <provider selected="true" editor-type-id="text-editor">
         <state line="171" column="0" selection-start="5926" selection-end="6209" vertical-scroll-proportion="0.15332429">
@@ -959,23 +934,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="163" selection-end="1091" vertical-scroll-proportion="0.12347354">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="6" selection-start="636" selection-end="636" vertical-scroll-proportion="0.75733334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Parser.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="33" selection-start="190" selection-end="190" vertical-scroll-proportion="0.208">
           <folding />
         </state>
       </provider>
@@ -994,13 +955,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="0" selection-start="1226" selection-end="1412" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/immutable/List.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="65" column="6" selection-start="2477" selection-end="2477" vertical-scroll-proportion="0.0">
@@ -1015,23 +969,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/template/template.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Parser.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="25" selection-start="300" selection-end="300" vertical-scroll-proportion="0.0">
+        <state line="9" column="6" selection-start="292" selection-end="292" vertical-scroll-proportion="0.32142857">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="11" selection-start="1151" selection-end="1151" vertical-scroll-proportion="0.0">
+        <state line="18" column="24" selection-start="504" selection-end="504" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/cli/CommandLineParserTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="18" selection-start="374" selection-end="374" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/ScriptStatementParser.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="68" selection-start="922" selection-end="922" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="0" selection-start="419" selection-end="419" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="7" selection-start="1942" selection-end="1942" vertical-scroll-proportion="-0.18181819">
+        <state line="123" column="31" selection-start="3887" selection-end="3887" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="26" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/template/template.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="8" selection-start="223" selection-end="223" vertical-scroll-proportion="0.21818182">
           <folding />
         </state>
       </provider>
