@@ -23,6 +23,7 @@ reporter pass user defined mongo queries to mongo and handle results (no custom 
 appender writes to story
 configuration file format, parser, writer
   some commands (like the use command) will need to store state there
+???
 
 steve> proseeo open story -title "bug?"
 Created stories/<guid>.proseeo
@@ -150,7 +151,7 @@ described above is the "routing" for stories
 
 pro-see-oh
 
-signing: a way to sign a story to assert authorship from this point back to the previous signing
+signing: a way to sign a story to assert authorship from th2is point back to the previous signing
 encryption: a way to encrypt parts of the document?? i don't know. this is less interesting to me because i value building an open system. ideally with a slick front end that allows full text searching --- this data should be a repo for information.
 
 git is clunky, that's ok, this is for the hardcore, a web interface can come later, a IOS interface too
@@ -194,7 +195,7 @@ could the document itself somehow advise routing?
 
        scrubbed            : [/] by Landon Kuhn 2 day(s) ago(bright)
 
-  need version_assignment  : 2.4, 2.3, 2.2, 13 more(dim)
+  need version_assignment  : 1.1(bright) 2.4, 2.3, 2.2, 13 more(dim)
 
        fixed_in_version    : 2.4(bright)
   need release_note        : > ____ < (dim)
@@ -231,5 +232,9 @@ what's next:
   brew formula
   file encoding
   archiving
+  jira import
 
-WWW
+spinny:
+  [-  ]
+  [ - ]
+  [  -]

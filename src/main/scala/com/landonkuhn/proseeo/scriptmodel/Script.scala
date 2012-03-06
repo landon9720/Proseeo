@@ -41,15 +41,6 @@ class Script(file:File) {
 		State(created, ended, says, document, where, plan)
 	}
 
-	case class State(
-		created:Option[Created],
-		ended:Option[Ended],
-		says:Seq[Say],
-		document:Document,
-		where:Option[Actor],
-		plan:Option[String]
-	)
-
 	private val statements:ListBuffer[Statement] = {
 		val result = new ListBuffer[Statement]
 		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
@@ -58,3 +49,12 @@ class Script(file:File) {
 		result
 	}
 }
+
+case class State(
+	created:Option[Created],
+	ended:Option[Ended],
+	says:Seq[Say],
+	document:Document,
+	where:Option[Actor],
+	plan:Option[String]
+)

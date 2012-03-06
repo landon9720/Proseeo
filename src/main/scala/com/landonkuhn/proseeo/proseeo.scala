@@ -135,7 +135,8 @@ object Proseeo {
 		info("plan:\n" + (plan match {
 			case None => "(none)"
 			case Some(plan) => plan.toString
-		}).indent)
+		}).indent + "\n")
+		for (plan <- plan) plan(state)
 	}
 
 	def doSay(message:String) {
