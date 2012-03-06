@@ -18,7 +18,6 @@ class Document(map:collection.mutable.Map[String, String] = new collection.mutab
 		map -= key
 		this
 	}
-
 	def scope(scope:String) = new ScopeDocument(this, scope)
 
 	val scope:String = ""

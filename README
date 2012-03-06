@@ -47,7 +47,7 @@ stories/<guid>.proseeo
 steve> cd <guid>
 steve> proseeo attach screenshot1.png
 Attached screenshot1.png
-steve> proseeo 
+steve> proseeo
 
 
 need a way to report on what is mine.
@@ -119,7 +119,7 @@ any source control will do! ha!
 going to need it to be an sbt probject
 going to need to publish a brew formula
 
-at some point worry about: 
+at some point worry about:
   story file encoding
   story archiving
 
@@ -231,3 +231,5 @@ what's next:
   brew formula
   file encoding
   archiving
+
+WWW
