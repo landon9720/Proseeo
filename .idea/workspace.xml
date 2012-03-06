@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f13ebdd7-38a2-4522-a196-5283e79924a1" name="Default" comment="">
       <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/proseeo.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/plan/Plan.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/plan/Plan.scala" />
     </list>
     <ignored path="Proseeo.iws" />
@@ -66,25 +66,7 @@
       <file leaf-file-name="Plan.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/plan/Plan.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="18" selection-start="473" selection-end="473" vertical-scroll-proportion="0.45066667">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="List.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/immutable/List.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="212" column="0" selection-start="6942" selection-end="6942" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TraversableLike.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/TraversableLike.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="490" column="0" selection-start="16995" selection-end="16995" vertical-scroll-proportion="0.0">
+            <state line="13" column="0" selection-start="233" selection-end="233" vertical-scroll-proportion="0.055913977">
               <folding />
             </state>
           </provider>
@@ -93,16 +75,7 @@
       <file leaf-file-name="Proseeo.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="28" selection-start="1819" selection-end="1819" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="171" column="0" selection-start="5926" selection-end="6209" vertical-scroll-proportion="0.0">
+            <state line="137" column="3" selection-start="4309" selection-end="4309" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -111,34 +84,7 @@
       <file leaf-file-name="bug.plan" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sandbox/bug.plan">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="16" selection-start="252" selection-end="252" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Logging.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="21" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="script" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="0" selection-start="464" selection-end="464" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommandLineParser.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="28" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0">
+            <state line="24" column="0" selection-start="271" selection-end="271" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -222,7 +168,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
+    <option name="STATE" value="2" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
@@ -603,8 +549,8 @@
     <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -655,6 +601,18 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method>
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+        <option name="PhingTarget" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
       <module name="" />
       <setting name="path" value="" />
@@ -665,18 +623,6 @@
       <method>
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-        <option name="PhingTarget" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method>
-        <option name="BuildArtifacts" enabled="false" />
         <option name="Maven.BeforeRunTask" enabled="false" />
         <option name="PhingTarget" enabled="false" />
       </method>
@@ -843,26 +789,26 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="822" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35006434" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35006434" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26948053" sideWeight="0.64993566" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2353896" sideWeight="0.64993566" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Phing Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32670453" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -902,7 +848,7 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <option name="CREATE_PATCH_EXPAND_DETAILS_DEFAULT" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic user and group configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="plan parsing and emitting" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -925,32 +871,12 @@
     <MESSAGE value="date diff" />
     <MESSAGE value="added end" />
     <MESSAGE value="basic user and group configuration" />
+    <MESSAGE value="plan parsing and emitting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Parser.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="6" selection-start="292" selection-end="292" vertical-scroll-proportion="0.32142857">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sandbox/stories/29c48ebfbb084e2f8e2e8949ad285e70/script">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="464" selection-end="464" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/com/landonkuhn/proseeo/plan/PlanLineParserTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="24" selection-start="232" selection-end="232" vertical-scroll-proportion="-0.10714286">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/scriptmodel/Script.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="26" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.58181816">
@@ -972,72 +898,85 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="28" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/generic/GenericCompanion.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="6" selection-start="1678" selection-end="1678" vertical-scroll-proportion="0.5146667">
+        <state line="42" column="6" selection-start="1678" selection-end="1678" vertical-scroll-proportion="0.5146667" />
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/GenTraversableLike.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="322" column="6" selection-start="13641" selection-end="13641" vertical-scroll-proportion="0.38181818" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/cli/CommandLineParser.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="30" selection-start="508" selection-end="510" vertical-scroll-proportion="0.42857143">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Logging.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="21" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
+        <state line="21" column="21" selection-start="287" selection-end="287" vertical-scroll-proportion="0.61866665">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="0" selection-start="5926" selection-end="6209" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sandbox/bug.plan">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="16" selection-start="252" selection-end="252" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="28" selection-start="1819" selection-end="1819" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/immutable/List.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="212" column="0" selection-start="6942" selection-end="6942" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/GenTraversableLike.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="322" column="6" selection-start="13641" selection-end="13641" vertical-scroll-proportion="0.38181818">
+        <state line="171" column="0" selection-start="5926" selection-end="6209" vertical-scroll-proportion="0.33242875">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/TraversableLike.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="490" column="0" selection-start="16995" selection-end="16995" vertical-scroll-proportion="0.0">
+        <state line="490" column="0" selection-start="16995" selection-end="16995" vertical-scroll-proportion="0.33242875">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/immutable/List.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="212" column="0" selection-start="6942" selection-end="6942" vertical-scroll-proportion="0.33242875">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/collection/Seq.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="6" selection-start="650" selection-end="650" vertical-scroll-proportion="-0.232" />
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.9.1-sources.jar!/scala/package.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="36" selection-start="2050" selection-end="2050" vertical-scroll-proportion="0.3229308" />
+      </provider>
+    </entry>
+    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/../Classes/classes.jar!/java/lang/Object.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="26" selection-start="536" selection-end="536" vertical-scroll-proportion="0.33242875">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/Proseeo.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="137" column="3" selection-start="4309" selection-end="4309" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sandbox/bug.plan">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="271" selection-end="271" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/landonkuhn/proseeo/plan/Plan.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="18" selection-start="473" selection-end="473" vertical-scroll-proportion="0.45066667">
+        <state line="13" column="0" selection-start="233" selection-end="233" vertical-scroll-proportion="0.055913977">
           <folding />
         </state>
       </provider>
