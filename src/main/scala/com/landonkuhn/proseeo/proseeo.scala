@@ -107,7 +107,8 @@ object Proseeo {
 
 	def doUse(storyId:String) {
 		info("Proseeo use %s".format(storyId))
-		userConf += "projects.%s.using".format(projectId) -> storyId // TODO check it
+		userConf += "projects.%s.using".format(projectId) -> storyId // later check it
+		userConf += "projects.%s.name".format(projectId) -> projectName // nice touch
 	}
 
 	def doTell {

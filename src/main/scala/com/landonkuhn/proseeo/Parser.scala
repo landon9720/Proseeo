@@ -16,5 +16,11 @@ abstract class Parser extends RegexParsers {
 }
 
 trait Actor
-case class UserActor(name:String) extends Actor
-case class GroupActor(name:String) extends Actor
+
+case class UserActor(name:String) extends Actor {
+	override def toString = "user %s".format(name)
+}
+
+case class GroupActor(name:String) extends Actor {
+	override def toString = "user %s".format(name)
+}

@@ -3,6 +3,10 @@ package com.landonkuhn.proseeo.scriptmodel
 import com.landonkuhn.proseeo._
 import java.util.Date
 
+import com.landonkuhn.proseeo._
+import Util._
+import Logging._
+
 object ScriptStatementParser {
 
 	def parseScriptStatement(statement:String):Statement = {
@@ -39,6 +43,6 @@ case class Say(text:String, by:String, at:Date) extends Statement {
 case class Set(key:String, value:String, by:String, at:Date) extends Statement {
 	override def toString = "set %s \"%s\" by %s @ %s".format(key, value, by, at.format)
 }
-case class RouteTo(name:Actor, then:Seq[Actor], by:String, at:Date) extends Statement {
-	override def toString = "route to %s%s by %s @ %s".format(name, then.map(" then " + _).mkString(""), by, at.format)
+case class RouteTo(actor:Actor, then:Seq[Actor], by:String, at:Date) extends Statement {
+	override def toString = "route to %s%s by %s @ %s".format(actor, then.map(" then " + _).mkString(""), by, at.format)
 }
