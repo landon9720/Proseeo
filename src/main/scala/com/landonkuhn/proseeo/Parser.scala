@@ -22,5 +22,5 @@ case class UserActor(name:String) extends Actor {
 }
 
 case class GroupActor(name:String) extends Actor {
-	override def toString = "user %s".format(name)
+	override def toString = "group %s".format(name)
 }
