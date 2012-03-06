@@ -7,9 +7,10 @@ import com.landonkuhn.proseeo
 import proseeo.Logging
 import Logging._
 
-import TemplateLineParser._
+import proseeo.plan.PlanLineParser
+import PlanLineParser._
 
-class TemplateLineParserTest {
+class PlanLineParserTest {
 
 	doNotDie = true
 

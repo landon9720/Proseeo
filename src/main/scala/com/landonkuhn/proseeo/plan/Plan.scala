@@ -1,4 +1,4 @@
-package com.landonkuhn.proseeo.template
+package com.landonkuhn.proseeo.plan
 
 import java.io.File
 import org.apache.commons.lang3.StringUtils._
@@ -7,9 +7,9 @@ import com.landonkuhn.proseeo._
 import Logging._
 import Util._
 import Files._
-import TemplateLineParser._
+import PlanLineParser._
 
-class Template(file: File) {
+class Plan(file: File) {
 
 	val groups:Seq[Seq[Field]] = {
 		def f(fields:Seq[Line]):Seq[Seq[Field]] = {
@@ -35,7 +35,7 @@ object Text extends Kind
 case class Enum(name:String) extends Kind
 object Gate extends Kind
 
-object TemplateLineParser {
+object PlanLineParser {
 	def parseLine(line:String):Line = {
 		if (trim(line) == "") NilLine else parser.parse(parser.line, line) match {
 			case parser.Success(line, _) => line
