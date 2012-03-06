@@ -14,7 +14,8 @@ class Plan(file: File) {
 	val groups:Seq[Seq[Field]] = {
 		def f(fields:Seq[Line]):Seq[Seq[Field]] = {
 			val (h, t) = fields.span(_.isInstanceOf[Field])
-			h.toList ::: t.toList match {
+			info("(h, t): " + (h.size, t.size))
+			List(h.toList) :: t.toList match {
 				case Nil => Nil
 				case t => f(t.dropWhile(!_.isInstanceOf[Field]))
 			}
@@ -25,19 +26,20 @@ class Plan(file: File) {
 
 trait Line
 
-object NilLine extends Line
+case class NilLine() extends Line
 trait Field extends Line
 case class Want(key:String, kind:Kind) extends Field
 case class Need(want:Want) extends Field
 
 trait Kind
-object Text extends Kind
+case class Text() extends Kind
 case class Enum(name:String) extends Kind
-object Gate extends Kind
+case class Gate() extends Kind
 
 object PlanLineParser {
 	def parseLine(line:String):Line = {
-		if (trim(line) == "") NilLine else parser.parse(parser.line, line) match {
+		info("i am parsing " + line)
+		if (trim(line) == "") NilLine() else parser.parse(parser.line, line) match {
 			case parser.Success(line, _) => line
 			case e:parser.NoSuccess => die("Sorry, but I don't understand something in here: [%s]".format(line), e.msg)
 		}
@@ -50,9 +52,9 @@ object PlanLineParser {
 		)
 		def want:Parser[Want] = (key ~ ":" ~ kind) ^^ { case k ~ ":" ~ l => Want(k, l) }
 		def kind:Parser[Kind] = (
-			  "text" ^^^ Text
+			  "text" ^^^ Text()
 			| "enum(" ~> name <~ ")" ^^ { case name => Enum(name) }
-			| "gate"  ^^^ Gate
+			| "gate"  ^^^ Gate()
 		)
 	}
 }

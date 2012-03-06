@@ -6,12 +6,13 @@ import org.apache.commons.lang3.StringUtils._
 
 import Logging._
 import Ansi._
+import plan.Plan
 import Util._
 
 object Proseeo {
 
 	lazy val projectDir = new File(".")
-	lazy val projectFile = new File(projectDir, ".proseeo.conf")
+	lazy val projectFile = new File(projectDir, ".proseeo.conf") // later no leading .
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.required("user.name")
@@ -48,7 +49,15 @@ object Proseeo {
 	}
 	lazy val script = new scriptmodel.Script(scriptFile)
 
-
+	lazy val plan:Option[Plan] = {
+		script.play.plan.flatMap(name =>
+			(Seq(storyDir, projectDir)
+				.map(dir => new File(dir, "%s.plan".format(name)))
+				.find(_.isFile)
+				.map(new Plan(_))
+			).orElse({ warn("I do not know plan [%s]".format(name)); None })
+		)
+	}
 
 	def main(args:Array[String]) {
 		info("Proseeo v0.1".cyan)
@@ -121,7 +130,8 @@ object Proseeo {
 		info("says:\n" + state.says.mkString("\n").indent)
 		info("document:\n" + state.document.toString.indent)
 		info("where: " + state.where)
-		info("plan: " + state.plan)
+		info("plan name: " + state.plan)
+		info("plan: " + plan)
 	}
 
 	def doSay(message:String) {

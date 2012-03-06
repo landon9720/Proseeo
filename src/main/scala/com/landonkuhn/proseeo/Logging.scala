@@ -18,6 +18,10 @@ object Logging {
 		println(s)
 	}
 
+	def warn(s:String) {
+		println(s.yellow)
+	}
+
 	def error(s:String, sd:String) { error(s, Some(sd)) }
 	def error(s:String, sd:Option[String] = None) {
 		println(s.white.bold.bgred)
