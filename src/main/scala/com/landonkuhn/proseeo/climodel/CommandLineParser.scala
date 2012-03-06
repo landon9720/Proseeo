@@ -1,5 +1,6 @@
-package com.landonkuhn.proseeo
+package com.landonkuhn.proseeo.climodel
 
+import com.landonkuhn.proseeo._
 import Logging._
 
 object CommandLineParser {
@@ -17,27 +18,27 @@ object CommandLineParser {
       | "status"            ^^^ Status()
       | "init" ~> ".+".r    ^^ { case name => Init(name) }
       | "start"             ^^^ Start()
-	    | "end"               ^^^ End()
+      | "end"               ^^^ End()
       | "use" ~> id         ^^ { case id => Use(id) }
       | "tell"              ^^^ Tell()
       | "say" ~> text       ^^ { case text => Say(text) }
       | "set" ~> key ~ text ^^ { case key ~ text => Set(key, text) }
-	    | route
-      )
-	  def route = "route" ~> "to" ~> name ~ rep("then" ~> name) ^^ { case name ~ then => RouteTo(name, then) }
+      | route
+      )  
+    def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
   }
-
-	trait Command
-	case class Help() extends Command
-	case class Status() extends Command
-	case class Init(name:String) extends Command
-	case class Start() extends Command
-	case class End() extends Command
-	case class Use(storyId:String) extends Command
-	case class Tell() extends Command
-	case class Say(message:String) extends Command
-	case class Set(key:String, value:String) extends Command
-
-	trait Route extends Command
-	case class RouteTo(name:String, then:Seq[String]) extends Route
 }
+
+trait Command
+case class Help() extends Command
+case class Status() extends Command
+case class Init(name:String) extends Command
+case class Start() extends Command
+case class End() extends Command
+case class Use(storyId:String) extends Command
+case class Tell() extends Command
+case class Say(message:String) extends Command
+case class Set(key:String, value:String) extends Command
+
+trait Route extends Command
+case class RouteTo(name:Actor, then:Seq[Actor]) extends Route

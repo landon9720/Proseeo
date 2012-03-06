@@ -1,13 +1,13 @@
-package com.landonkuhn.proseeo
+package com.landonkuhn.proseeo.scriptmodel
 
 import collection.mutable.ListBuffer
 import org.apache.commons.lang3.StringUtils._
 import java.io.File
 
-import Logging._
-import Files._
-import Util._
-import com.landonkuhn.proseeo.ScriptStatementParser._
+import com.landonkuhn.proseeo.Logging._
+import com.landonkuhn.proseeo.Files._
+import com.landonkuhn.proseeo._
+import com.landonkuhn.proseeo.scriptmodel.ScriptStatementParser._
 
 class Script(file:File) {
 
@@ -44,7 +44,7 @@ class Script(file:File) {
 	private val statements:ListBuffer[Statement] = {
 		val result = new ListBuffer[Statement]
 		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
-			ScriptStatementParser.parseScriptStatement(line)
+			parseScriptStatement(line)
 		})
 		result
 	}

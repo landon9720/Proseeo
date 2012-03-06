@@ -17,6 +17,10 @@
           </value>
         </option>
         <option name="LINE_SEPARATOR" value="&#10;" />
+        <ScalaCodeStyleSettings>
+          <option name="ENABLE_JAVA_TO_SCALA_CONVERSION" value="false" />
+          <option name="TREAT_DOC_COMMENT_AS_BLOCK_COMMENT" value="true" />
+        </ScalaCodeStyleSettings>
         <ADDITIONAL_INDENT_OPTIONS fileType="css">
           <option name="INDENT_SIZE" value="4" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
