@@ -188,6 +188,31 @@ needs tested:gate
 could the document itself somehow advise routing?
 ...
 
+       title               : color on home page does not match(bright)
+       description         : etc etc blah blah(bright)
+  want version_reported_in : 2.4, 2.3, 2.2, 13 more(dim)
+
+       scrubbed            : [/] by Landon Kuhn 2 day(s) ago(bright)
+
+  need version_assignment  : 2.4, 2.3, 2.2, 13 more(dim)
+
+       fixed_in_version    : 2.4(bright)
+  need release_note        : > ____ < (dim)
+  need fixed               : > [ ] < (dim)
+
+       test_note(dim)
+       tested
+       foo_field
+       bar_field
+
+       14 more
+
+
+
+
+
+
+
 what's next:
   document templating
   tagging
@@ -195,6 +220,7 @@ what's next:
   routing use cases: ask, pass
   indexer and queries
   generated file header comments
+  attachments and multiline values
   .
   .
   .

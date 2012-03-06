@@ -14,17 +14,17 @@ object CommandLineParser {
 
   val parser = new Parser {
     def command = (
-        "help"              ^^^ Help()
-      | "status"            ^^^ Status()
-      | "init" ~> name      ^^ { case name => Init(name) }
-      | "start"             ^^^ Start()
-      | "end"               ^^^ End()
-      | "use" ~> id         ^^ { case id => Use(id) }
-      | "tell"              ^^^ Tell()
-      | "say" ~> text       ^^ { case text => Say(text) }
-      | "set" ~> key ~ text ^^ { case key ~ text => Set(key, text) }
+        "help"               ^^^ Help()
+      | "status"             ^^^ Status()
+      | "init" ~> name       ^^ { case name => Init(name) }
+      | "start" ~> opt(name) ^^ { case name => Start(name) }
+      | "end"                ^^^ End()
+      | "use" ~> id          ^^ { case id => Use(id) }
+      | "tell"               ^^^ Tell()
+      | "say" ~> text        ^^ { case text => Say(text) }
+      | "set" ~> key ~ text  ^^ { case key ~ text => Set(key, text) }
       | route
-      | "plan" ~> name      ^^ { case name => Plan(name) }
+      | "plan" ~> name       ^^ { case name => Plan(name) }
      )
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
   }
@@ -34,7 +34,7 @@ trait Command
 case class Help() extends Command
 case class Status() extends Command
 case class Init(name:String) extends Command
-case class Start() extends Command
+case class Start(plan:Option[String]) extends Command
 case class End() extends Command
 case class Use(storyId:String) extends Command
 case class Tell() extends Command

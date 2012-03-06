@@ -69,7 +69,7 @@ object Proseeo {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
 			case cli.Init(name) => doInit(name)
-			case cli.Start() => doStart
+			case cli.Start(name) => doStart(name)
 			case cli.End() => doEnd
 			case cli.Use(storyId) => doUse(storyId)
 			case cli.Tell() => doTell
@@ -101,7 +101,7 @@ object Proseeo {
 		projectConf.save
 	}
 
-  def doStart {
+  def doStart(name:Option[String]) {
 		info("Proseeo start")
 		val storyId = Util.id
 		val story = new File(new File("stories"), storyId)
@@ -110,6 +110,7 @@ object Proseeo {
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
 		doUse(storyId)
+		for (name <- name) doPlan(name)
 	}
 
 	def doEnd {
