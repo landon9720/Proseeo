@@ -4,10 +4,10 @@ import collection.mutable.ListBuffer
 import org.apache.commons.lang3.StringUtils._
 import java.io.File
 
-import com.landonkuhn.proseeo.Logging._
-import com.landonkuhn.proseeo.Files._
 import com.landonkuhn.proseeo._
-import com.landonkuhn.proseeo.scriptmodel.ScriptStatementParser._
+import Logging._
+import Files._
+import scriptmodel.ScriptStatementParser._
 
 class Script(file:File) {
 
