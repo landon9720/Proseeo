@@ -24,7 +24,7 @@ object CommandLineParser {
       | "say" ~> text       ^^ { case text => Say(text) }
       | "set" ~> key ~ text ^^ { case key ~ text => Set(key, text) }
       | route
-      )  
+     )
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
   }
 }

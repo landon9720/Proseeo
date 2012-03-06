@@ -67,10 +67,10 @@ steve notes """
 """
 steve forwards with feedback to user anthony
 anthony comments "yes i can duplicate this. we will fix it."
-anthony sets template to bug
+anthony sets template to bug <---- think about this!
 anthony sets bug.fix_version = 1.0.2.3
 anthony forwards to engineering
-pinned by landon
+pinned by landon <------- think about this!!!!
 pinned by zach
 zach comments "i think i know what caused this...."
 landon comments "found and fixed"
@@ -107,7 +107,8 @@ there needs to be conf files
     smpt.setting2 = etc ... allows tools to send messages on user's behalf
 
 Welcome to com.landonkuhn.proseeo.main.Proseeo
-Here I am building a platform to help groups get stuff done. This is distributed process structure. DPS.
+Here I am building a platform to help groups get stuff done. This is distributed
+process structure. DPS. This is soft business process management.
 This is a new way for groups to communicate, to organize, and to get stuff done.
 I am starting with business of making software. This is the work I know, and the
 first who will use this.
@@ -155,5 +156,52 @@ encryption: a way to encrypt parts of the document?? i don't know. this is less 
 git is clunky, that's ok, this is for the hardcore, a web interface can come later, a IOS interface too
 
 could it work for the mongo database to actually live on the network and be shared? i think perhaps it is so!
+  --- OR NOT! -- somebody's local repo could be out of date.
 
 perhaps proseeo is business process management inspired by twitter
+
+
+
+
+=== document templating ===
+
+dsl to describe requirements?
+
+/templates/bug <-- name of file
+
+needs title:text
+needs description:text
+optional version_reported_in:named_enum(versions)
+
+needs scrubbed:gate
+
+needs version_assignment:named_enum(versions)
+
+needs fixed_in_version:named_enum(versions)
+needs release_note:text
+needs fixed:gate
+
+needs test_note:text
+needs tested:gate
+
+...
+could the document itself somehow advise routing?
+...
+
+what's next:
+  document templating
+  tagging
+  group member pinning
+  routing use cases: ask, pass
+  indexer and queries
+  generated file header comments
+  .
+  .
+  .
+  signing
+  .
+  .
+  .
+  brew formula
+  file encoding
+  archiving
