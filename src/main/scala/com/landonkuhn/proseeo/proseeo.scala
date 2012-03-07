@@ -61,7 +61,7 @@ object Proseeo {
 		.find(_.isFile)
 		.map(new Plan(name, _))
 
-	def main(args:Array[String]) {
+	def main(args:Array[String]) = try {
 
 		val human = trim(args.mkString(" "))
 		val willOfTheHuman = if (human == "") {
@@ -93,6 +93,8 @@ object Proseeo {
 		userConf.save
 
 		ok("ok")
+	} catch {
+		case ex:Exception => error("Sorry, I had an accident"); ex.printStackTrace
 	}
 
 	def doHelp {
