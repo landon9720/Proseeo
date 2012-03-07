@@ -1,7 +1,16 @@
-Proseeo  A new way for groups to communicate, to organize, and to get stuff done.
-				"I am the cutest little bug tracking software there is."
+Proseeo  A new way for groups to communicate, organize, and get stuff done.
+         "I am the cutest little bug tracking software there is!"
 
-				ok ok
+         Features
+
+         distributed - Proseeo keeps project files on your local file system.
+                       Project files are shared using tools you already use: source control
+
+     softer software - Proseeo trusts you to make good decisions about your process.
+
+
+
+         ok ok
 
 tools:
 one program: proseeo
@@ -227,14 +236,17 @@ what's next:
   .
   .
   .
+  linking
   signing
   .
   .
   .
   brew formula
+  eclipse task connector
   file encoding
   archiving
   jira import
+  egit integration
 
 spinny:
   [-  ]

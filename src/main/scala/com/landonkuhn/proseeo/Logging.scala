@@ -12,10 +12,9 @@ object Logging {
 
 	def die(s:String):Nothing = {
 		error(s)
-		if (doNotDie) sys.error(s)
-    else sys.exit
+		if (exception_on_die) sys.error(s)
+		else sys.exit
 	}
 
-  var doNotDie = false
-  val verbose = false
+  var exception_on_die = true
 }

@@ -8,7 +8,7 @@ import com.landonkuhn.proseeo.Logging
 
 class CommandLineParserTest {
 
-	Logging.doNotDie = true
+	Logging.exception_on_die = true
 
 	@Test
 	def help {

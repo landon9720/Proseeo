@@ -12,7 +12,7 @@ import PlanLineParser._
 
 class PlanLineParserTest {
 
-	doNotDie = true
+	exception_on_die = true
 
 	@Test
 	def test {

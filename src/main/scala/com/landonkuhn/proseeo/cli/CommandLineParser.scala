@@ -5,7 +5,6 @@ import Logging._
 import scriptmodel.Unplan
 
 object CommandLineParser {
-
 	def parseCommandLine(args:String):Command = {
     parser.parseAll(parser.command, args) match {
       case parser.Success(command, _) => command

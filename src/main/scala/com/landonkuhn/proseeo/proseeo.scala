@@ -17,13 +17,16 @@ import org.apache.commons.lang3.StringUtils
 object Proseeo {
 
 	lazy val projectDir = new File(".")
-	lazy val projectFile = new File(projectDir, "proseeo.conf") // later no leading
+	lazy val projectFile = new File(projectDir, "proseeo.conf")
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
-	lazy val user = userConf.required("user.name")
+	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
 	lazy val storyId = userConf.get("projects.%s.using".format(projectId))
 
-	lazy val projectConf = new Conf(projectFile)
+	lazy val projectConf = {
+	  if (!projectFile.isFile) die("I don't see a project here")
+	  new Conf(projectFile)
+	}
 	lazy val projectName = projectConf.required("project.name")
 	lazy val projectId = projectConf.required("project.id")
 
@@ -37,22 +40,15 @@ object Proseeo {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
 
-	lazy val storiesDir = {
-		val f = new File(projectDir, "stories")
-		if (!f.isDirectory) die("Missing stories directory %s".format(f))
-		f
+	lazy val storiesDir = new File(projectDir, "stories")
+	lazy val storyDir = new File(storiesDir, storyId.getOrElse("I don't know what story we're using"))
+	lazy val scriptFile = new File(storyDir, "script.proseeo")
+	lazy val script = {
+	  if (!storiesDir.isDirectory) die("Missing stories directory %s".format(storiesDir))
+	  if (!storyDir.isDirectory) die("Missing story directory %s".format(storyDir))
+	  if (!scriptFile.isFile) die("Missing script file %s".format(scriptFile))
+	  new scriptmodel.Script(scriptFile)
 	}
-	lazy val storyDir = {
-		val f = new File(storiesDir, storyId.getOrElse("I don't know what story we're using"))
-		if (!f.isDirectory) die("Missing story directory %s".format(f))
-		f
-	}
-	lazy val scriptFile = {
-		val f = new File(storyDir, "script")
-		if (!f.isFile) die("Missing script file %s".format(f))
-		f
-	}
-	lazy val script = new scriptmodel.Script(scriptFile)
 
 	lazy val plan:Option[Plan] = {
 		val name:Option[String] = script.play.plan
@@ -71,11 +67,6 @@ object Proseeo {
 			if (storyId.isDefined) cli.Tell()
 			else cli.Status() // later reports
 		} else cli.CommandLineParser.parseCommandLine(human)
-
-		if (!projectFile.isFile) {
-
-		}
-
 		willOfTheHuman match {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
@@ -109,7 +100,8 @@ object Proseeo {
 	}
 
   def doInit(name:String) {
-		if (projectConf.file.exists) die("There is already a project here")
+		if (projectFile.isFile) die("There is already a project here")
+		touch(projectFile)
 		projectConf += "project.name" -> name
 		projectConf += "project.id" -> Util.id
 		projectConf.save
@@ -117,13 +109,13 @@ object Proseeo {
 
   def doStart(name:Option[String]) {
 		val storyId = Util.id
-		val story = new File(new File("stories"), storyId)
-		val scriptFile = new File(story, "script")
+		val storyDir = new File(storiesDir, storyId)
+		val scriptFile = new File(storyDir, "script.proseeo")
 		touch(scriptFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
 		doUse(Some(storyId))
-		for (name <- name) doPlan(Some(name), false) // later this nested call may fail after the start succeeds
+		for (name <- name) doPlan(Some(name), false)
 	}
 
 	def doEnd {
