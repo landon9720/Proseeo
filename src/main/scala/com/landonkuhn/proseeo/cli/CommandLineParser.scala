@@ -22,7 +22,7 @@ object CommandLineParser {
       | "use" ~> id                                             ^^ { case id => Use(id) }
       | "tell"                                                  ^^^ Tell()
       | ("say" | "c(omment)?".r) ~> text                        ^^ { case text => Say(text) }
-      | "s(et)?".r ~> key ~ opt(":" | "=") ~ text               ^^ { case key ~ _ ~ text => Set(key, text) }
+      | "s(et)?".r ~> opt("--force" | "-f") ~ key ~ opt(":" | "=") ~ text               ^^ { case force ~ key ~ _ ~ text => Set(key, text, force.isDefined) }
       | "d(el(ete))??".r ~> key                                 ^^ { case key => Delete(key) }
       | route
       | "plan" ~> name                                          ^^ { case name => Plan(name) }
@@ -40,7 +40,7 @@ case class End() extends Command
 case class Use(storyId:String) extends Command
 case class Tell() extends Command
 case class Say(message:String) extends Command
-case class Set(key:String, value:String) extends Command
+case class Set(key:String, value:String, force:Boolean) extends Command
 case class Delete(key:String) extends Command
 
 trait Route extends Command

@@ -11,7 +11,7 @@ import Ansi._
 import PlanLineParser._
 import scriptmodel.State
 
-class Plan(file: File) {
+class Plan(val name:String, file:File) {
 
 	def apply(state:State) {
 		var future = false
@@ -63,6 +63,8 @@ class Plan(file: File) {
 		}
 		f((for (line <- read(file).map(trim) if !startsWith(line, "#")) yield parseLine(line)).dropWhile(!_.isInstanceOf[Field]))
 	}
+
+	val fields = groups.flatten.map(field => field.key -> field).toMap
 }
 
 trait Line

@@ -54,7 +54,7 @@ object Proseeo {
 			(Seq(storyDir, projectDir)
 				.map(dir => new File(dir, "%s.plan".format(name)))
 				.find(_.isFile)
-				.map(new Plan(_))
+				.map(new Plan(name, _))
 			).orElse({ warn("I do not know plan [%s]".format(name)); None })
 		)
 	}
@@ -74,7 +74,7 @@ object Proseeo {
 			case cli.Use(storyId) => doUse(storyId)
 			case cli.Tell() => doTell
 			case cli.Say(message) => doSay(message)
-			case cli.Set(key, value) => doSet(key, value)
+			case cli.Set(key, value, force) => doSet(key, value, force)
 			case cli.Delete(key) => doDelete(key)
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
 			case cli.Plan(name) => doPlan(name)
@@ -144,7 +144,8 @@ object Proseeo {
 		script.append(scriptmodel.Say(message, user, now)).save
 	}
 
-	def doSet(key:String, value:String) {
+	def doSet(key:String, value:String, force:Boolean) {
+		for (plan <- plan) if (!force && !plan.fields.contains(key)) die("Field [%s] is not in the plan [%s]; use --force".format(key, plan.name))
 		script.append(scriptmodel.Set(key, value, user, now)).save
 	}
 
