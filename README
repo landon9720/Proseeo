@@ -300,3 +300,36 @@ p cat plan name
 p edit story
 p edit plan // creates story copy
 p edit plan --project // edits project copy
+
+script:
+  attach "filename" by lkuhn @ ... # filename expected to be in story dir
+  detach "filename" by lkuhn @ ...
+
+p:
+  p attach ~/Desktop/screenshot.jpg # file is copied into story dir as screenshot.jpg
+  p attach ~/Desktop/foo/screenshot.jpg # this would fail
+  p attach ~/Desktop/foo/screenshot.jpg as screenshot2.jpg # file is copied into story dir as screenshot2.jpg
+  p detach screenshot.jpg # removes it from the script state, but not the file system
+  p attach new release_document.md # touches release_document.md in story dir. perhaps in the future support a with template keywoard
+
+i think the command line parser will work better if it takes the token stream as passed in as args
+
+release plan
+  need version:text
+  want summary:text
+  need release_date:timestamp
+  need release_document:attachment
+
+  need accepted:gate
+
+p set release_date now + 1d 1h # now and today keywords with + and - operators with human string operands
+p set release_date now + 1d 2h
+p set release_date today + 1d
+
+p tell
+  ...
+1) screenshot.jpg
+2) screenshot2.jpg
+
+p open attachment 1 # invoke system viewer
+p edit attachment 2 # invoke system editor
