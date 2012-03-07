@@ -37,6 +37,7 @@ class Script(file:File) {
 			case Delete(key, _, _) => document -= key
 			case RouteTo(actor, _, _, _) => where = Some(actor)
 			case Plan(name, _, _) => plan = Some(name)
+			case Unplan(_, _) => plan = None
 		}
 
 		State(created, ended, says, document, where, plan)

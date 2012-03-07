@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils._
 
 import Logging._
 import Ansi._
-import plan.Plan
+import plan.{Enum, Text, Field, Need, Want, Gate, Plan}
 import scriptmodel.Created
 import Util._
 import java.util.Date
@@ -21,7 +21,7 @@ object Proseeo {
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.required("user.name")
-	lazy val storyId = userConf.required("projects.%s.using".format(projectId))
+	lazy val storyId = userConf.get("projects.%s.using".format(projectId))
 
 	lazy val projectConf = new Conf(projectFile)
 	lazy val projectName = projectConf.required("project.name")
@@ -43,7 +43,7 @@ object Proseeo {
 		f
 	}
 	lazy val storyDir = {
-		val f = new File(storiesDir, storyId)
+		val f = new File(storiesDir, storyId.getOrElse("I don't know what story we're using"))
 		if (!f.isDirectory) die("Missing story directory %s".format(f))
 		f
 	}
@@ -66,10 +66,12 @@ object Proseeo {
 
 	def main(args:Array[String]) {
 
-		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
-		userConf += "stats.last" -> now.format
-
-		cli.CommandLineParser.parseCommandLine(args.mkString(" ")) match {
+		val human = trim(args.mkString(" "))
+		val willOfTheHuman = if (human == "") {
+			if (storyId.isDefined) cli.Tell()
+			else cli.Status() // later reports
+		} else cli.CommandLineParser.parseCommandLine(human)
+		willOfTheHuman match {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
 			case cli.Init(name) => doInit(name)
@@ -84,17 +86,20 @@ object Proseeo {
 			case cli.Plan(name, force) => doPlan(name, force)
 		}
 
+		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
+		userConf += "stats.last" -> now.format
 		userConf.save
+
 		ok("ok")
 	}
 
 	def doHelp {
-		info("Proseeo 0.01")
+		i("Proseeo 0.01")
 	}
 
 	def doStatus {
-		info("Users:\n" + users.values.mkString("\n").indent)
-		info("Groups:\n" + groups.values.mkString("\n").indent)
+		i("Users:\n" + users.values.mkString("\n").indent)
+		i("Groups:\n" + groups.values.mkString("\n").indent)
 	}
 
   def doInit(name:String) {
@@ -111,17 +116,25 @@ object Proseeo {
 		touch(scriptFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
-		doUse(storyId)
-		for (name <- name) doPlan(name, false) // later this nested call may fail after the start succeeds
+		doUse(Some(storyId))
+		for (name <- name) doPlan(Some(name), false) // later this nested call may fail after the start succeeds
 	}
 
 	def doEnd {
-		script.append(scriptmodel.Ended(user, now))save
+		script.append(scriptmodel.Ended(user, now)).save
 	}
 
-	def doUse(storyId:String) {
-		userConf += "projects.%s.using".format(projectId) -> storyId // later check it
-		userConf += "projects.%s.name".format(projectId) -> projectName // nice touch
+	def doUse(storyId:Option[String]) {
+		storyId match {
+			case Some(storyId) => {
+				userConf += "projects.%s.using".format(projectId) -> storyId // later check it
+				userConf += "projects.%s.name".format(projectId) -> projectName // nice touch
+			}
+			case None => {
+				userConf -= "projects.%s.using".format(projectId)
+				userConf -= "projects.%s.name".format(projectId)
+			}
+		}
 	}
 
 	def doTell {
@@ -150,27 +163,57 @@ object Proseeo {
 			case None => Nil
 		}) ::: Nil
 		val kw = kvs.map(_._1.length).max
-		info((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
+		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
 
-		info("")
-		info(if (state.says.isEmpty) "no comments yet" else "%d comments".format(state.says.size))
 
+		if (state.says.isEmpty) {
+			i("")
+			i("no says yet")
+		}
 		for (say <- state.says) {
-			info("")
-			info("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
+			i("")
+			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
+		}
+
+		if (state.plan.isEmpty) {
+			i("")
+			i("no plan")
+		}
+		var future = false
+		for (plan <- plan; group <- plan.groups) {
+			val active = ! group.collect({ case x:Need => x }).forall(_.test(state.document))
+			val fw = group.map(_.key.size).max
+			i("")
+			for (field <- group) {
+				val prefix = field match {
+					case w@Want(key, kind) if !w.test(state.document) => "want"
+					case n@Need(Want(key, kind)) if !n.test(state.document) => "need"
+					case _ => "    "
+				}
+				val value = field.kind match {
+					case g:Gate if field.test(state.document) => Some("[*]")
+					case _ => state.document.get(field.key)
+				}
+				val hint = field match {
+					case field:Field if field.test(state.document) => ""
+					case field:Field => field.kind match {
+						case _:Text => "____"
+						case Enum(values) => values.take(4).mkString(", ") + (values.drop(4).size match {
+							case 0 => ""
+							case n => ", %d more".format(n)
+						})
+						case _:Gate => "[ ]"
+					}
+				}
+				val cursor = if (active && !future && !field.test(state.document)) ">" else " "
+				i("%s %s %s  %s%s".format(cursor.bold, prefix, rightPad(field.key, fw), value.map(_ + " ").getOrElse("").bold, hint.yellow))
+			}
+			if (active) future = true
 		}
 
 
-		info("")
-		info("document:\n" + state.document.toString.indent)
-
-
-		info("plan name: " + state.plan)
-		info("plan:\n")
-		plan match {
-			case None => println("  (none)")
-			case Some(plan) => plan(state)
-		}
+		i("")
+		i("document:\n" + state.document.toString.indent)
 	}
 
 	def doSay(message:String) {
@@ -190,8 +233,16 @@ object Proseeo {
 		script.append(scriptmodel.RouteTo(name, then, user, now)).save
 	}
 
-	def doPlan(name:String, force:Boolean) {
-		if (loadPlan(name).isEmpty && !force) die("I don't have plan [%s]".format(name))
-		script.append(scriptmodel.Plan(name, user, now)).save
+	def doPlan(name:Option[String], force:Boolean) {
+		name match {
+			case Some(name) => {
+				if (loadPlan(name).isEmpty && !force) die("I don't have plan [%s]".format(name))
+				script.append(scriptmodel.Plan(name, user, now)).save
+			}
+			case None => {
+				script.append(scriptmodel.Unplan(user, now)).save
+			}
+		}
+		doTell
 	}
 }

@@ -29,7 +29,7 @@ class CommandLineParserTest {
 	@Test
 	def use {
 		parseCommandLine("use 91bf1358bed94ff69d11242d8ec6fb5d") match {
-			case Use("91bf1358bed94ff69d11242d8ec6fb5d") =>
+			case Use(Some("91bf1358bed94ff69d11242d8ec6fb5d")) =>
 			case _ => fail
 		}
 	}

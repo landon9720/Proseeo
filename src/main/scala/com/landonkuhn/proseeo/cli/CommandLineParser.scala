@@ -2,6 +2,7 @@ package com.landonkuhn.proseeo.cli
 
 import com.landonkuhn.proseeo._
 import Logging._
+import scriptmodel.Unplan
 
 object CommandLineParser {
 
@@ -19,15 +20,16 @@ object CommandLineParser {
         "help"                                                  ^^^ Help()
       | "status"                                                ^^^ Status()
       | "init" ~> name                                          ^^ { case name => Init(name) }
-      | "start" ~> opt(name)                                    ^^ { case name => Start(name) }
-      | "end"                                                   ^^^ End()
-      | "use" ~> id                                             ^^ { case id => Use(id) }
+      | "create" ~> opt(name)                                   ^^ { case name => Start(name) }
+      | "complete"                                              ^^^ End()
+      | "use" ~> opt(id)                                        ^^ { case id => Use(id) }
       | "tell"                                                  ^^^ Tell()
       | "say" ~> text                                           ^^ { case text => Say(text) }
       | ("set" | "s") ~> force ~ key ~ opt(":" | "=") ~ text    ^^ { case force ~ key ~ _ ~ text => Set(key, text, force) }
       | ("delete" | "del") ~> key                               ^^ { case key => Delete(key) }
       | route
-      | "plan" ~> force ~ name                                  ^^ { case force ~ name => Plan(name, force) }
+      | "unplan"                                                ^^^ Plan(None, false)
+      | "plan" ~> force ~ opt(name)                             ^^ { case force ~ name => Plan(name, force) }
      )
     def force = opt("--force" | "-f") ^^ { case force => force.isDefined }
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
@@ -40,7 +42,7 @@ case class Status() extends Command
 case class Init(name:String) extends Command
 case class Start(plan:Option[String]) extends Command
 case class End() extends Command // later create and close instead of start/end
-case class Use(storyId:String) extends Command
+case class Use(storyId:Option[String]) extends Command
 case class Tell() extends Command
 case class Say(message:String) extends Command
 case class Set(key:String, value:String, force:Boolean) extends Command
@@ -49,4 +51,4 @@ case class Delete(key:String) extends Command
 trait Route extends Command
 case class RouteTo(name:Actor, then:Seq[Actor]) extends Route
 
-case class Plan(name:String, force:Boolean) extends Command
+case class Plan(name:Option[String], force:Boolean) extends Command

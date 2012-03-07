@@ -24,6 +24,7 @@ object ScriptStatementParser {
 			| "delete" ~> key ~ by ~ at           ^^ { case key ~ by ~ at => Delete(key, by, at) }
 			| route
 			| "plan" ~> name ~ by ~ at            ^^ { case name ~ by ~ at => Plan(name, by, at) }
+			| "unplan" ~> by ~ at                 ^^ { case by ~ at => Unplan(by, at) }
 		)
 		def by = "by" ~> name
 		def at = "@" ~> "[\\S]+".r ^? { case x if x.isDate => x.toDate }
@@ -55,4 +56,7 @@ case class RouteTo(actor:Actor, then:Seq[Actor], by:String, at:Date) extends Sta
 }
 case class Plan(name:String, by:String, at:Date) extends Statement {
 	override def toString = "plan %s by %s @ %s".format(name, by, at.format)
+}
+case class Unplan(by:String, at:Date) extends Statement {
+	override def toString = "unplan by %s @ %s".format(by, at.format)
 }
