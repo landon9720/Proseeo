@@ -34,6 +34,7 @@ class Script(file:File) {
 			case e:Ended => if (ended.isDefined) die("More than one ended") else ended = Some(e)
 			case s:Say => says += s
 			case Set(key, value, _, _) => document += key -> value
+			case Delete(key, _, _) => document -= key
 			case RouteTo(actor, _, _, _) => where = Some(actor)
 			case Plan(name, _, _) => plan = Some(name)
 		}

@@ -14,8 +14,11 @@ import scriptmodel.State
 class Plan(file: File) {
 
 	def apply(state:State) {
-
+		var future = false
 		for (group <- groups) {
+
+			val active = ! group.forall(_.test(state.document))
+
 			for (field <- group) {
 				val prefix = field match {
 					case w@Want(key, kind) if !w.test(state.document) => "want"
@@ -37,8 +40,10 @@ class Plan(file: File) {
 						case _:Gate => "[ ]"
 					}
 				}
-				info("%s %s %s %s".format(prefix, field.key, value.bold, hint.yellow))
+				val cursor = if (active && !future && !field.test(state.document)) "> " else "  "
+				info("%s %s %s %s %s".format(cursor, prefix, field.key, value.bold, hint.yellow))
 			}
+			if (active) future = true
 			info("")
 		}
 	}

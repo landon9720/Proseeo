@@ -32,11 +32,6 @@ object Proseeo {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
 
-	// case class Enum(name:String, values:Seq[String])
-	// lazy val enums = (for ((name, values) <- new Document(projectConf).scope("project.enums.").tree.leafs) yield {
-	// 	name -> Enum(name, values.split(",").map(trim))
-	// }).toMap
-
 	lazy val storiesDir = {
 		val f = new File(projectDir, "stories")
 		if (!f.isDirectory) die("Missing stories directory [%s]".format(f))
@@ -80,6 +75,7 @@ object Proseeo {
 			case cli.Tell() => doTell
 			case cli.Say(message) => doSay(message)
 			case cli.Set(key, value) => doSet(key, value)
+			case cli.Delete(key) => doDelete(key)
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
 			case cli.Plan(name) => doPlan(name)
 		}
@@ -150,6 +146,10 @@ object Proseeo {
 
 	def doSet(key:String, value:String) {
 		script.append(scriptmodel.Set(key, value, user, now)).save
+	}
+
+	def doDelete(key:String) {
+		script.append(scriptmodel.Delete(key, user, now)).save
 	}
 
 	def doRouteTo(name:Actor, then:Seq[Actor]) {
