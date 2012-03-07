@@ -11,7 +11,7 @@ import Ansi._
 import PlanLineParser._
 import scriptmodel.State
 
-class Plan(val name:String, file:File) {
+class Plan(val name:String, val file:File) {
 
 	override def toString = (for (group <- groups) yield {
 		(for (line <- group) yield line.toString).mkString("\n")

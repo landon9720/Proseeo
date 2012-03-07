@@ -1,10 +1,14 @@
 Proseeo  A new way for groups to communicate, organize, and get stuff done.
          "I am the cutest little bug tracking software there is!"
 
-         Features
-
+         plans
+         
+         routing
+         
+         reporting
+         
          distributed - Proseeo keeps project files on your local file system.
-                       Project files are shared using tools you already use: source control
+                       Project files are shared using using your source control tools.
 
      softer software - Proseeo trusts you to make good decisions about your process.
 
@@ -288,3 +292,11 @@ As programmers building a complex system we make thousands of small tiny decisio
       want color red, blue, green, black, 2 more
 
 ok ok
+
+p cat story
+p cat plan (current)
+p cat plan name
+
+p edit story
+p edit plan // creates story copy
+p edit plan --project // edits project copy

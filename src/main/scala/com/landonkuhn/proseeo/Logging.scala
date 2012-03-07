@@ -16,5 +16,5 @@ object Logging {
 		else sys.exit
 	}
 
-  var exception_on_die = true
+  var exception_on_die = false
 }

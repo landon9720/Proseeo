@@ -1,11 +1,14 @@
 package com.landonkuhn.proseeo
 
 import java.util.Date
+
 import org.joda.time.format.ISODateTimeFormat
 import java.io.File
 import org.apache.commons.io.FileUtils
 import org.joda.time.{Duration, DateTimeZone, DateTime}
 import com.eaio.util.text.HumanTime
+import Files._
+import Logging._
 
 object Util {
 
@@ -26,28 +29,28 @@ object Util {
 
 	def now:Date = new Date
 
-  def editor():Option[String] = {
-    val f = File.createTempFile("proceeo_", ".value")
-    f.deleteOnExit
-
-    //    val out = new BufferedWriter(new FileWriter(f))
-    //    out.write(s)
-    //    out.close
-    //
-    //    debug("Launching editor: %s".format(f.getAbsolutePath))
-
-    val args = System.getenv("EDITOR").split(" ").toList :+ f.getAbsolutePath
-    val pb = new ProcessBuilder(args.toArray: _*)
-    pb.start.waitFor
-
-    import collection.JavaConversions._
-    Some(FileUtils.readLines(f).mkString("\n"))
-
-    //    val in = Source.fromFile(f)
-    //    val result = in.getLines.mkString("\n")
-    //    in.close
-    //    result
-  }
+	def editor(file:File) {
+//		val f = File.createTempFile(prefix + "_", ".edit.proseeo")
+//		f.deleteOnExit
+//		write(f, input)
+		
+//		val args = System.getenv("EDITOR").split(" ").toList :+ f.getAbsolutePath
+//		val pb = new ProcessBuilder(args.toArray: _*)
+//		pb.start.waitFor
+		
+//		scala.sys.process.Process(args) !
+		
+//		Runtime.getRuntime.exec(args.toArray).waitFor
+		
+//		File file = new File("FinalReport.doc");
+		java.awt.Desktop.getDesktop.edit(file)
+		
+//		val result = read(f)
+//		if (result.isEmpty) {
+//			i("Forgotten")
+//			None
+//		} else Some(result)
+	}
 
   def id: String = java.util.UUID.randomUUID.toString.replace("-", "")
 }

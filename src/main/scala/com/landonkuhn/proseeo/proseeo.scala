@@ -1,7 +1,7 @@
 package com.landonkuhn.proseeo
 
 import java.io.File
-import org.apache.commons.io.FileUtils._
+import org.apache.commons.io.FileUtils.{touch, getUserDirectory}
 import org.apache.commons.lang3.StringUtils._
 
 import Logging._
@@ -9,6 +9,7 @@ import Ansi._
 import plan.{Enum, Text, Field, Need, Want, Gate, Plan}
 import scriptmodel.Created
 import Util._
+import Files._
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
@@ -41,7 +42,7 @@ object Proseeo {
 	}).toMap
 
 	lazy val storiesDir = new File(projectDir, "stories")
-	lazy val storyDir = new File(storiesDir, storyId.getOrElse("I don't know what story we're using"))
+	lazy val storyDir = new File(storiesDir, storyId.getOrElse(die("I don't know what story we're using")))
 	lazy val scriptFile = new File(storyDir, "script.proseeo")
 	lazy val script = {
 	  if (!storiesDir.isDirectory) die("Missing stories directory %s".format(storiesDir))
@@ -81,6 +82,10 @@ object Proseeo {
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
 			case cli.Plan(name, force) => doPlan(name, force)
 			case cli.Cmd(_) => doCmd(args.drop(1))
+			case cli.CatScript() => println(read(scriptFile).mkString("\n"))
+			case cli.CatPlan() => println(plan.map(_.file).map(read(_)).map(_.mkString("\n")).getOrElse(""))
+			case cli.EditScript() => doEditScript
+  			case cli.EditPlan(project) => doEditPlan(project)
 		}
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
@@ -139,6 +144,7 @@ object Proseeo {
 		import StringUtils._
 
 		val state = script.play
+		val _ = plan // force lazy evaluation
 
 		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when(now))
 
@@ -162,7 +168,6 @@ object Proseeo {
 		}) ::: Nil
 		val kw = kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
-
 
 		if (state.says.isEmpty) {
 			i("")
@@ -209,9 +214,12 @@ object Proseeo {
 			if (active) future = true
 		}
 
-
-		i("")
-		i("document:\n" + state.document.toString.indent)
+		if (!state.document.isEmpty) {
+			i("")
+			val kvs = (for (k <- state.document.keys.toSeq.sorted if plan.isEmpty || ! plan.get.fields.contains(k)) yield k -> state.document(k))
+			val kw = kvs.map(_._1.length).max
+			i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v.bold)).mkString("\n").indent)
+		}
 	}
 
 	def doSay(message:String) {
@@ -246,5 +254,13 @@ object Proseeo {
 
 	def doCmd(args:Array[String]) {
 		scala.sys.process.Process(args, storyDir) ! // later, shell-fu to make this better?
+	}
+	
+	def doEditScript {
+	  editor(scriptFile)
+	}
+	
+	def doEditPlan(project:Boolean) {
+	  
 	}
 }

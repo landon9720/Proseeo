@@ -30,9 +30,14 @@ object CommandLineParser {
       | "unplan"                                                ^^^ Plan(None, false)
       | "plan" ~> force ~ opt(name)                             ^^ { case force ~ name => Plan(name, force) }
       | "x" ~> text                                             ^^ { case cmd => Cmd(cmd) }
+      | "cat" ~ "script"                                        ^^^ CatScript()
+      | "cat" ~ "plan"                                          ^^^ CatPlan()
+      | "edit" ~ "script"                                       ^^^ EditScript()
+      | "edit" ~ "plan" ~> project                              ^^ { case project => EditPlan(project) }
      )
     def force = opt("--force" | "-f") ^^ { case force => force.isDefined }
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
+    def project = opt("--project") ^^ { case project => project.isDefined }
   }
 }
 
@@ -54,3 +59,8 @@ case class RouteTo(name:Actor, then:Seq[Actor]) extends Route
 case class Plan(name:Option[String], force:Boolean) extends Command
 
 case class Cmd(cmd:String) extends Command
+
+case class CatScript() extends Command
+case class CatPlan() extends Command
+case class EditScript() extends Command
+case class EditPlan(project:Boolean) extends Command
