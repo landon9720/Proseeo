@@ -30,6 +30,7 @@ object CommandLineParser {
       | route
       | "unplan"                                                ^^^ Plan(None, false)
       | "plan" ~> force ~ opt(name)                             ^^ { case force ~ name => Plan(name, force) }
+      | "x" ~> text                                             ^^ { case cmd => Cmd(cmd) }
      )
     def force = opt("--force" | "-f") ^^ { case force => force.isDefined }
     def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ^^ { case name ~ then => RouteTo(name, then) }
@@ -52,3 +53,5 @@ trait Route extends Command
 case class RouteTo(name:Actor, then:Seq[Actor]) extends Route
 
 case class Plan(name:Option[String], force:Boolean) extends Command
+
+case class Cmd(cmd:String) extends Command

@@ -84,6 +84,7 @@ object Proseeo {
 			case cli.Delete(key) => doDelete(key)
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
 			case cli.Plan(name, force) => doPlan(name, force)
+			case cli.Cmd(_) => doCmd(args.drop(1))
 		}
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
@@ -244,5 +245,9 @@ object Proseeo {
 			}
 		}
 		doTell
+	}
+
+	def doCmd(args:Array[String]) {
+		scala.sys.process.Process(args, storyDir) ! // later, shell-fu to make this better?
 	}
 }
