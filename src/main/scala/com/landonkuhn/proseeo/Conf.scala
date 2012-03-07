@@ -24,13 +24,11 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     this
   }
   
-  def required(key: String): String = getOrElse(key, {
-    die("I can't find the configuration value for [%s]".format(key), files.mkString("\n"))
-  })
+  def required(key: String): String = getOrElse(key, die("I can't find the configuration value for [%s]\n%s".format(
+    key, files.map("I checked " + _.toString).mkString("\n").indent)))
 
   def save {
     write(file, toStrings)
-    debug("Saved configuration file [%s]:\n%s".format(file, toString.indent))
   }
 
   private def toStrings: Seq[String] = {
@@ -52,8 +50,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     }
     conf
   }
-	debug("Read configuration file [%s]:%s".format(file, if (conf.isEmpty) " (empty)" else "\n" + toString.indent))
-  
+
   private val files: Seq[File] = {
     val result = new ListBuffer[File]
     var conf: Option[Conf] = Some(this)

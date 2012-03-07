@@ -5,36 +5,17 @@ import Util._
 
 object Logging {
 
-	def ok(s:String) {
-		println(s.white.bggreen.bold)
-	}
+	def ok(s:String)    { println(s.split("\n").map("ok".white.bold.bggreen + " " + _).mkString("\n")) }
+	def info(s:String)  { println(s.split("\n").map("   " + _).mkString("\n")) }
+	def warn(s:String)  { println(s.split("\n").map("??".white.bold.bgyellow + " " + _).mkString("\n")) }
+	def error(s:String) { println(s.split("\n").map("!?".white.bold.bgyellow + " " + _).mkString("\n")) }
 
-	def debug(s:String) {
-		// if (verbose) // later
-		println(s.cyan)
-	}
-
-	def info(s:String) {
-		println(s)
-	}
-
-	def warn(s:String) {
-		println(s.yellow)
-	}
-
-	def error(s:String, sd:String) { error(s, Some(sd)) }
-	def error(s:String, sd:Option[String] = None) {
-		println(s.white.bold.bgred)
-		for (sd <- sd) debug(sd.indent)
-	}
-
-	def die(s:String, sd:String): Nothing = die(s, Some(sd))
-	def die(s:String, sd:Option[String] = None): Nothing = {
+	def die(s:String):Nothing = {
 		error(s)
-		for (sd <- sd) debug(sd.indent)
 		if (doNotDie) sys.error(s)
     else sys.exit
 	}
 
   var doNotDie = false
+  val verbose = false
 }

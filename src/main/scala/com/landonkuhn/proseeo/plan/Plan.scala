@@ -106,9 +106,9 @@ case class Gate() extends Kind { // later rename to checkpoint?
 
 object PlanLineParser {
 	def parseLine(line:String):Line = {
-		if (trim(line) == "") NilLine() else parser.parse(parser.line, line) match {
+		if (trim(line) == "") NilLine() else parser.parseAll(parser.line, line) match {
 			case parser.Success(line, _) => line
-			case e:parser.NoSuccess => die("Sorry, but I don't understand something in here: [%s]".format(line), e.msg)
+			case e:parser.NoSuccess => die("Sorry, but I don't understand something in here: [%s]\n  %s".format(line, e.msg))
 		}
 	}
 

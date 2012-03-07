@@ -9,9 +9,9 @@ import Logging._
 object ScriptStatementParser {
 
 	def parseScriptStatement(statement:String):Statement = {
-    parser.parse(parser.statement, statement) match {
+    parser.parseAll(parser.statement, statement) match {
       case parser.Success(statement, _) => statement
-      case e:parser.NoSuccess => die("I don't understand [%s]".format(statement), e.msg)
+      case e:parser.NoSuccess => die("I don't understand [%s]\n  %s".format(statement, e.msg))
     }
   }
 
