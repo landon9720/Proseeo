@@ -1,5 +1,8 @@
 need title:text
 need description:text
-want version_repoted_in:enum(versions)
+want version_reported_in:enum(2.1, 2.0, 1.5, 1.4, 1.3, 1.2, 1.1, 0.1_beta2, 0.1_beta1)
 
 need scrubbed:gate
+need scrubbed2:gate
+
+want color:enum(red, blue, green, black, pink, aqua)

@@ -27,10 +27,15 @@ object Proseeo {
 		userName -> User(userName, user.leaf("name").getOrElse("<unknown name>"), user.leaf("email").getOrElse("<unknown email>"))
 	}).toMap
 
-	case class Group(groupName:String, members:collection.Set[User])
+	case class Group(groupName:String, members:Set[User])
 	lazy val groups = (for ((group, members) <- new Document(projectConf).scope("project.groups.").tree.leafs) yield {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
+
+	// case class Enum(name:String, values:Seq[String])
+	// lazy val enums = (for ((name, values) <- new Document(projectConf).scope("project.enums.").tree.leafs) yield {
+	// 	name -> Enum(name, values.split(",").map(trim))
+	// }).toMap
 
 	lazy val storiesDir = {
 		val f = new File(projectDir, "stories")
@@ -132,11 +137,11 @@ object Proseeo {
 		info("document:\n" + state.document.toString.indent)
 		info("where: " + state.where)
 		info("plan name: " + state.plan)
-		info("plan:\n" + (plan match {
-			case None => "(none)"
-			case Some(plan) => plan.toString
-		}).indent + "\n")
-		for (plan <- plan) plan(state)
+		info("plan:\n")
+		plan match {
+			case None => println("  (none)")
+			case Some(plan) => plan(state)
+		}
 	}
 
 	def doSay(message:String) {

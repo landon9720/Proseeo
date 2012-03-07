@@ -14,6 +14,7 @@ import scriptmodel.State
 class Plan(file: File) {
 
 	def apply(state:State) {
+
 		for (group <- groups) {
 			for (field <- group) {
 				val prefix = field match {
@@ -29,15 +30,14 @@ class Plan(file: File) {
 					case field:Field if field.test(state.document) => ""
 					case field:Field => field.kind match {
 						case _:Text => "____"
-						case Enum(_, Some(values)) => values.take(4).mkString(", ") + (values.drop(4).size match {
+						case Enum(values) => values.take(4).mkString(", ") + (values.drop(4).size match {
 							case 0 => ""
-							case n => "%d more".format(n)
+							case n => ", %d more".format(n)
 						})
-						case Enum(name, None) => "unknown %s".format(name)
 						case _:Gate => "[ ]"
 					}
 				}
-				info("%s %s %s %s".format(prefix, field.key, value.bold, hint.cyan))
+				info("%s %s %s %s".format(prefix, field.key, value.bold, hint.yellow))
 			}
 			info("")
 		}
@@ -88,8 +88,8 @@ case class Text() extends Kind { // later rename to any?
 	override def toString = "text"
 	def test(document:Document, key:String):Boolean = document.contains(key)
 }
-case class Enum(name:String, values:Option[Set[String]] = None) extends Kind {
-	override def toString = "enum(%s)".format(name)
+case class Enum(values:Seq[String]) extends Kind {
+	override def toString = "enum(%s)".format(values.mkString(" "))
 	def test(document:Document, key:String):Boolean = document.get(key).map(value => values.exists(_ == value)).getOrElse(false)
 }
 case class Gate() extends Kind { // later rename to checkpoint?
@@ -99,7 +99,6 @@ case class Gate() extends Kind { // later rename to checkpoint?
 
 object PlanLineParser {
 	def parseLine(line:String):Line = {
-		info("i am parsing " + line)
 		if (trim(line) == "") NilLine() else parser.parse(parser.line, line) match {
 			case parser.Success(line, _) => line
 			case e:parser.NoSuccess => die("Sorry, but I don't understand something in here: [%s]".format(line), e.msg)
@@ -114,7 +113,7 @@ object PlanLineParser {
 		def want:Parser[Want] = (key ~ ":" ~ kind) ^^ { case k ~ ":" ~ l => Want(k, l) }
 		def kind:Parser[Kind] = (
 			  "text" ^^^ Text()
-			| "enum(" ~> name <~ ")" ^^ { case name => Enum(name) }
+			| "enum(" ~> rep1sep(key, ("," | " ")) <~ ")" ^^ { case values => Enum(values) }
 			| "gate"  ^^^ Gate()
 		)
 	}
