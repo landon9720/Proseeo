@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils
 object Proseeo {
 
 	lazy val projectDir = new File(".")
-	lazy val projectFile = new File(projectDir, ".proseeo.conf") // later no leading .
+	lazy val projectFile = new File(projectDir, "proseeo.conf") // later no leading
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.required("user.name")
@@ -71,6 +71,11 @@ object Proseeo {
 			if (storyId.isDefined) cli.Tell()
 			else cli.Status() // later reports
 		} else cli.CommandLineParser.parseCommandLine(human)
+
+		if (!projectFile.isFile) {
+
+		}
+
 		willOfTheHuman match {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
