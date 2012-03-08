@@ -57,9 +57,10 @@ object Proseeo {
 		plan
 	}
 	private def loadPlan(name:String):Option[Plan] = Seq(storyDir, projectDir)
-		.map(dir => new File(dir, "%s.plan.proseeo".format(name)))
+		.map(dir => new File(dir, planFileName(name)))
 		.find(_.isFile)
 		.map(new Plan(name, _))
+	private def planFileName(name:String):String = "%s.plan.proseeo".format(name)
 
 	def main(args:Array[String]) = try {
 
@@ -85,7 +86,7 @@ object Proseeo {
 			case cli.CatScript() => println(read(scriptFile).mkString("\n"))
 			case cli.CatPlan() => println(plan.map(_.file).map(read(_)).map(_.mkString("\n")).getOrElse(""))
 			case cli.EditScript() => doEditScript
-  			case cli.EditPlan(project) => doEditPlan(project)
+  			case cli.EditPlan(global) => doEditPlan(global)
 		}
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
@@ -262,7 +263,9 @@ object Proseeo {
 	  editor(scriptFile)
 	}
 	
-	def doEditPlan(project:Boolean) {
-	  
+	def doEditPlan(global:Boolean) {
+	  //val planFileName = planFileName()
+	  lazy val localPlanFile = new File(storyDir, planFileName)
+	  lazy val globalPlanFile = new File(projectDir, planFileName)
 	}
 }
