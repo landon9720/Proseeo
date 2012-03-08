@@ -14,6 +14,7 @@ import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.io.FileUtils
 
 object Proseeo {
 
@@ -50,17 +51,11 @@ object Proseeo {
 	  if (!scriptFile.isFile) die("Missing script file %s".format(scriptFile))
 	  new scriptmodel.Script(scriptFile)
 	}
+	lazy val scriptState = script.play
 
-	lazy val plan:Option[Plan] = {
-		val name:Option[String] = script.play.plan
-		val plan:Option[Plan] = name.flatMap(loadPlan(_).orElse({ warn("I don't know plan [%s]".format(name.get)); None }))
-		plan
-	}
-	private def loadPlan(name:String):Option[Plan] = Seq(storyDir, projectDir)
-		.map(dir => new File(dir, planFileName(name)))
-		.find(_.isFile)
-		.map(new Plan(name, _))
-	private def planFileName(name:String):String = "%s.plan.proseeo".format(name)
+	lazy val planFile:File = new File(storyDir, "plan.proseeo")
+	lazy val plan:Plan = new Plan(planFile)
+	def projectPlanFile(name:String):File = new File(projectDir, "%s.plan.proseeo".format(name))
 
 	def main(args:Array[String]) = try {
 
@@ -84,7 +79,7 @@ object Proseeo {
 			case cli.Plan(name, force) => doPlan(name, force)
 			case cli.Cmd(_) => doCmd(args.drop(1))
 			case cli.CatScript() => println(read(scriptFile).mkString("\n"))
-			case cli.CatPlan() => println(plan.map(_.file).map(read(_)).map(_.mkString("\n")).getOrElse(""))
+			case cli.CatPlan() => println(read(planFile).mkString("\n"))
 			case cli.EditScript() => doEditScript
   			case cli.EditPlan(global) => doEditPlan(global)
 		}
@@ -119,7 +114,9 @@ object Proseeo {
 		val storyId = Util.id
 		val storyDir = new File(storiesDir, storyId)
 		val scriptFile = new File(storyDir, "script.proseeo")
-		touch(scriptFile)
+	  touch(scriptFile)
+		val planFile = new File(storyDir, "plan.proseeo")
+		touch(planFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
 		doUse(Some(storyId))
@@ -169,7 +166,7 @@ object Proseeo {
 			case Some(a:Actor) => List(("where", a.toString.bold)) // later
 			case None => Nil
 		}) ::: Nil
-		val kw = kvs.map(_._1.length).max
+		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
 
 		if (state.says.isEmpty) {
@@ -181,14 +178,14 @@ object Proseeo {
 			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
 		}
 
-		if (state.plan.isEmpty) {
+		if (plan.groups.isEmpty) {
 			i("")
 			i("no plan")
 		}
 		var future = false
-		for (plan <- plan; group <- plan.groups) {
+		for (group <- plan.groups) {
 			val active = ! group.collect({ case x:Need => x }).forall(_.test(state.document))
-			val fw = group.map(_.key.size).max
+			val fw = if (group.isEmpty) 0 else group.map(_.key.size).max
 			i("")
 			for (field <- group) {
 				val prefix = field match {
@@ -219,8 +216,8 @@ object Proseeo {
 
 		if (!state.document.isEmpty) {
 			i("")
-			val kvs = (for (k <- state.document.keys.toSeq.sorted if plan.isEmpty || ! plan.get.fields.contains(k)) yield k -> state.document(k))
-			val kw = kvs.map(_._1.length).max
+			val kvs = (for (k <- state.document.keys.toSeq.sorted if plan.fields.isEmpty || ! plan.fields.contains(k)) yield k -> state.document(k))
+			val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 			i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v.bold)).mkString("\n").indent)
 		}
 	}
@@ -230,7 +227,7 @@ object Proseeo {
 	}
 
 	def doSet(key:String, value:String, force:Boolean) {
-		for (plan <- plan) if (!force && !plan.fields.contains(key)) die("Field [%s] is not in the plan [%s]".format(key, plan.name))
+		if (!force && !plan.fields.isEmpty && !plan.fields.contains(key)) die("Field [%s] is not in the plan".format(key))
 		script.append(scriptmodel.Set(key, value, user, now)).save
 	}
 
@@ -245,11 +242,18 @@ object Proseeo {
 	def doPlan(name:Option[String], force:Boolean) {
 		name match {
 			case Some(name) => {
-				if (loadPlan(name).isEmpty && !force) die("I don't have plan [%s]".format(name))
-				script.append(scriptmodel.Plan(name, user, now)).save
+				val source = projectPlanFile(name)
+				if (!source.isFile) {
+					if (!force) die("I don't have plan file %s".format(source))
+					else FileUtils.touch(source)
+				}
+				FileUtils.copyFile(source, planFile)
+				script.append(scriptmodel.Set("proseeo.plan", name, user, now)).save
 			}
 			case None => {
-				script.append(scriptmodel.Unplan(user, now)).save
+				if (planFile.isFile) planFile.delete
+				FileUtils.touch(planFile)
+				script.append(scriptmodel.Delete("proseeo.plan", user, now)).save
 			}
 		}
 		doTell
@@ -264,8 +268,6 @@ object Proseeo {
 	}
 	
 	def doEditPlan(global:Boolean) {
-	  //val planFileName = planFileName()
-	  lazy val localPlanFile = new File(storyDir, planFileName)
-	  lazy val globalPlanFile = new File(projectDir, planFileName)
+		editor(plan.file)
 	}
 }
