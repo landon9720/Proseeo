@@ -18,17 +18,28 @@ import org.apache.commons.io.FileUtils
 
 object Proseeo {
 
-	lazy val projectDir = new File(".")
+	lazy val projectDir = {
+		val dirs = Seq(new File("."), new File(".."), new File(new File(".."), ".."))
+		val conf = dirs.find(new File(_, "proseeo.conf").isFile)
+		conf.getOrElse(die("I don't see a project here. Change to a project directory, or create one here using p init."))
+	}
 	lazy val projectFile = new File(projectDir, "proseeo.conf")
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
-	lazy val storyId = userConf.get("projects.%s.using".format(projectId))
-
-	lazy val projectConf = {
-	  if (!projectFile.isFile) die("I don't see a project here")
-	  new Conf(projectFile)
+	lazy val storyId:Option[String] = {
+		def projectUsing = userConf.get("projects.%s.using".format(projectId))
+		if (Option(new File(".").getCanonicalFile.getParentFile).flatMap(f => Option(f.getParentFile.getCanonicalFile)) == Some(projectDir.getCanonicalFile)) {
+			val storyId = Some(new File(".").getCanonicalFile.getName)
+			if (projectUsing != storyId) {
+				doUse(storyId)
+				warn("You are in a story directory, so we are going to use the story here")
+			}
+		}
+		projectUsing
 	}
+
+	lazy val projectConf = new Conf(projectFile)
 	lazy val projectName = projectConf.required("project.name")
 	lazy val projectId = projectConf.required("project.id")
 
@@ -57,8 +68,9 @@ object Proseeo {
 	lazy val plan:Plan = new Plan(planFile)
 	def projectPlanFile(name:String):File = new File(projectDir, "%s.plan.proseeo".format(name))
 
+	var say_ok = true
 	def main(args:Array[String]) = try {
-
+	  
 		val human = trim(args.mkString(" "))
 		val willOfTheHuman = if (human == "") {
 			if (storyId.isDefined) cli.Tell()
@@ -68,7 +80,7 @@ object Proseeo {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
 			case cli.Init(name) => doInit(name)
-			case cli.Start(name) => doStart(name)
+			case cli.Start() => doStart
 			case cli.End() => doEnd
 			case cli.Use(storyId) => doUse(storyId)
 			case cli.Tell() => doTell
@@ -77,18 +89,14 @@ object Proseeo {
 			case cli.Delete(key) => doDelete(key)
 			case cli.RouteTo(name, then) => doRouteTo(name, then)
 			case cli.Plan(name, force) => doPlan(name, force)
-			case cli.Cmd(_) => doCmd(args.drop(1))
-			case cli.CatScript() => println(read(scriptFile).mkString("\n"))
-			case cli.CatPlan() => println(read(planFile).mkString("\n"))
-			case cli.EditScript() => doEditScript
-  			case cli.EditPlan(global) => doEditPlan(global)
+			case cli.Locate(name) => doLocate(name)
 		}
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
 		userConf += "stats.last" -> now.format
 		userConf.save
 
-		ok("ok")
+		if (say_ok) ok("ok")
 	} catch {
 		case ex:Exception => error("Sorry, I had an accident"); ex.printStackTrace
 	}
@@ -110,7 +118,7 @@ object Proseeo {
 		projectConf.save
 	}
 
-  def doStart(name:Option[String]) {
+  def doStart() {
 		val storyId = Util.id
 		val storyDir = new File(storiesDir, storyId)
 		val scriptFile = new File(storyDir, "script.proseeo")
@@ -120,7 +128,6 @@ object Proseeo {
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
 		doUse(Some(storyId))
-		for (name <- name) doPlan(Some(name), false)
 	}
 
 	def doEnd {
@@ -138,6 +145,7 @@ object Proseeo {
 				userConf -= "projects.%s.name".format(projectId)
 			}
 		}
+		userConf.save
 	}
 
 	def doTell {
@@ -256,18 +264,26 @@ object Proseeo {
 				script.append(scriptmodel.Delete("proseeo.plan", user, now)).save
 			}
 		}
-		doTell
-	}
-
-	def doCmd(args:Array[String]) {
-		scala.sys.process.Process(args, storyDir) ! // later, shell-fu to make this better?
 	}
 	
-	def doEditScript {
-	  editor(scriptFile)
-	}
-	
-	def doEditPlan(global:Boolean) {
-		editor(plan.file)
+	def doLocate(name:Option[String]) {
+	  val kvs = for (name <- (name.getOrElse("all") match {
+	    case "all" => Seq("project", "conf", "story", "script", "plan")
+	    case name => Seq(name)
+	  })) yield name match {
+	    case "project" => name -> projectDir
+	    case "conf" => name -> projectFile
+	    case "story" => name -> storyDir
+	    case "script" => name -> scriptFile
+	    case "plan" => name -> planFile
+	    case name => die("That is not something you can locate. Try p locate all, project, conf, story, script, or plan.")
+	  }
+		if (kvs.length == 1) {
+			println(kvs.head._2)
+			say_ok = false // to support ` ` bash usage
+		} else {
+			val kw = kvs.map(_._1.length).max
+			i((for ((k, v) <- kvs.sortBy(_._2)) yield "%s : %s".format(rightPad(k, kw), v.toString.bold)).mkString("\n").indent)
+		}
 	}
 }

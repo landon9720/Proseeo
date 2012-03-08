@@ -1,14 +1,15 @@
 package com.landonkuhn.proseeo
 
 import java.util.Date
-
 import org.joda.time.format.ISODateTimeFormat
-import java.io.File
+import java.io._
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils.copy
 import org.joda.time.{Duration, DateTimeZone, DateTime}
 import com.eaio.util.text.HumanTime
 import Files._
 import Logging._
+import scala.sys.process._
 
 object Util {
 
@@ -28,29 +29,5 @@ object Util {
 	}
 
 	def now:Date = new Date
-
-	def editor(file:File) {
-//		val f = File.createTempFile(prefix + "_", ".edit.proseeo")
-//		f.deleteOnExit
-//		write(f, input)
-		
-//		val args = System.getenv("EDITOR").split(" ").toList :+ f.getAbsolutePath
-//		val pb = new ProcessBuilder(args.toArray: _*)
-//		pb.start.waitFor
-		
-//		scala.sys.process.Process(args) !
-		
-//		Runtime.getRuntime.exec(args.toArray).waitFor
-		
-//		File file = new File("FinalReport.doc");
-		java.awt.Desktop.getDesktop.edit(file)
-		
-//		val result = read(f)
-//		if (result.isEmpty) {
-//			i("Forgotten")
-//			None
-//		} else Some(result)
-	}
-
-  def id: String = java.util.UUID.randomUUID.toString.replace("-", "")
+	def id:String = java.util.UUID.randomUUID.toString.replace("-", "")
 }

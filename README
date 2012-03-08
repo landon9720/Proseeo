@@ -334,3 +334,5 @@ p tell
 
 p open attachment 1 # invoke system viewer
 p edit attachment 2 # invoke system editor
+
+error messages should be written as if the programmer is sitting with the user and walking them through their use case
