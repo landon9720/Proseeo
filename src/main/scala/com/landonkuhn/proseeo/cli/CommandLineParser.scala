@@ -21,7 +21,8 @@ object CommandLineParser {
 	    case "route" :: actor :: then => RouteTo(actor :: then)
 	    case "plan" :: name :: Nil => Plan(Some(name))
 	    case "unplan" :: Nil => Plan(None)
-	    case "locate" :: name :: Nil => Locate(Some(name))
+	    case "locate" :: Nil => Locate("all")
+	    case "locate" :: name :: Nil => Locate(name)
 	    case "attach" :: files => Attach(files)
 	    case _ => die("I don't understand you")
     }
@@ -45,5 +46,5 @@ case class RouteTo(actors:Seq[String]) extends Route
 
 case class Plan(name:Option[String]) extends Command
 
-case class Locate(name:Option[String]) extends Command
+case class Locate(name:String) extends Command
 case class Attach(files:Seq[String]) extends Command

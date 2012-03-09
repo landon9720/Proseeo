@@ -218,7 +218,7 @@ object Proseeo {
 					}
 				}
 				val cursor = if (active && !future && !field.test(state.document)) ">" else " "
-				i("%s %s %s  %s%s".format(cursor.bold, prefix, rightPad(field.key, fw), value.map(_ + " ").getOrElse("").bold, hint.yellow))
+				i("%s %s | %s  %s%s".format(cursor.bold, prefix, rightPad(field.key, fw), value.map(_ + " ").getOrElse("").bold, hint.yellow))
 			}
 			if (active) future = true
 		}
@@ -268,8 +268,8 @@ object Proseeo {
 		}
 	}
 	
-	def doLocate(name:Option[String]) {
-	  val kvs = for (name <- (name.getOrElse("all") match {
+	def doLocate(name:String) {
+	  val kvs = for (name <- (name match {
 	    case "all" => Seq("project", "conf", "story", "script", "plan")
 	    case name => Seq(name)
 	  })) yield name match {
