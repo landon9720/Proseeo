@@ -9,10 +9,12 @@ object CommandLineParser {
 	    case "help" :: Nil => Help()
 	    case "status" :: Nil => Status()
 	    case "init" :: name :: Nil => Init(name)
-	    case "create" :: Nil => Start()
-	    case "start" :: Nil => Start()
+	    case "create" :: name :: Nil => Start(name)
+	    case "start" :: name :: Nil => Start(name)
 	    case "complete" :: Nil => End()
 	    case "end" :: Nil => End()
+	    case "use" :: name :: Nil => Use(Some(name))
+	    case "use" :: Nil => Use(None)
 	    case "tell" :: Nil => Tell()
 	    case "t" :: Nil => Tell()
 		  case "say" :: tail :: Nil => Say(tail.mkString(""))
@@ -33,9 +35,9 @@ trait Command
 case class Help() extends Command
 case class Status() extends Command
 case class Init(name:String) extends Command
-case class Start() extends Command
-case class End() extends Command // later create and close instead of start/end
-case class Use(storyId:Option[String]) extends Command
+case class Start(name:String) extends Command
+case class End() extends Command
+case class Use(name:Option[String]) extends Command
 case class Tell() extends Command
 case class Say(message:String) extends Command
 case class Set(key:String, value:String) extends Command

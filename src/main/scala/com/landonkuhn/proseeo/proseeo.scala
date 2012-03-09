@@ -18,7 +18,7 @@ import org.apache.commons.io.FileUtils._
 object Proseeo {
 
 	lazy val projectDir = {
-		val dirs = Seq(new File("."), new File(".."), new File(new File(".."), ".."))
+		val dirs = Seq(new File("."), new File(".."))
 		val conf = dirs.find(new File(_, "project.proseeo").isFile)
 		conf.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	}
@@ -28,7 +28,7 @@ object Proseeo {
 	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
 	lazy val storyId:Option[String] = {
 		def projectUsing = userConf.get("projects.%s.using".format(projectId))
-		if (Option(new File(".").getCanonicalFile.getParentFile).flatMap(f => Option(f.getParentFile.getCanonicalFile)) == Some(projectDir.getCanonicalFile)) {
+		if (Option(new File(".").getCanonicalFile.getParentFile) == Some(projectDir.getCanonicalFile)) {
 			val storyId = Some(new File(".").getCanonicalFile.getName)
 			if (projectUsing != storyId) {
 				doUse(storyId)
@@ -52,11 +52,9 @@ object Proseeo {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
 
-	lazy val storiesDir = new File(projectDir, "stories")
-	lazy val storyDir = new File(storiesDir, storyId.getOrElse(die("I don't know what story we're using")))
+	lazy val storyDir = new File(projectDir, storyId.getOrElse(die("I don't know what story we're using")))
 	lazy val scriptFile = new File(storyDir, "script.proseeo")
 	lazy val script = {
-	  if (!storiesDir.isDirectory) die("missing stories directory %s".format(storiesDir))
 	  if (!storyDir.isDirectory) die("missing story directory %s".format(storyDir))
 	  if (!scriptFile.isFile) die("missing script file %s".format(scriptFile))
 	  new scriptmodel.Script(scriptFile)
@@ -78,9 +76,9 @@ object Proseeo {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
 			case cli.Init(name) => doInit(name)
-			case cli.Start() => doStart
+			case cli.Start(name) => doStart(name)
 			case cli.End() => doEnd
-			case cli.Use(storyId) => doUse(storyId)
+			case cli.Use(name) => doUse(name)
 			case cli.Tell() => doTell
 			case cli.Say(message) => doSay(message)
 			case cli.Set(key, value) => doSet(key, value)
@@ -118,26 +116,26 @@ object Proseeo {
 		projectConf.save
 	}
 
-  def doStart() {
-		val storyId = Util.id
-		val storyDir = new File(storiesDir, storyId)
+  def doStart(name:String) {
+		val storyDir = (new File(projectDir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(projectDir, "%s-%d".format(name, i)))).find(!_.exists).get
 		val scriptFile = new File(storyDir, "script.proseeo")
 	  touch(scriptFile)
 		val planFile = new File(storyDir, "plan.proseeo")
 		touch(planFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(user, now)).save
-		doUse(Some(storyId))
+	  i("started story %s".format(storyDir.getName))
+		doUse(Some(storyDir.getName))
 	}
 
 	def doEnd {
 		script.append(scriptmodel.Ended(user, now)).save
 	}
 
-	def doUse(storyId:Option[String]) {
-		storyId match {
-			case Some(storyId) => {
-				userConf += "projects.%s.using".format(projectId) -> storyId // later check it
+	def doUse(name:Option[String]) {
+		name match {
+			case Some(name) => {
+				userConf += "projects.%s.using".format(projectId) -> name // later check it
 				userConf += "projects.%s.name".format(projectId) -> projectName // nice touch
 			}
 			case None => {
@@ -164,16 +162,19 @@ object Proseeo {
 
 		def atbyStr(date:Date, name:String) = "%s by %s".format(atStr(date), byStr(name))
 
-		val kvs = (state.created match {
-			case Some(scriptmodel.Created(by, at)) => List(("created", atbyStr(at, by)))
-			case None => Nil
-		}) ::: (state.ended match {
-			case Some(scriptmodel.Ended(by, at)) => List(("closed", atbyStr(at, by)))
-			case None => Nil
-		}) ::: (state.where match {
-			case Some(a:String) => List(("where", a.toString.bold)) // later
-			case None => Nil
-		}) ::: Nil
+		val kvs =
+			(
+				List("story" -> storyDir.getName)
+			) ::: (state.created match {
+				case Some(scriptmodel.Created(by, at)) => List("created" -> atbyStr(at, by))
+				case None => Nil
+			}) ::: (state.ended match {
+				case Some(scriptmodel.Ended(by, at)) => List("closed" -> atbyStr(at, by))
+				case None => Nil
+			}) ::: (state.where match {
+				case Some(a:String) => List("where" -> a.toString.bold) // later
+				case None => Nil
+			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
 
