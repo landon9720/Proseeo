@@ -1,7 +1,12 @@
 package com.landonkuhn.proseeo.cli
 
+import com.eaio.util.text.HumanTime
+import org.joda.time.DateTime
+import java.util.Date
+
 import com.landonkuhn.proseeo._
 import Logging._
+import Util._
 
 object CommandLineParser {
 	def parseCommandLine(args:List[String]):Command = {
@@ -11,14 +16,16 @@ object CommandLineParser {
 	    case "init" :: name :: Nil => Init(name)
 	    case "create" :: name :: Nil => Start(name)
 	    case "start" :: name :: Nil => Start(name)
-	    case "complete" :: Nil => End()
+	    case "close" :: Nil => End()
 	    case "end" :: Nil => End()
 	    case "use" :: name :: Nil => Use(Some(name))
 	    case "use" :: Nil => Use(None)
 	    case "tell" :: Nil => Tell()
 	    case "t" :: Nil => Tell()
 		  case "say" :: tail :: Nil => Say(tail.mkString(""))
-		  case "set" :: key :: value :: Nil=> Set(key, value.mkString(""))
+		  case "set" :: key :: "now" :: Nil => Set(key, TimeStampValue(now))
+		  case "set" :: key :: delta :: Nil if HumanTime.eval(delta).getDelta != 0L => Set(key, TimeStampValue(new DateTime().plus(HumanTime.eval(delta).getDelta).toDate))
+		  case "set" :: key :: value :: Nil=> Set(key, TextValue(value))
 			case "delete" :: key :: Nil => Delete(key)
 	    case "route" :: actor :: then => RouteTo(actor :: then)
 	    case "plan" :: name :: Nil => Plan(Some(name))
@@ -40,7 +47,12 @@ case class End() extends Command
 case class Use(name:Option[String]) extends Command
 case class Tell() extends Command
 case class Say(message:String) extends Command
-case class Set(key:String, value:String) extends Command
+
+trait SetValue
+case class TextValue(value:String) extends SetValue
+case class TimeStampValue(value:Date) extends SetValue
+case class Set(key:String, value:SetValue) extends Command
+
 case class Delete(key:String) extends Command
 
 trait Route extends Command

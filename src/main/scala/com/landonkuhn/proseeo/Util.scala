@@ -24,8 +24,8 @@ object Util {
 
 	implicit def rich_date(d:Date) = new {
 		def format:String = ISODateTimeFormat.dateTime.print(new DateTime(d, DateTimeZone.UTC))
-		def when(d0:Date):String =  if (d.getTime < d0.getTime) HumanTime.approximately(d.getTime - d0.getTime) + " ago"
-																	else "in " + HumanTime.approximately(d.getTime - d0.getTime)
+		def when(d0:Date):String =  if (d.getTime < d0.getTime) HumanTime.exactly(d.getTime - d0.getTime) + " ago"
+																	else "in " + HumanTime.exactly(d.getTime - d0.getTime)
 	}
 
 	def now:Date = new Date

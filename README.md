@@ -1,143 +1,63 @@
-Proseeo  A new way for groups to communicate, organize, and get stuff done.
-         "I am the cutest little bug tracking software there is!"
+# Proseeo
 
-         plans
+Proseeo is a new way for groups to communicate, organize, and get stuff done. _"I am the cutest little bug tracking software there is!"_
 
+What is Proseeo? Is it a bug tracking platform? Is it a process management tool? Is it a content management system? Is it a chat room or a wiki? *Proseeo is all of these.*
 
-         routing
+*pro-see-oh*
 
-         reporting
+<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
 
-         distributed - Proseeo keeps project files on your local file system.
-                       Project files are shared using using your source control tools.
+# Concepts
 
-     softer software - Proseeo trusts you to make good decisions about your process.
+Proseeo is unlike any bug tracking software you have used. Before you get started there are few things you need to understand.
 
+## Projects
 
+A project is just a directory on your file system. This directory contains all your project data, including configuration, stories, and attachments. Proseeo makes finding and updating this data easy.
 
-         ok ok
+A project is just a directory, so to share a project, check it into source control. (A network file system or Dropbox would should work just as well.) There is no Proseeo server. Project configuration is stored in `project.proseeo`.
 
-tools:
-one program: proseeo
-talk to it like you talk to siri
-proseeo init
-proseeo start story
-proseeo use <guid>
-proseeo comment ipsum
-proseeo forward to ipsuser
-proseeo report
+## Stories
 
-lower level. what are the tools:
-command line language parser and syntax tree
-command line execution engine
-story language parser and syntax tree
-story execution engine to arrive at current document state
-  including the important (but easy??) active chain & tip algorithm
-indexer (push all stories into mongo)
-reporter pass user defined mongo queries to mongo and handle results (no custom dsl for now, but in future)
-appender writes to story
-configuration file format, parser, writer
-  some commands (like the use command) will need to store state there
-???
+A story is a like a ticket in a conventional bug database. For each story Proseeo keeps track of who created it, where it is, and what it contains. Stories contain "says" (tweet-like comments), attachments, and routing information.
 
-steve> proseeo open story -title "bug?"
-Created stories/<guid>.proseeo
-steve> cd <guid>
-steve> comment "i just talked to etc..."
-steve> forward to anthony
-Forwarded to user anthony (Anthony A)
-anthony> proseeo create report -title "mine"
-Created reports/<guid>.report
-anthony> echo "{open: true}" > reports/<guid>.report
-anthony> proseeo report -title "mine"
-stories/<guid>.proseeo
-  created by steve (Steve A) on xx/xx/xx
-  "i just talked to etc..."
-anthony> cd <guid>.proseeo
-anthony> proseeo ask steve "i need a screenshot"
+A story is just a subdirectory under the project. Story metadata is stored in `script.proseeo`. Attachments are also stored in the story directory.
 
-steve> proseeo report
-stories/<guid>.proseeo
-  asked by adupre (Anthony A) on xx/xx/xx
-  "i need a screenshot!"
-steve> cd <guid>
-steve> proseeo attach screenshot1.png
-Attached screenshot1.png
-steve> proseeo
+## Plans
 
+Plans define what a story should contain. For example, the `bug` plan might contain fields for `title`, `description`, `fix_version`, and `test_notes`. A plan is a loose schema that defines the story requirements.
 
-need a way to report on what is mine.
-stories in which i am in the active chain
-the critical question i have not answered here is
-  "how do i view my in-box?"
-  "well there is no in-box."
-  "well i want an in-box."
+Proseeo believes that every story is different, and that no single workflow should be imposed. Each story has a plan file `plan.proseeo`. The plan file is in a simple text format and can be easily edited to suit the needs story.
 
-in the above use cases the story should have been in anthony's, and then engineerings's, "in boxes"
-because: at the time, they were at the tip of the active chain
-so every story: evaluate to find active chain and active tip
+Proseeo supports template plan files stored in the project directory. When a story is assigned a plan, the template plan is copied into the story directory. Proseo comes with template plan files `bug`, `todo`, and `release`.
 
-steve notes """
-  i just talked to abc in and their xyg feature isnot working,
-  please look into this
-"""
-steve forwards with feedback to user anthony
-anthony comments "yes i can duplicate this. we will fix it."
-anthony sets template to bug <---- think about this!
-anthony sets bug.fix_version = 1.0.2.3
-anthony forwards to engineering
-pinned by landon <------- think about this!!!!
-pinned by zach
-zach comments "i think i know what caused this...."
-landon comments "found and fixed"
-landon sets bug.fixed = true
-chris sets bug.tested = true
+## Routes
 
-...
+Routes determine where a story is, where it has been, and where it needs to go. Route destinations include individual users, and user groups. Because Proseeo does not impose a workflow the route is completely mutatable any any time. Proseeo trusts people to make the right routing decisions.
 
-this doesn't even wrap git
-it's just a collection of command line tools for
-  parsing these documents
-  updating these documents
-  indexing them
-  providing querying and reporting services
-  later: signing and encryption!!!!
-stores these as a plain-text document right on the file system
-filenames in the format: guid.proseeo -- it's a directory! inside is the script, and attachments!
-an indexer can crawl all these documents to build a reportable index
-  using mongo
-  but don't checkin the mongo database! no need. :) the tools can
-  rebuild when needed
-report query language..maybe native mongo queries at first
-there needs to be conf files
-  ./.proseeo.conf
-    users
-      listed so that user references can be validated
-    groups
-      listed for the same reason
-    basically anything that might need to be referenced should be configured
-    with metadata (name, email address, etc.) which will allow tools
-    to annotate those references, send emails, etc.
-  ~/.proseeo.conf
-    smtp.setting1 =
-    smpt.setting2 = etc ... allows tools to send messages on user's behalf
+## Queries
 
-Welcome to com.landonkuhn.proseeo.main.Proseeo
+later
+
+<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
+
+# Getting Started
+
+* Download and install Proseeo
+* Create a project directory, `cd` into that directory, and execute `p init name`. Name is the name of your project.
+* Create your first story using `p start name`. Name is the name of your story, and can be anything you want. You can use a generic name such as `bug` or something specific.
+* later
+
+<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
+
+# Development Notes
+
 Here I am building a platform to help groups get stuff done. This is distributed
 process structure. DPS. This is soft business process management.
 This is a new way for groups to communicate, to organize, and to get stuff done.
 I am starting with business of making software. This is the work I know, and the
 first who will use this.
-
-it really has no dependencies on git all all
-any source control will do! ha!
-
-going to need it to be an sbt probject
-going to need to publish a brew formula
-
-at some point worry about:
-  story file encoding
-  story archiving
 
 active chain and tip:
 created by user A
@@ -163,9 +83,6 @@ these are reports against the story state itself, not the document state
 they are built on built-in concepts in the story model
 described above is the "routing" for stories
 
-
-pro-see-oh
-
 signing: a way to sign a story to assert authorship from th2is point back to the previous signing
 encryption: a way to encrypt parts of the document?? i don't know. this is less interesting to me because i value building an open system. ideally with a slick front end that allows full text searching --- this data should be a repo for information.
 
@@ -176,10 +93,7 @@ could it work for the mongo database to actually live on the network and be shar
 
 perhaps proseeo is business process management inspired by twitter
 
-
-
-
-=== document templating ===
+document templating
 
 dsl to describe requirements?
 
@@ -257,16 +171,6 @@ spinny:
   [-  ]
   [ - ]
   [  -]
-
-
-I want to say a little about my philosophy of the way I think software should be.
-
-Actually, I want to say something about the way programmers should work.
-
-Programmers communicate users. The media and method of communication is the software. The programmer is the sender, and the user is the receiver. With most software this is almost an abusive relationship. I want to change that.
-
-As programmers building a complex system we make thousands of small tiny decisions. Those decisions are informed by product requirements, culture, and habit. But there is something missing. In addition to requirements, and culture, there's something else we should
-
 
 
    created : 1/1/2000 3 hours ago by Landon Kuhn <lkuhn> lkuhn@example.com

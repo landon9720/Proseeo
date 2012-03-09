@@ -5,7 +5,7 @@ import java.io.File
 
 import Logging._
 import Ansi._
-import plan.{Enum, Text, Field, Need, Want, Gate, Plan}
+import plan._
 import Util._
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
@@ -67,7 +67,7 @@ object Proseeo {
 
 	var say_ok = true
 	def main(args:Array[String]) = try {
-	  
+
 		val willOfTheHuman = if (args.isEmpty) {
 			if (storyId.isDefined) cli.Tell()
 			else cli.Status() // later reports
@@ -149,8 +149,9 @@ object Proseeo {
 	def doTell {
 		import StringUtils._
 
-		val state = script.play
-		val _ = plan // force lazy evaluation
+		// force lazy evaluation
+		val state = scriptState
+		val _ = plan
 
 		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when(now))
 
@@ -163,9 +164,11 @@ object Proseeo {
 		def atbyStr(date:Date, name:String) = "%s by %s".format(atStr(date), byStr(name))
 
 		val kvs =
-			(
-				List("story" -> storyDir.getName)
-			) ::: (state.created match {
+			(List("story" -> storyDir.getName.bold)
+			) ::: (state.document.get("proseeo.plan") match {
+				case Some(plan) => List("plan" -> plan.bold)
+				case None => List("plan" -> "no plan (use p plan name)".yellow)
+			}) ::: (state.created match {
 				case Some(scriptmodel.Created(by, at)) => List("created" -> atbyStr(at, by))
 				case None => Nil
 			}) ::: (state.ended match {
@@ -178,19 +181,11 @@ object Proseeo {
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
 
-		if (state.says.isEmpty) {
-			i("")
-			i("no says yet")
-		}
 		for (say <- state.says) {
 			i("")
 			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
 		}
 
-		if (plan.fields.isEmpty) {
-			i("")
-			i("no plan")
-		}
 		var future = false
 		for (group <- plan.groups) {
 			val active = ! group.collect({ case x:Need => x }).forall(_.test(state.document))
@@ -204,6 +199,10 @@ object Proseeo {
 				}
 				val value = field.kind match {
 					case g:Gate if field.test(state.document) => Some("[*]")
+					case ts:TimeStamp if field.test(state.document) => {
+						val date = state.document(field.key).toDate
+						Some("%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when(now)))
+					}
 					case _ => state.document.get(field.key)
 				}
 				val hint = field match {
@@ -215,6 +214,7 @@ object Proseeo {
 							case n => ", %d more".format(n)
 						})
 						case _:Gate => "[ ]"
+						case _:TimeStamp => "timestamp"
 					}
 				}
 				val cursor = if (active && !future && !field.test(state.document)) ">" else " "
@@ -224,10 +224,18 @@ object Proseeo {
 		}
 
 		if (!state.document.isEmpty) {
-			i("")
-			val kvs = (for (k <- state.document.keys.toSeq.sorted if plan.fields.isEmpty || ! plan.fields.contains(k)) yield k -> state.document(k))
-			val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
-			i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v.bold)).mkString("\n").indent)
+			def value(s:String):String = {
+				s.optDate match {
+					case Some(date) => "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when(now))
+					case None => s
+				}
+			}
+			val kvs = (for (k <- state.document.keys.toSeq.sorted if !k.startsWith("proseeo.") && (plan.fields.isEmpty || ! plan.fields.contains(k))) yield k -> state.document(k))
+			if (!kvs.isEmpty) {
+				i("")
+				val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
+				i((for ((k, v) <- kvs) yield "     | %s  %s".format(rightPad(k, kw), value(v))).mkString("\n").indent)
+			}
 		}
 	}
 
@@ -235,9 +243,13 @@ object Proseeo {
 		script.append(scriptmodel.Say(message, user, now)).save
 	}
 
-	def doSet(key:String, value:String) {
+	def doSet(key:String, value:cli.SetValue) {
 		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("that is not in the plan".format(key))
-		script.append(scriptmodel.Set(key, value, user, now)).save
+		val valueString = value match {
+			case cli.TextValue(value) => value
+			case cli.TimeStampValue(value) => value.format
+		}
+		script.append(scriptmodel.Set(key, valueString, user, now)).save
 	}
 
 	def doDelete(key:String) {
@@ -254,8 +266,7 @@ object Proseeo {
 			case Some(name) => {
 				val source = projectPlanFile(name)
 				if (!source.isFile) {
-					FileUtils.touch(source)
-					warn("Touched plan file %s".format(source))
+					die("there is no plan file %s".format(source))
 				}
 				FileUtils.copyFile(source, planFile)
 				script.append(scriptmodel.Set("proseeo.plan", name, user, now)).save
@@ -267,7 +278,7 @@ object Proseeo {
 			}
 		}
 	}
-	
+
 	def doLocate(name:String) {
 	  val kvs = for (name <- (name match {
 	    case "all" => Seq("project", "conf", "story", "script", "plan")

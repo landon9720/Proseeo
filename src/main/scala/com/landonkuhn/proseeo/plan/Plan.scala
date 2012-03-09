@@ -67,6 +67,10 @@ case class Gate() extends Kind { // later rename to checkpoint?
 	override def toString = "gate"
 	def test(document:Document, key:String):Boolean = document.get(key).map(_ == "ok").getOrElse(false)
 }
+case class TimeStamp() extends Kind {
+	override def toString = "timeStamp"
+	def test(document:Document, key:String):Boolean = document.get(key).flatMap(_.optDate).isDefined
+}
 
 object PlanLineParser {
 	def parseLine(line:String):Line = {
@@ -86,6 +90,7 @@ object PlanLineParser {
 			  "text" ^^^ Text()
 			| "enum(" ~> rep1sep(key, ("," | " ")) <~ ")" ^^ { case values => Enum(values) }
 			| "gate"  ^^^ Gate()
+			| "timestamp" ^^^ TimeStamp()
 		)
 	}
 }
