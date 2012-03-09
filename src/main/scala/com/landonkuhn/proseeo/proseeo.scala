@@ -1,31 +1,30 @@
 package com.landonkuhn.proseeo
 
 import java.io.File
-import org.apache.commons.io.FileUtils.{touch, getUserDirectory}
-import org.apache.commons.lang3.StringUtils._
+
 
 import Logging._
 import Ansi._
 import plan.{Enum, Text, Field, Need, Want, Gate, Plan}
-import scriptmodel.Created
 import Util._
-import Files._
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils._
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FileUtils._
 
 object Proseeo {
 
 	lazy val projectDir = {
 		val dirs = Seq(new File("."), new File(".."), new File(new File(".."), ".."))
 		val conf = dirs.find(new File(_, "project.proseeo").isFile)
-		conf.getOrElse(die("I don't see a project here. Change to a project directory, or create one here using p init."))
+		conf.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	}
 	lazy val projectFile = new File(projectDir, "project.proseeo")
 
-	lazy val userConf = new Conf(new File(getUserDirectory, "project.proseeo"))
+	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
 	lazy val storyId:Option[String] = {
 		def projectUsing = userConf.get("projects.%s.using".format(projectId))
@@ -33,7 +32,7 @@ object Proseeo {
 			val storyId = Some(new File(".").getCanonicalFile.getName)
 			if (projectUsing != storyId) {
 				doUse(storyId)
-				warn("You are in a story directory, so we are going to use the story here")
+				warn("this is a story directory, so we are going to use the story here")
 			}
 		}
 		projectUsing
@@ -57,9 +56,9 @@ object Proseeo {
 	lazy val storyDir = new File(storiesDir, storyId.getOrElse(die("I don't know what story we're using")))
 	lazy val scriptFile = new File(storyDir, "script.proseeo")
 	lazy val script = {
-	  if (!storiesDir.isDirectory) die("Missing stories directory %s".format(storiesDir))
-	  if (!storyDir.isDirectory) die("Missing story directory %s".format(storyDir))
-	  if (!scriptFile.isFile) die("Missing script file %s".format(scriptFile))
+	  if (!storiesDir.isDirectory) die("missing stories directory %s".format(storiesDir))
+	  if (!storyDir.isDirectory) die("missing story directory %s".format(storyDir))
+	  if (!scriptFile.isFile) die("missing script file %s".format(scriptFile))
 	  new scriptmodel.Script(scriptFile)
 	}
 	lazy val scriptState = script.play
@@ -98,7 +97,7 @@ object Proseeo {
 
 		if (say_ok) ok("ok")
 	} catch {
-		case ex:Exception => error("Sorry, I had an accident"); ex.printStackTrace
+		case ex:Exception => error("sorry, I had an accident"); ex.printStackTrace
 	}
 
 	def doHelp {
@@ -112,7 +111,7 @@ object Proseeo {
 
   def doInit(name:String) {
 		val projectFile = new File("project.proseeo")
-	  if (projectFile.isFile) die("There is already a project here")
+	  if (projectFile.isFile) die("there is already a project here")
 		touch(projectFile)
 		projectConf += "project.name" -> name
 		projectConf += "project.id" -> Util.id
@@ -236,7 +235,7 @@ object Proseeo {
 	}
 
 	def doSet(key:String, value:String) {
-		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("That is not in the plan".format(key))
+		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("that is not in the plan".format(key))
 		script.append(scriptmodel.Set(key, value, user, now)).save
 	}
 
@@ -278,7 +277,7 @@ object Proseeo {
 	    case "story" => name -> storyDir
 	    case "script" => name -> scriptFile
 	    case "plan" => name -> planFile
-	    case name => die("That is not something you can locate. Try p locate all, project, conf, story, script, or plan.")
+	    case name => die("that is not something you can locate. try p locate all, project, conf, story, script, or plan")
 	  }
 		if (kvs.length == 1) {
 			println(kvs.head._2)
@@ -290,6 +289,15 @@ object Proseeo {
 	}
 
 	def doAttach(files:Seq[String]) {
-		i(files.mkString("\n").indent)
+		files.map(new File(_)).foreach { file =>
+			if (!file.isFile) warn("%s is not a file".format(file))
+			else if (file.getName.endsWith(".proseeo")) warn("%s is my file and should not be attached".format(file))
+			else {
+				val dest = new File(storyDir, file.getName)
+				if (dest.isFile) warn("%s already exists and I am overwriting it".format(dest))
+				copyFile(file, dest)
+				i("attached %s".format(file.getName))
+			}
+		}
 	}
 }
