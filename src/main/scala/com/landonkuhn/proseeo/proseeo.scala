@@ -20,12 +20,12 @@ object Proseeo {
 
 	lazy val projectDir = {
 		val dirs = Seq(new File("."), new File(".."), new File(new File(".."), ".."))
-		val conf = dirs.find(new File(_, "proseeo.conf").isFile)
+		val conf = dirs.find(new File(_, "project.proseeo").isFile)
 		conf.getOrElse(die("I don't see a project here. Change to a project directory, or create one here using p init."))
 	}
-	lazy val projectFile = new File(projectDir, "proseeo.conf")
+	lazy val projectFile = new File(projectDir, "project.proseeo")
 
-	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
+	lazy val userConf = new Conf(new File(getUserDirectory, "project.proseeo"))
 	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
 	lazy val storyId:Option[String] = {
 		def projectUsing = userConf.get("projects.%s.using".format(projectId))
@@ -71,11 +71,10 @@ object Proseeo {
 	var say_ok = true
 	def main(args:Array[String]) = try {
 	  
-		val human = trim(args.mkString(" "))
-		val willOfTheHuman = if (human == "") {
+		val willOfTheHuman = if (args.isEmpty) {
 			if (storyId.isDefined) cli.Tell()
 			else cli.Status() // later reports
-		} else cli.CommandLineParser.parseCommandLine(human)
+		} else cli.CommandLineParser.parseCommandLine(args.toList)
 		willOfTheHuman match {
 			case cli.Help() => doHelp
 			case cli.Status() => doStatus
@@ -85,11 +84,12 @@ object Proseeo {
 			case cli.Use(storyId) => doUse(storyId)
 			case cli.Tell() => doTell
 			case cli.Say(message) => doSay(message)
-			case cli.Set(key, value, force) => doSet(key, value, force)
+			case cli.Set(key, value) => doSet(key, value)
 			case cli.Delete(key) => doDelete(key)
-			case cli.RouteTo(name, then) => doRouteTo(name, then)
-			case cli.Plan(name, force) => doPlan(name, force)
+			case cli.RouteTo(actors) => doRouteTo(actors)
+			case cli.Plan(name) => doPlan(name)
 			case cli.Locate(name) => doLocate(name)
+			case cli.Attach(files) => doAttach(files)
 		}
 
 		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
@@ -111,7 +111,8 @@ object Proseeo {
 	}
 
   def doInit(name:String) {
-		if (projectFile.isFile) die("There is already a project here")
+		val projectFile = new File("project.proseeo")
+	  if (projectFile.isFile) die("There is already a project here")
 		touch(projectFile)
 		projectConf += "project.name" -> name
 		projectConf += "project.id" -> Util.id
@@ -171,7 +172,7 @@ object Proseeo {
 			case Some(scriptmodel.Ended(by, at)) => List(("closed", atbyStr(at, by)))
 			case None => Nil
 		}) ::: (state.where match {
-			case Some(a:Actor) => List(("where", a.toString.bold)) // later
+			case Some(a:String) => List(("where", a.toString.bold)) // later
 			case None => Nil
 		}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
@@ -186,7 +187,7 @@ object Proseeo {
 			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
 		}
 
-		if (plan.groups.isEmpty) {
+		if (plan.fields.isEmpty) {
 			i("")
 			i("no plan")
 		}
@@ -194,7 +195,7 @@ object Proseeo {
 		for (group <- plan.groups) {
 			val active = ! group.collect({ case x:Need => x }).forall(_.test(state.document))
 			val fw = if (group.isEmpty) 0 else group.map(_.key.size).max
-			i("")
+			if (!group.isEmpty) i("")
 			for (field <- group) {
 				val prefix = field match {
 					case w@Want(key, kind) if !w.test(state.document) => "want"
@@ -234,26 +235,27 @@ object Proseeo {
 		script.append(scriptmodel.Say(message, user, now)).save
 	}
 
-	def doSet(key:String, value:String, force:Boolean) {
-		if (!force && !plan.fields.isEmpty && !plan.fields.contains(key)) die("Field [%s] is not in the plan".format(key))
+	def doSet(key:String, value:String) {
+		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("That is not in the plan".format(key))
 		script.append(scriptmodel.Set(key, value, user, now)).save
 	}
 
 	def doDelete(key:String) {
+		if (!scriptState.document.contains(key)) warn("That is not set")
 		script.append(scriptmodel.Delete(key, user, now)).save
 	}
 
-	def doRouteTo(name:Actor, then:Seq[Actor]) {
-		script.append(scriptmodel.RouteTo(name, then, user, now)).save
+	def doRouteTo(actors:Seq[String]) {
+		script.append(scriptmodel.RouteTo(actors.head, actors.tail, user, now)).save
 	}
 
-	def doPlan(name:Option[String], force:Boolean) {
+	def doPlan(name:Option[String]) {
 		name match {
 			case Some(name) => {
 				val source = projectPlanFile(name)
 				if (!source.isFile) {
-					if (!force) die("I don't have plan file %s".format(source))
-					else FileUtils.touch(source)
+					FileUtils.touch(source)
+					warn("Touched plan file %s".format(source))
 				}
 				FileUtils.copyFile(source, planFile)
 				script.append(scriptmodel.Set("proseeo.plan", name, user, now)).save
@@ -285,5 +287,9 @@ object Proseeo {
 			val kw = kvs.map(_._1.length).max
 			i((for ((k, v) <- kvs.sortBy(_._2)) yield "%s : %s".format(rightPad(k, kw), v.toString.bold)).mkString("\n").indent)
 		}
+	}
+
+	def doAttach(files:Seq[String]) {
+		i(files.mkString("\n").indent)
 	}
 }

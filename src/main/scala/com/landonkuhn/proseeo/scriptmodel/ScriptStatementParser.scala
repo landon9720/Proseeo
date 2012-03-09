@@ -26,7 +26,7 @@ object ScriptStatementParser {
 		)
 		def by = "by" ~> name
 		def at = "@" ~> "[\\S]+".r ^? { case x if x.isDate => x.toDate }
-		def route = "route" ~> "to" ~> actor ~ rep("then" ~> actor) ~ by ~ at ^^ { case name ~ then ~ by ~ at => RouteTo(name, then, by, at) }
+		def route = "route" ~> "to" ~> name ~ rep("then" ~> name) ~ by ~ at ^^ { case name ~ then ~ by ~ at => RouteTo(name, then, by, at) }
 	}
 }
 
@@ -49,6 +49,6 @@ case class Set(key:String, value:String, by:String, at:Date) extends Statement {
 case class Delete(key:String, by:String, at:Date) extends Statement {
 	override def toString = "delete %s by %s @ %s".format(key, by, at.format)
 }
-case class RouteTo(actor:Actor, then:Seq[Actor], by:String, at:Date) extends Statement {
+case class RouteTo(actor:String, then:Seq[String], by:String, at:Date) extends Statement {
 	override def toString = "route to %s%s by %s @ %s".format(actor, then.map(" then " + _).mkString(""), by, at.format)
 }

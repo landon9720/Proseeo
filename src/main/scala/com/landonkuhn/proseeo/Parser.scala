@@ -8,11 +8,6 @@ abstract class Parser extends RegexParsers {
 	def text        = ".+".r
 	def quotedText  = "\"" ~> "[^\"]+".r <~ "\"" ^^ { case x => x }
 	def name        = "[a-zA-Z0-9]+".r ^^ { case x => x } // later combine name and key
-
-	def actor = (
-		  "group" ~> name     ^^ { case name => GroupActor(name) }
-		| opt("user") ~> name ^^ { case name => UserActor(name) }
-	)
 }
 
 trait Actor

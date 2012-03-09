@@ -26,7 +26,7 @@ class Script(file:File) {
 		var ended:Option[Ended] = None
 		val says = new ListBuffer[Say]
 		val document = new Document
-		var where:Option[Actor] = None
+		var where:Option[String] = None
 
 		for (statement <- statements) statement match {
 			case c:Created => if (created.isDefined) die("More than one created") else created = Some(c)
@@ -54,5 +54,5 @@ case class State(
 	ended:Option[Ended],
 	says:Seq[Say],
 	document:Document,
-	where:Option[Actor]
+	where:Option[String]
 )
