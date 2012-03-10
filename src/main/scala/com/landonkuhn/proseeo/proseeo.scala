@@ -6,6 +6,7 @@ import java.io.File
 import Logging._
 import Ansi._
 import plan._
+import scriptmodel.RouteState
 import Util._
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
@@ -174,9 +175,10 @@ object Proseeo {
 			}) ::: (state.ended match {
 				case Some(scriptmodel.Ended(by, at)) => List("closed" -> atbyStr(at, by))
 				case None => Nil
-			}) ::: (state.where match {
-				case Some(a:String) => List("where" -> a.toString.bold) // later
-				case None => Nil
+			}) ::: (state.route match {
+				case RouteState(past, present, future) => List("where" -> {
+					past.mkString("->") + present.map("=>" + _).getOrElse("").bold + future.map("->" + _).mkString("")
+				})
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
