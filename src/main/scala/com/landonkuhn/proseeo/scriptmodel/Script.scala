@@ -7,6 +7,7 @@ import java.io.File
 import com.landonkuhn.proseeo._
 import Logging._
 import Files._
+import Util._
 import scriptmodel.ScriptStatementParser._
 
 class Script(file:File) {
@@ -35,7 +36,11 @@ class Script(file:File) {
 			case Set(key, value, _, _) => document += key -> value
 			case Delete(key, _, _) => document -= key
 			case Route(actors, _, _) => route = route.copy(
-				past = route.past ++ route.present.map(Seq(_)).getOrElse(Nil),
+				past = route.past ++ {
+					if (route.past.lastOption != route.present && route.present != actors.headOption)
+						route.present.map(Seq(_)).getOrElse(Nil)
+					else Nil
+				},
 				present = actors.headOption,
 				future = actors.tail
 			)

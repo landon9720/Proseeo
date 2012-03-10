@@ -152,7 +152,6 @@ what's next:
   generate template plans on init
   disable ansi when not supported or wanted
   brew formula
-  bug: route list duplicates present
   .
   .
   .

@@ -28,6 +28,13 @@ object Util {
 																	else "in " + HumanTime.exactly(d.getTime - d0.getTime)
 	}
 
+	implicit def rich_seq[T](s:Seq[T]) = new {
+		def dedupe:Seq[T] = (List[T]() /: s) { (elements, element) =>
+			if (elements.lastOption != Some(element)) elements :+ element
+			else elements
+		}
+	}
+
 	def now:Date = new Date
 	def id:String = java.util.UUID.randomUUID.toString.replace("-", "")
 }

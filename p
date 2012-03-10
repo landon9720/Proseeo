@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar `dirname $0`/target/proseeo.jar "$@"
+java -jar -client `dirname $0`/target/proseeo.jar "$@"
