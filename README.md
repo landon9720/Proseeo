@@ -144,67 +144,33 @@ could the document itself somehow advise routing?
 
 
 what's next:
-  document templating
-  tagging
-  group member pinning
+
+	tell needs to list attachments,
+	plan needs to support attachments
   routing use cases: ask, pass
   indexer and queries
-  generated file header comments
-  attachments and multiline values
-  command suggestions, undo
+  generate template plans on init
+  disable ansi when not supported or wanted
+  brew formula
   .
   .
   .
   linking
   signing
-  .
-  .
-  .
-  brew formula
+  tagging
   eclipse task connector
   file encoding
   archiving
   jira import
   egit integration
+  group member pinning
+  command suggestions, undo
 
 spinny:
   [-  ]
   [ - ]
   [  -]
 
-
-   created : 1/1/2000 3 hours ago by Landon Kuhn <lkuhn> lkuhn@example.com
-   ended   : 1/1/2000 1 minutes ago by Landon Kuhn <lkuhn>             // only if ended
-   route   : creator ~> sbob ~> lkuhn(bold) ~> then1 ~> then2
-
-   no comments yet // or 6 comments
-
-   "blaah blaahhl baahh blaaah"
-     by Steve Bob <sbob> 1 hours ago
-
-   "zabbit zabbity"
-     by Landon Kuhn <lkuhn> 1 hours ago
-
-   bug // or (no plan)
-
-   >  need title                ____
-   >  need description          ____
-   >  want version_reported_in  2.1, 2.0, 1.5, 1.4, 5 more
-
-      need scrubbed   [ ]
-      need scrubbed2  [ ]
-
-      want color red, blue, green, black, 2 more
-
-ok ok
-
-p cat story
-p cat plan (current)
-p cat plan name
-
-p edit story
-p edit plan // creates story copy
-p edit plan --project // edits project copy
 
 script:
   attach "filename" by lkuhn @ ... # filename expected to be in story dir
@@ -216,8 +182,6 @@ p:
   p attach ~/Desktop/foo/screenshot.jpg as screenshot2.jpg # file is copied into story dir as screenshot2.jpg
   p detach screenshot.jpg # removes it from the script state, but not the file system
   p attach new release_document.md # touches release_document.md in story dir. perhaps in the future support a with template keywoard
-
-i think the command line parser will work better if it takes the token stream as passed in as args
 
 release plan
   need version:text
@@ -240,13 +204,3 @@ p open attachment 1 # invoke system viewer
 p edit attachment 2 # invoke system editor
 
 error messages should be written as if the programmer is sitting with the user and walking them through their use case
-
-plan field type: date
-use case: due date field
-set with commands like "p set due in 2w"
-reporting use cases: sort by due date, filter on past due
-
-stories should have a name instead of a uuid
-use: p create bug
-where bug is the name of the story and the immediate subdir of the project dir
-if it already exists then bug-n is created instead and a warning is issued
