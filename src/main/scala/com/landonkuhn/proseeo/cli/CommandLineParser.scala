@@ -27,7 +27,7 @@ object CommandLineParser {
 		  case "set" :: key :: delta :: Nil if HumanTime.eval(delta).getDelta != 0L => Set(key, TimeStampValue(new DateTime().plus(HumanTime.eval(delta).getDelta).toDate))
 		  case "set" :: key :: value :: Nil=> Set(key, TextValue(value))
 			case "delete" :: key :: Nil => Delete(key)
-	    case "route" :: actor :: then => RouteTo(actor :: then)
+	    case "route" :: actors => Route(actors.filter(_ != "to"))
 	    case "plan" :: name :: Nil => Plan(Some(name))
 	    case "unplan" :: Nil => Plan(None)
 	    case "locate" :: Nil => Locate("all")
@@ -47,18 +47,12 @@ case class End() extends Command
 case class Use(name:Option[String]) extends Command
 case class Tell() extends Command
 case class Say(message:String) extends Command
-
 trait SetValue
 case class TextValue(value:String) extends SetValue
 case class TimeStampValue(value:Date) extends SetValue
 case class Set(key:String, value:SetValue) extends Command
-
 case class Delete(key:String) extends Command
-
-trait Route extends Command
-case class RouteTo(actors:Seq[String]) extends Route
-
+case class Route(actors:Seq[String]) extends Command
 case class Plan(name:Option[String]) extends Command
-
 case class Locate(name:String) extends Command
 case class Attach(files:Seq[String]) extends Command

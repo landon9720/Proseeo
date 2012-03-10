@@ -83,7 +83,7 @@ object Proseeo {
 			case cli.Say(message) => doSay(message)
 			case cli.Set(key, value) => doSet(key, value)
 			case cli.Delete(key) => doDelete(key)
-			case cli.RouteTo(actors) => doRouteTo(actors)
+			case cli.Route(actors) => doRoute(actors)
 			case cli.Plan(name) => doPlan(name)
 			case cli.Locate(name) => doLocate(name)
 			case cli.Attach(files) => doAttach(files)
@@ -257,8 +257,8 @@ object Proseeo {
 		script.append(scriptmodel.Delete(key, user, now)).save
 	}
 
-	def doRouteTo(actors:Seq[String]) {
-		script.append(scriptmodel.RouteTo(actors.head, actors.tail, user, now)).save
+	def doRoute(actors:Seq[String]) {
+		script.append(scriptmodel.Route(actors, user, now)).save
 	}
 
 	def doPlan(name:Option[String]) {

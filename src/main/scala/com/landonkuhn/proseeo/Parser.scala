@@ -7,15 +7,5 @@ abstract class Parser extends RegexParsers {
 	def key         = "[a-zA-Z0-9._]+".r
 	def text        = ".+".r
 	def quotedText  = "\"" ~> "[^\"]+".r <~ "\"" ^^ { case x => x }
-	def name        = "[a-zA-Z0-9]+".r ^^ { case x => x } // later combine name and key
-}
-
-trait Actor
-
-case class UserActor(name:String) extends Actor {
-	override def toString = "user %s".format(name)
-}
-
-case class GroupActor(name:String) extends Actor {
-	override def toString = "group %s".format(name)
+	def name        = "[a-zA-Z0-9]{3,}".r ^^ { case x => x } // later combine name and key
 }
