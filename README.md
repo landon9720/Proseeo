@@ -145,8 +145,6 @@ could the document itself somehow advise routing?
 
 what's next:
 
-	tell needs to list attachments,
-	plan needs to support attachments
   routing use cases: ask, pass
   indexer and queries
   generate template plans on init
@@ -165,6 +163,7 @@ what's next:
   egit integration
   group member pinning
   command suggestions, undo
+  extended plan support: attachments, routing
 
 spinny:
   [-  ]
@@ -194,13 +193,3 @@ release plan
 p set release_date now + 1d 1h # now and today keywords with + and - operators with human string operands
 p set release_date now + 1d 2h
 p set release_date today + 1d
-
-p tell
-  ...
-1) screenshot.jpg
-2) screenshot2.jpg
-
-p open attachment 1 # invoke system viewer
-p edit attachment 2 # invoke system editor
-
-error messages should be written as if the programmer is sitting with the user and walking them through their use case
