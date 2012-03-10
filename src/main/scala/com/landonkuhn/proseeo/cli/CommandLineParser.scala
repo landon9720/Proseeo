@@ -27,7 +27,7 @@ object CommandLineParser {
 		  case "set" :: key :: delta :: Nil if HumanTime.eval(delta).getDelta != 0L => Set(key, TimeStampValue(new DateTime().plus(HumanTime.eval(delta).getDelta).toDate))
 		  case "set" :: key :: value :: Nil=> Set(key, TextValue(value))
 			case "delete" :: key :: Nil => Delete(key)
-	    case "route" :: actors => Route(actors.filter(_ != "to"))
+	    case "route" :: actor :: actors => Route((actor :: actors).filter(_ != "to"))
 	    case "plan" :: name :: Nil => Plan(Some(name))
 	    case "unplan" :: Nil => Plan(None)
 	    case "locate" :: Nil => Locate("all")

@@ -1,5 +1,6 @@
 package com.landonkuhn.proseeo
 
+import access.Attachment
 import java.io.File
 
 
@@ -176,8 +177,9 @@ object Proseeo {
 				case Some(scriptmodel.Ended(by, at)) => List("closed" -> atbyStr(at, by))
 				case None => Nil
 			}) ::: (state.route match {
-				case RouteState(past, present, future) => List("where" -> {
-					past.mkString("->") + present.map("=>" + _).getOrElse("").bold + future.map("->" + _).mkString("")
+				case RouteState(past, present, future) => List("route" -> {
+					if ((past ++ present ++ future).isEmpty) "no route (use p route names)".yellow
+					else past.mkString("->") + present.map("=>" + _).getOrElse("").bold + future.map("->" + _).mkString("")
 				})
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
@@ -238,6 +240,16 @@ object Proseeo {
 				val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 				i((for ((k, v) <- kvs) yield "     | %s  %s".format(rightPad(k, kw), value(v))).mkString("\n").indent)
 			}
+		}
+
+		val attachments = Attachment(storyDir)
+		if (!attachments.isEmpty) {
+			i("")
+			val kvs = (for (attachment <- attachments.sortBy(_.fileName)) yield {
+				attachment.fileName -> attachment.size
+			})
+			val kw = kvs.map(_._1.length).max
+			i((for ((k, v) <- kvs) yield "%s  %s".format(rightPad(k, kw).bold, v)).mkString("\n"))
 		}
 	}
 
