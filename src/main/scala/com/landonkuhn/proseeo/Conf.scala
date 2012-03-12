@@ -11,7 +11,7 @@ import collection.mutable.{ListBuffer, Map, HashMap}
 
 import Util._
 
-class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, String] {
+class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, String] { // later get rid of chaining?
 
   def iterator: Iterator[(String, String)] = conf.iterator
   def get(key: String): Option[String] = conf.get(key)

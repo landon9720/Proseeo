@@ -1,6 +1,6 @@
 package com.landonkuhn.proseeo
 
-import access.Attachment
+import access.{Project, Stories, Attachment}
 import java.io.File
 
 
@@ -24,7 +24,11 @@ object Proseeo {
 		val conf = dirs.find(new File(_, "project.proseeo").isFile)
 		conf.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	}
-	lazy val projectFile = new File(projectDir, "project.proseeo")
+
+	lazy val project = Project.get(projectDir)
+	lazy val projectConf = project.conf
+	lazy val projectName = project.name
+	lazy val projectId = project.id
 
 	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
 	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
@@ -40,9 +44,7 @@ object Proseeo {
 		projectUsing
 	}
 
-	lazy val projectConf = new Conf(projectFile)
-	lazy val projectName = projectConf.required("project.name")
-	lazy val projectId = projectConf.required("project.id")
+
 
 	case class User(userName:String, fullName:Option[String], email:Option[String])
 	lazy val users = (for ((userName, user) <- new Document(projectConf).scope("project.users.").tree.subtrees) yield {
@@ -54,12 +56,15 @@ object Proseeo {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
 
-	lazy val storyDir = new File(projectDir, storyId.getOrElse(die("I don't know what story we're using")))
-	lazy val scriptFile = new File(storyDir, "script.proseeo")
-	lazy val script = {
-	  if (!storyDir.isDirectory) die("missing story directory %s".format(storyDir))
-	  if (!scriptFile.isFile) die("missing script file %s".format(scriptFile))
-	  new scriptmodel.Script(scriptFile)
+	lazy val stories = new Stories(projectDir)
+
+	lazy val (storyDir, scriptFile, script) = storyId match {
+		case Some(storyName) => (
+				stories.storyDir(storyName),
+				stories.scriptFile(storyName),
+				stories.get(storyName).script
+		)
+		case None => die("I don't know what story we're using")
 	}
 	lazy val scriptState = script.play
 
@@ -299,7 +304,7 @@ object Proseeo {
 	    case name => Seq(name)
 	  })) yield name match {
 	    case "project" => name -> projectDir
-	    case "conf" => name -> projectFile
+	    case "conf" => name -> projectConf.file
 	    case "story" => name -> storyDir
 	    case "script" => name -> scriptFile
 	    case "plan" => name -> planFile

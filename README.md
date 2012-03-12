@@ -147,7 +147,7 @@ what's next:
 
   routing use cases: ask, pass
   indexer and queries
-  generate template plans on init
+  on init: generate template plans, .gitignore
   disable ansi when not supported or wanted
   brew formula
   .
