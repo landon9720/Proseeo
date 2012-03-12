@@ -8,6 +8,7 @@
   <classpathentry path="/Users/lkuhn/.ivy2/cache/commons-io/commons-io/jars/commons-io-2.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/Users/lkuhn/.ivy2/cache/org.joda/joda-convert/jars/joda-convert-1.2.jar" kind="lib"></classpathentry>
   <classpathentry path="/Users/lkuhn/.ivy2/cache/joda-time/joda-time/jars/joda-time-2.1.jar" kind="lib"></classpathentry>
+  <classpathentry path="/Users/lkuhn/.ivy2/cache/org.apache.lucene/lucene-core/jars/lucene-core-3.5.0.jar" kind="lib"></classpathentry>
   <classpathentry path="/Users/lkuhn/.ivy2/cache/com.novocode/junit-interface/jars/junit-interface-0.8.jar" kind="lib"></classpathentry>
   <classpathentry path="/Users/lkuhn/.ivy2/cache/junit/junit/jars/junit-4.8.2.jar" kind="lib"></classpathentry>
   <classpathentry path="/Users/lkuhn/.ivy2/cache/org.scala-tools.testing/test-interface/jars/test-interface-0.5.jar" kind="lib"></classpathentry>
