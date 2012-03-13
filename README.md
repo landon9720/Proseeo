@@ -63,6 +63,7 @@ later
 * p locate needs to work even when located resources are invalid
 * handle case: p start xxx; rm -rf xxx; p;
 * p use foo needs to work even when current story contains invalid resources
+* newlines in windows, and other windows validation
 
 ## what's next for future release
 

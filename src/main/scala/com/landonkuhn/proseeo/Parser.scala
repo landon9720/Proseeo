@@ -7,5 +7,4 @@ abstract class Parser extends RegexParsers {
 	def key         = "[a-zA-Z0-9._]+".r
 	def text        = ".+".r
 	def quotedText  = "\"" ~> "[^\"]+".r <~ "\"" ^^ { case x => x }
-	def name        = "[a-zA-Z0-9]+".r ^^ { case x => x } // later combine name and key
 }

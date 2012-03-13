@@ -24,9 +24,9 @@ object ScriptStatementParser {
 			| "delete" ~> key ~ by ~ at               ^^ { case key ~ by ~ at => Delete(key, by, at) }
 			| "route" ~> actors ~ by ~ at             ^^ { case actors ~ by ~ at => Route(actors, by, at) }
 		)
-		def by = "by" ~> name
+		def by = "by" ~> key
 		def at = "@" ~> "[\\S]+".r ^? { case x if x.isDate => x.toDate }
-		def actors = "(" ~> repsep(name, ",") <~ ")" ^^ { case actors => actors }
+		def actors = "(" ~> repsep(key, ",") <~ ")" ^^ { case actors => actors }
 	}
 }
 
