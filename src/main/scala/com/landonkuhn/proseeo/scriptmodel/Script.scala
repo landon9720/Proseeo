@@ -58,7 +58,7 @@ class Script(val file:File) {
 					else Nil
 				},
 				present = actors.headOption,
-				future = actors.tail
+				future = actors.drop(1)
 			)
 		}
 

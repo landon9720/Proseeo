@@ -72,7 +72,7 @@ object Proseeo {
 			case cli.Say(message) => doSay(message)
 			case cli.Set(key, value) => doSet(key, value)
 			case cli.Delete(key) => doDelete(key)
-			case cli.Route(actors) => doRoute(actors)
+			case r:cli.Route => doRoute(r)
 			case cli.Plan(name) => doPlan(name)
 			case cli.Locate(name) => doLocate(name)
 			case cli.Attach(files) => doAttach(files)
@@ -331,7 +331,21 @@ index.proseeo/
 		story.script.append(scriptmodel.Delete(key, this_user.name, now)).save
 	}
 
-	def doRoute(actors:Seq[String]) {
+	def doRoute(route:cli.Route) {
+		val previousRoute = story.script.state.route
+		val actors = (route match {
+			case cli.Ask(actor) => actor +: previousRoute.present.getOrElse(this_user.name) +: previousRoute.future
+			case cli.Pass() => if (previousRoute.present.isEmpty) die("this story doesn't have anywhere to go") else previousRoute.future.drop(1)
+			case cli.RouteInsert(actors) => actors ++ previousRoute.future
+			case cli.RouteAppend(actors) => previousRoute.future ++ actors
+			case cli.Reroute(actors) => actors
+		}).dedupe
+		for (actor <- (previousRoute.future.toSet -- actors)) {
+			warn("%s has been lost from the route".format(actor))
+		}
+		for (actor <- actors if project.actor(actor) == None) {
+			warn("%s is not in the project".format(actor))
+		}
 		story.script.append(scriptmodel.Route(actors, this_user.name, now)).save
 	}
 

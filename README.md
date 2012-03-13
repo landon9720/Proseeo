@@ -1,16 +1,12 @@
 # Proseeo
 
-Proseeo is a new way for groups to communicate, organize, and get stuff done. _"I am the cutest little bug tracking software there is!"_
-
-What is Proseeo? Is it a bug tracking platform? Is it a process management tool? Is it a content management system? Is it a chat room or a wiki? *Proseeo is all of these.*
-
-*pro-see-oh*
+Proseeo is a new way for groups to communicate, organize, and get stuff done.
 
 **ok** ok
 
 # Concepts
 
-Proseeo is unlike any bug tracking software you have used. Before you get started there are few things you need to understand.
+Proseeo is unlike any bug or ticket tracking software you have used. Before you get started there are few things you need to understand.
 
 ## Projects
 
@@ -26,7 +22,7 @@ A story is just a subdirectory under the project. Story metadata is stored in `s
 
 ## Plans
 
-Plans define what a story should contain. For example, the `bug` plan might contain fields for `title`, `description`, `fix_version`, and `test_notes`. A plan is a loose schema that defines the story requirements.
+Plans define what a story should contain. For example, the `bug` plan contains fields `title`, `description`, `fix_version`, `test_notes`, and others. A plan is a loose schema that defines the story requirements.
 
 Proseeo believes that every story is different, and that no single workflow should be imposed. Each story has a plan file `plan.proseeo`. The plan file is in a simple text format and can be easily edited to suit the needs story.
 
@@ -36,7 +32,7 @@ Proseeo supports template plan files stored in the project directory. When a sto
 
 ## Routes
 
-Routes determine where a story is, where it has been, and where it needs to go. Route destinations include individual users, and user groups. Because Proseeo does not impose a workflow the route is completely mutatable any any time. Proseeo trusts people to make the right routing decisions.
+Routes determine where a story is, where it has been, and where it needs to go. Route destinations include individual users, and user groups. Because Proseeo does not impose a workflow the route is mutatable any any time. Proseeo trusts people to make the right routing decisions.
 
 ## Queries
 
@@ -48,7 +44,7 @@ later
 
 * Download and install Proseeo
 * Create a project directory, `cd` into that directory, and execute `p init name`. Name is the name of your project.
-* Create your first story using `p start name`. Name is the name of your story, and can be anything you want. You can use a generic name such as `bug` or something specific.
+* Create your first story using `p start name`. Name is the name of your story, and can be anything you want. You can use a generic name such as `bug` or something specific. If name matches a plan, then that plan is automaticalloy used. To start a new bug story enter `p start bug`.
 * later
 
 **ok** ok
@@ -57,12 +53,16 @@ later
 
 ## what's next for v0.01
 
-* routing use cases: ask, pass
 * indexer and queries
 * disable ansi when not supported or wanted
 * brew formula
 * top of plan: starting route, including support for {creator}
 * prevent p start . from "working"
+* man page
+* command line parsing error messages
+* p locate needs to work even when located resources are invalid
+* handle case: p start xxx; rm -rf xxx; p;
+* p use foo needs to work even when current story contains invalid resources
 
 ## what's next for future release
 
