@@ -30,7 +30,7 @@ class Script(val file:File) {
 		result
 	}
 
-	val state:State = {
+	lazy val state:State = {
 		var created:Option[Created] = None
 		var ended:Option[Ended] = None
 		val says = new ListBuffer[Say]
