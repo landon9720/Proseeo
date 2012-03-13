@@ -22,7 +22,15 @@ class Script(file:File) {
 		this
 	}
 
-	def play:State = {
+	private val statements:ListBuffer[Statement] = {
+		val result = new ListBuffer[Statement]
+		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
+			parseScriptStatement(line)
+		})
+		result
+	}
+
+	val state:State = {
 		var created:Option[Created] = None
 		var ended:Option[Ended] = None
 		val says = new ListBuffer[Say]
@@ -47,14 +55,6 @@ class Script(file:File) {
 		}
 
 		State(created, ended, says, document, route)
-	}
-
-	private val statements:ListBuffer[Statement] = {
-		val result = new ListBuffer[Statement]
-		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
-			parseScriptStatement(line)
-		})
-		result
 	}
 }
 

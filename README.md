@@ -6,7 +6,7 @@ What is Proseeo? Is it a bug tracking platform? Is it a process management tool?
 
 *pro-see-oh*
 
-<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
+**ok** ok
 
 # Concepts
 
@@ -30,6 +30,8 @@ Plans define what a story should contain. For example, the `bug` plan might cont
 
 Proseeo believes that every story is different, and that no single workflow should be imposed. Each story has a plan file `plan.proseeo`. The plan file is in a simple text format and can be easily edited to suit the needs story.
 
+Plans are just suggestions about what your story should contain. Each field is loosely validated based on "needs" and "wants" and a simple type system. Ultimately it is up to you to decide what each story should contain, based on what makes sense. Proseeo happily stays out of your way.
+
 Proseeo supports template plan files stored in the project directory. When a story is assigned a plan, the template plan is copied into the story directory. Proseo comes with template plan files `bug`, `todo`, and `release`.
 
 ## Routes
@@ -40,7 +42,7 @@ Routes determine where a story is, where it has been, and where it needs to go. 
 
 later
 
-<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
+**ok** ok
 
 # Getting Started
 
@@ -49,7 +51,7 @@ later
 * Create your first story using `p start name`. Name is the name of your story, and can be anything you want. You can use a generic name such as `bug` or something specific.
 * later
 
-<span style="color:white; background-color:green; font-weight:bold">ok</span> **ok**
+**ok** ok
 
 # Development Notes
 
@@ -147,7 +149,6 @@ what's next:
 
   routing use cases: ask, pass
   indexer and queries
-  on init: generate template plans, .gitignore
   disable ansi when not supported or wanted
   brew formula
   .

@@ -11,7 +11,7 @@ import collection.mutable.{ListBuffer, Map, HashMap}
 
 import Util._
 
-class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, String] { // later get rid of chaining?
+class Conf(file: File) extends Map[String, String] {
 
   def iterator: Iterator[(String, String)] = conf.iterator
   def get(key: String): Option[String] = conf.get(key)
@@ -24,8 +24,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     this
   }
   
-  def required(key: String): String = getOrElse(key, die("I can't find the configuration value for [%s]\n%s".format(
-    key, files.map("I checked " + _.toString).mkString("\n").indent)))
+  def required(key: String): String = getOrElse(key, die("I can't find the configuration value for [%s]".format(key)))
 
   def save {
     write(file, toStrings)
@@ -33,7 +32,7 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
 
   private def toStrings: Seq[String] = {
     val width = if (keys.isEmpty) 0 else keys.map(_.length).max
-		(for (k <- keys.toSeq.sorted) yield "%s : %s".format(rightPad(k, width, ' '), apply(k))).toSeq
+		(for (k <- keys.toSeq.sorted) yield "%s : %s".format(rightPad(k, width), apply(k))).toSeq
   }
   override def toString: String = toStrings.mkString("\n")
 
@@ -41,23 +40,9 @@ class Conf(val file: File, val parent: Option[Conf] = None) extends Map[String, 
     val conf = new HashMap[String, String]
     for (line <- readIfExists(file).getOrElse(List()).map(trim) if line.length > 0 && ! startsWith(line, "#")) {
       val kv = split(line, "=:", 2)
-      if (kv.length != 2) {
-        error("Invalid line in configuration file [%s]:")
-        error(line)
-        sys.exit
-      }
+      if (kv.length != 2) die("Invalid line in configuration file [%s]: %s".format(line))
       conf += trim(kv(0)) -> trim(kv(1))
     }
     conf
-  }
-
-  private val files: Seq[File] = {
-    val result = new ListBuffer[File]
-    var conf: Option[Conf] = Some(this)
-    while (conf.isDefined) {
-      result += conf.get.file
-      conf = conf.get.parent
-    }
-    result
   }
 }

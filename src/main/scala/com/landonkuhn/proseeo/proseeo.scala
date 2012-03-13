@@ -9,6 +9,7 @@ import Ansi._
 import plan._
 import scriptmodel.RouteState
 import Util._
+import access.{User, Group}
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
@@ -21,44 +22,30 @@ object Proseeo {
 
 	val cwd = new File(".")
 
-	lazy val projectDir = {
-		val dirs = Seq(cwd, cwd.getParentFile)
-		val conf = dirs.find(new File(_, "project.proseeo").isFile)
-		conf.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
-	}
+	lazy val project = Project.get({
+		Seq(cwd, cwd.getCanonicalFile.getParentFile).find(Project.test(_))
+			.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
+	})
 
-	lazy val project = Project.get(projectDir)
-	lazy val projectConf = project.conf
-	lazy val projectName = project.name
-	lazy val projectId = project.id
-
-	lazy val userConf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
-	lazy val user = userConf.getOrElseUpdate("user.name", System.getenv("USER"))
-	lazy val storyId:Option[String] = {
-		def projectUsing = userConf.get("projects.%s.using".format(projectId))
-		if (Option(new File(".").getCanonicalFile.getParentFile) == Some(projectDir.getCanonicalFile)) {
-			val storyId = Some(new File(".").getCanonicalFile.getName)
-			if (projectUsing != storyId) {
-				doUse(storyId)
-				warn("this is a story directory, so we are going to use the story here")
+	lazy val this_user = new {
+		val conf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
+		val name = conf.getOrElseUpdate("user.name", System.getenv("USER"))
+		lazy val useStoryName:Option[String] = {
+			def projectUsing = conf.get("projects.%s.using".format(project.id))
+			if (Option(cwd.getCanonicalFile.getParentFile) == Some(project.projectDir.getCanonicalFile)) {
+				val storyId = Some(cwd.getCanonicalFile.getName)
+				if (projectUsing != storyId) {
+					doUse(storyId)
+					warn("this is a story directory, so we are going to use the story here")
+				}
 			}
+			projectUsing
 		}
-		projectUsing
 	}
 
-	case class User(userName:String, fullName:Option[String], email:Option[String])
-	lazy val users = (for ((userName, user) <- new Document(projectConf).scope("project.users.").tree.subtrees) yield {
-		userName -> User(userName, user.leaf("name"), user.leaf("email"))
-	}).toMap
+	lazy val stories = new Stories(project.projectDir)
 
-	case class Group(groupName:String, members:Set[User])
-	lazy val groups = (for ((group, members) <- new Document(projectConf).scope("project.groups.").tree.leafs) yield {
-		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
-	}).toMap
-
-	lazy val stories = new Stories(projectDir)
-
-	lazy val (storyDir, scriptFile, script) = storyId match {
+	lazy val (storyDir, scriptFile, script) = this_user.useStoryName match {
 		case Some(storyName) => (
 				stories.storyDir(storyName),
 				stories.scriptFile(storyName),
@@ -66,17 +53,22 @@ object Proseeo {
 		)
 		case None => die("I don't know what story we're using")
 	}
-	lazy val scriptState = script.play
 
 	lazy val planFile:File = new File(storyDir, "plan.proseeo")
 	lazy val plan:Plan = new Plan(planFile)
-	def projectPlanFile(name:String):File = new File(projectDir, "%s.plan.proseeo".format(name))
+	def projectPlanFile(name:String):File = new File(project.projectDir, "%s.plan.proseeo".format(name))
 
 	var say_ok = true
-	def main(args:Array[String]) = try {
+
+	def main(args:Array[String]):Unit = try {
+
+		args match {
+			case Array("dump") => doDump
+			case _ =>
+		}
 
 		val willOfTheHuman = if (args.isEmpty) {
-			if (storyId.isDefined) cli.Tell()
+			if (this_user.useStoryName.isDefined) cli.Tell()
 			else cli.Status() // later reports
 		} else cli.CommandLineParser.parseCommandLine(args.toList)
 		willOfTheHuman match {
@@ -96,14 +88,25 @@ object Proseeo {
 			case cli.Attach(files) => doAttach(files)
 		}
 
-		userConf += "stats.count" -> (userConf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
-		userConf += "stats.last" -> now.format
-		userConf.save
+		this_user.conf += "stats.count" -> (this_user.conf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
+		this_user.conf += "stats.last" -> now.format
+		this_user.conf.save
 
 		if (say_ok) ok("ok")
 	} catch {
 		case ex:Logging.Dying => dye_for_real(ex)
 		case ex:Exception => error("sorry, I had an accident"); ex.printStackTrace
+	}
+	
+	def doDump {
+		for (file <- Seq(
+			new File(new File("."), "project.proseeo").getCanonicalFile,
+			new File(getUserDirectory, ".proseeo.conf").getCanonicalFile
+		)) {
+			println("#./%s".format(file.getName))
+			println(Files.read(file).mkString("\n"))
+		}
+		sys.exit
 	}
 
 	def doHelp {
@@ -111,8 +114,8 @@ object Proseeo {
 	}
 
 	def doStatus {
-		i("Users:\n" + users.values.mkString("\n").indent)
-		i("Groups:\n" + groups.values.mkString("\n").indent)
+		i("Users:\n" + project.users.values.mkString("\n").indent)
+		i("Groups:\n" + project.groups.values.mkString("\n").indent)
 	}
 
   def doInit(name:String) {
@@ -125,13 +128,14 @@ object Proseeo {
 		projectFile -> """
 	    project.name: %s
 	    project.id: %s
+	    project.born.on: %s
 	    project.users.lkuhn.name: Landon Kuhn
 	    project.users.lkuhn.email: landon9720@gmail.com
 	    project.users.example_user.name: Example User
 	    project.users.example_user.email: user@example.com
 	    project.groups.engineering=lkuhn
 	    project.groups.example_group=lkuhn,example_user
-	   """.format(name, Util.id),
+	   """.format(name, Util.id, now.format),
 
 	   new File(cwd, "bug.plan.proseeo") -> """
 				need title:text
@@ -157,6 +161,10 @@ object Proseeo {
 				need release_document.md:text
 
 				need accepted:gate
+	   """,
+
+	   new File(cwd, ".gitignore") -> """
+	    index.proseeo/
 	   """
 	  )) {
 	    Files.write(file, content.split("\n"))
@@ -164,45 +172,44 @@ object Proseeo {
 	}
 
   def doStart(name:String) {
-		val storyDir = (new File(projectDir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(projectDir, "%s-%d".format(name, i)))).find(!_.exists).get
+		val storyDir = (new File(project.projectDir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(project.projectDir, "%s-%d".format(name, i)))).find(!_.exists).get
 		val scriptFile = new File(storyDir, "script.proseeo")
 	  touch(scriptFile)
 		val planFile = new File(storyDir, "plan.proseeo")
 		touch(planFile)
 		val script = new scriptmodel.Script(scriptFile)
-		script.append(scriptmodel.Created(user, now)).save
+		script.append(scriptmodel.Created(this_user.name, now)).save
 	  i("started story %s".format(storyDir.getName))
 		doUse(Some(storyDir.getName))
 	}
 
 	def doEnd {
-		script.append(scriptmodel.Ended(user, now)).save
+		script.append(scriptmodel.Ended(this_user.name, now)).save
 	}
 
 	def doUse(name:Option[String]) {
 		name match {
 			case Some(name) => {
-				userConf += "projects.%s.using".format(projectId) -> name // later check it
-				userConf += "projects.%s.name".format(projectId) -> projectName // nice touch
+				this_user.conf += "projects.%s.using".format(project.id) -> name // later check it
+				this_user.conf += "projects.%s.name".format(project.id) -> project.name // nice touch
 			}
 			case None => {
-				userConf -= "projects.%s.using".format(projectId)
-				userConf -= "projects.%s.name".format(projectId)
+				this_user.conf -= "projects.%s.using".format(project.id)
+				this_user.conf -= "projects.%s.name".format(project.id)
 			}
 		}
-		userConf.save
+		this_user.conf.save
 	}
 
 	def doTell {
 		import StringUtils._
 
-		// force lazy evaluation
-		val state = scriptState
-		val _ = plan
+		val state = script.state
+		val _ = plan // force lazy evaluation
 
 		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when(now))
 
-		def byStr(name:String) = users.get(name) match {
+		def byStr(name:String) = project.users.get(name) match {
 			case Some(User(_, fullName, email)) =>
 				"%s<%s>%s".format(fullName.map(_ + " ").getOrElse("").bold, name, email.map(" " + ).getOrElse(""))
 			case None => "<%s>".format(name)
@@ -299,7 +306,7 @@ object Proseeo {
 	}
 
 	def doSay(message:String) {
-		script.append(scriptmodel.Say(message, user, now)).save
+		script.append(scriptmodel.Say(message, this_user.name, now)).save
 	}
 
 	def doSet(key:String, value:cli.SetValue) {
@@ -308,16 +315,16 @@ object Proseeo {
 			case cli.TextValue(value) => value
 			case cli.TimeStampValue(value) => value.format
 		}
-		script.append(scriptmodel.Set(key, valueString, user, now)).save
+		script.append(scriptmodel.Set(key, valueString, this_user.name, now)).save
 	}
 
 	def doDelete(key:String) {
-		if (!scriptState.document.contains(key)) warn("That is not set")
-		script.append(scriptmodel.Delete(key, user, now)).save
+		if (!script.state.document.contains(key)) warn("That is not set")
+		script.append(scriptmodel.Delete(key, this_user.name, now)).save
 	}
 
 	def doRoute(actors:Seq[String]) {
-		script.append(scriptmodel.Route(actors, user, now)).save
+		script.append(scriptmodel.Route(actors, this_user.name, now)).save
 	}
 
 	def doPlan(name:Option[String]) {
@@ -328,12 +335,12 @@ object Proseeo {
 					die("there is no plan file %s".format(source))
 				}
 				FileUtils.copyFile(source, planFile)
-				script.append(scriptmodel.Set("proseeo.plan", name, user, now)).save
+				script.append(scriptmodel.Set("proseeo.plan", name, this_user.name, now)).save
 			}
 			case None => {
 				if (planFile.isFile) planFile.delete
 				FileUtils.touch(planFile)
-				script.append(scriptmodel.Delete("proseeo.plan", user, now)).save
+				script.append(scriptmodel.Delete("proseeo.plan", this_user.name, now)).save
 			}
 		}
 	}
@@ -343,8 +350,8 @@ object Proseeo {
 	    case "all" => Seq("project", "conf", "story", "script", "plan")
 	    case name => Seq(name)
 	  })) yield name match {
-	    case "project" => name -> projectDir
-	    case "conf" => name -> projectConf.file
+	    case "project" => name -> project.projectDir
+	    case "conf" => name -> project.projectFile
 	    case "story" => name -> storyDir
 	    case "script" => name -> scriptFile
 	    case "plan" => name -> planFile
