@@ -19,8 +19,6 @@ import org.apache.commons.io.FileUtils._
 
 object Proseeo {
 
-	val cwd = new File(".")
-
 	lazy val project = Project.get({
 		Seq(cwd, cwd.getCanonicalFile.getParentFile).find(Project.test(_))
 			.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
@@ -42,10 +40,8 @@ object Proseeo {
 		}
 	}
 
-	lazy val stories = new Stories(project.dir)
-
 	lazy val story = this_user.useStoryName match {
-		case Some(storyName) => stories.get(storyName)
+		case Some(storyName) => new Stories(project.dir).get(storyName)
 		case None => die("I don't know what story we're using")
 	}
 

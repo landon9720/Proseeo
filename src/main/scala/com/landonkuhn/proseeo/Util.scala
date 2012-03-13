@@ -35,6 +35,7 @@ object Util {
 		}
 	}
 
-	def now:Date = new Date
-	def id:String = java.util.UUID.randomUUID.toString.replace("-", "")
+	def now = new Date
+	def id = java.util.UUID.randomUUID.toString.replace("-", "")
+	val cwd = new File(".")
 }
