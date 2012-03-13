@@ -64,6 +64,7 @@ later
 * handle case: p start xxx; rm -rf xxx; p;
 * p use foo needs to work even when current story contains invalid resources
 * newlines in windows, and other windows validation
+* whois command
 
 ## what's next for future release
 
