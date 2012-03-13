@@ -44,15 +44,9 @@ object Proseeo {
 
 	lazy val stories = new Stories(project.dir)
 
-	lazy val story = new {
-		val (dir, file, script) = this_user.useStoryName match {
-			case Some(storyName) => (
-					stories.storyDir(storyName),
-					stories.scriptFile(storyName),
-					stories.get(storyName).script
-			)
-			case None => die("I don't know what story we're using")
-		}
+	lazy val story = this_user.useStoryName match {
+		case Some(storyName) => stories.get(storyName)
+		case None => die("I don't know what story we're using")
 	}
 
 	lazy val plans = new Plans(project.dir, story.dir)
