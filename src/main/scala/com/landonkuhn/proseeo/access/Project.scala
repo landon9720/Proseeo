@@ -13,6 +13,13 @@ case class Project(dir:File, file:File, conf:Conf, name:String, id:String) {
 	val groups = (for ((group, members) <- new Document(conf).scope("project.groups.").tree.leafs) yield {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
+	def actor(actorName:String):Option[Either[User, Group]] = users.get(actorName) match {
+		case Some(user) => Some(Left(user))
+		case _ => groups.get(actorName) match {
+			case Some(group) => Some(Right(group))
+			case _ => None
+		}
+	}
 }
 
 case class User(userName:String, fullName:Option[String], email:Option[String])
