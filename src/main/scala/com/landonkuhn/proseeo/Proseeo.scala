@@ -301,11 +301,24 @@ index.proseeo/
 	}
 
 	def doSay(message:String) {
-		story.script.append(scriptmodel.Say(message, this_user.name, now)).save
+		def amend(say0:String, say1:String):Boolean = (
+			((getLevenshteinDistance(say0, say1) / ((say0.length + say1.length) / 2.0d)) < 0.1d)
+			|| say1.startsWith(say0)
+			|| say1.endsWith(say0)
+		)
+		val say = scriptmodel.Say(message, this_user.name, now)
+		story.script.statements.collect({ case x@scriptmodel.Say(text, this_user.name, _) => x }).lastOption match {
+			case Some(last) if amend(last.text, message) => {
+				warn("(amending your last say)")
+				story.script.replace(last, say)
+			}
+			case _=> story.script.append(say)
+		}
+		story.script.save
 	}
 
 	def doSet(key:String, value:cli.SetValue) {
-		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("that is not in the plan".format(key))
+		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("(that is not in the plan)".format(key))
 		val valueString = value match {
 			case cli.TextValue(value) => value
 			case cli.TimeStampValue(value) => value.format
@@ -314,7 +327,7 @@ index.proseeo/
 	}
 
 	def doDelete(key:String) {
-		if (!story.script.state.document.contains(key)) warn("That is not set")
+		if (!story.script.state.document.contains(key)) die("(that is not set)")
 		story.script.append(scriptmodel.Delete(key, this_user.name, now)).save
 	}
 

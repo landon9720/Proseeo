@@ -17,12 +17,20 @@ class Script(val file:File) {
 		this
 	}
 
+	def replace[T <: Statement](existing:T, replacement:T):Script = {
+		statements.indexOf(existing) match {
+			case -1 => die("failed updating script")
+			case i => statements.update(i, replacement)
+		}
+		this
+	}
+
 	def save:Script = {
 		write(file, statements.map(_.toString))
 		this
 	}
 
-	private val statements:ListBuffer[Statement] = {
+	val statements:ListBuffer[Statement] = { // later how to make this private?
 		val result = new ListBuffer[Statement]
 		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
 			parseScriptStatement(line)
