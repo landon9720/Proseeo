@@ -22,10 +22,11 @@ object ScriptStatementParser {
 			| "say" ~> quotedText ~ by ~ at           ^^ { case quotedText ~ by ~ at => Say(quotedText, by, at) }
 			| "set" ~> key ~ quotedText ~ by ~ at     ^^ { case key ~ quotedText ~ by ~ at => Set(key, quotedText, by, at) }
 			| "delete" ~> key ~ by ~ at               ^^ { case key ~ by ~ at => Delete(key, by, at) }
-			| "route" ~> rep(name) ~ by ~ at  ^^ { case actors ~ by ~ at => Route(actors, by, at) }
+			| "route" ~> actors ~ by ~ at             ^^ { case actors ~ by ~ at => Route(actors, by, at) }
 		)
 		def by = "by" ~> name
 		def at = "@" ~> "[\\S]+".r ^? { case x if x.isDate => x.toDate }
+		def actors = "(" ~> repsep(name, ",") <~ ")" ^^ { case actors => actors }
 	}
 }
 
@@ -49,5 +50,5 @@ case class Delete(key:String, by:String, at:Date) extends Statement {
 	override def toString = "delete %s by %s @ %s".format(key, by, at.format)
 }
 case class Route(actors:Seq[String], by:String, at:Date) extends Statement {
-	override def toString = "route %s by %s @ %s".format(actors.mkString(" "), by, at.format)
+	override def toString = "route (%s) by %s @ %s".format(actors.mkString(", "), by, at.format)
 }
