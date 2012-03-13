@@ -55,144 +55,24 @@ later
 
 # Development Notes
 
-Here I am building a platform to help groups get stuff done. This is distributed
-process structure. DPS. This is soft business process management.
-This is a new way for groups to communicate, to organize, and to get stuff done.
-I am starting with business of making software. This is the work I know, and the
-first who will use this.
+## what's next for v0.01
 
-active chain and tip:
-created by user A
-A assigned to user B
-B asked of user A
-A responded
-B assigned to group C
-user D closed
+* routing use cases: ask, pass
+* indexer and queries
+* disable ansi when not supported or wanted
+* brew formula
+* top of plan: starting route, including support for {creator}
+* prevent p start . from "working"
 
-pretty simple. just follow the arrows:
-   created by establsihes the starting point
-   assigned to user is a 1:1 arrow with no implied next destination
-   ask of user is a 1:1 arrow with implied return to sender on "respond"
-   assigned to group is a 1:* arrow with no implied next destination
-   ask of group is a 1:* arrow with implied return to sender on "respond" by any 1 group member
+## what's next for future release
 
-we can now report on:
-   stories that i am in the active chain
-   stories that i am at the tip of the active chain
-   stories that i am at the tip of the active chain and i am being asked something
-   ditto for the last two, but due to group membership
-these are reports against the story state itself, not the document state
-they are built on built-in concepts in the story model
-described above is the "routing" for stories
-
-signing: a way to sign a story to assert authorship from th2is point back to the previous signing
-encryption: a way to encrypt parts of the document?? i don't know. this is less interesting to me because i value building an open system. ideally with a slick front end that allows full text searching --- this data should be a repo for information.
-
-git is clunky, that's ok, this is for the hardcore, a web interface can come later, a IOS interface too
-
-could it work for the mongo database to actually live on the network and be shared? i think perhaps it is so!
-  --- OR NOT! -- somebody's local repo could be out of date.
-
-perhaps proseeo is business process management inspired by twitter
-
-document templating
-
-dsl to describe requirements?
-
-/templates/bug <-- name of file
-
-needs title:text
-needs description:text
-optional version_reported_in:named_enum(versions)
-
-needs scrubbed:gate
-
-needs version_assignment:named_enum(versions)
-
-needs fixed_in_version:named_enum(versions)
-needs release_note:text
-needs fixed:gate
-
-needs test_note:text
-needs tested:gate
-
-...
-could the document itself somehow advise routing?
-...
-
-       title               : color on home page does not match(bright)
-       description         : etc etc blah blah(bright)
-  want version_reported_in : 2.4, 2.3, 2.2, 13 more(dim)
-
-       scrubbed            : [/] by Landon Kuhn 2 day(s) ago(bright)
-
-  need version_assignment  : 1.1(bright) 2.4, 2.3, 2.2, 13 more(dim)
-
-       fixed_in_version    : 2.4(bright)
-  need release_note        : > ____ < (dim)
-  need fixed               : > [ ] < (dim)
-
-       test_note(dim)
-       tested
-       foo_field
-       bar_field
-
-       14 more
-
-
-
-
-
-
-
-what's next:
-
-  routing use cases: ask, pass
-  indexer and queries
-  disable ansi when not supported or wanted
-  brew formula
-  top of plan: starting route, including support for {creator}
-  prevent p start . from "working"
-  .
-  .
-  .
-  linking
-  signing
-  tagging
-  eclipse task connector
-  file encoding
-  archiving
-  jira import
-  egit integration
-  group member pinning
-  command suggestions, undo
-  extended plan support: attachments, routing
-
-spinny:
-  [-  ]
-  [ - ]
-  [  -]
-
-
-script:
-  attach "filename" by lkuhn @ ... # filename expected to be in story dir
-  detach "filename" by lkuhn @ ...
-
-p:
-  p attach ~/Desktop/screenshot.jpg # file is copied into story dir as screenshot.jpg
-  p attach ~/Desktop/foo/screenshot.jpg # this would fail
-  p attach ~/Desktop/foo/screenshot.jpg as screenshot2.jpg # file is copied into story dir as screenshot2.jpg
-  p detach screenshot.jpg # removes it from the script state, but not the file system
-  p attach new release_document.md # touches release_document.md in story dir. perhaps in the future support a with template keywoard
-
-release plan
-  need version:text
-  want summary:text
-  need release_date:timestamp
-  need release_document:attachment
-
-  need accepted:gate
-
-p set release_date now + 1d 1h # now and today keywords with + and - operators with human string operands
-p set release_date now + 1d 2h
-p set release_date today + 1d
+* linking
+* signing & encryption?
+* tagging
+* eclipse task connector
+* file encoding
+* archiving
+* jira import
+* egit integration
+* group member pinning
+* command suggestions, undo
