@@ -152,6 +152,7 @@ what's next:
   disable ansi when not supported or wanted
   brew formula
   top of plan: starting route, including support for {creator}
+  prevent p start . from "working"
   .
   .
   .
