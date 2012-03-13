@@ -10,7 +10,7 @@ import Files._
 import Util._
 import scriptmodel.ScriptStatementParser._
 
-class Script(file:File) {
+class Script(val file:File) {
 
 	def append(statement:Statement):Script = {
 		statements += statement

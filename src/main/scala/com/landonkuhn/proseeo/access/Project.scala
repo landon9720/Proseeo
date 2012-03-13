@@ -6,7 +6,7 @@ import com.landonkuhn.proseeo.{Document, Conf}
 import org.apache.commons.lang3.StringUtils
 import StringUtils._
 
-case class Project(projectDir:File, projectFile:File, conf:Conf, name:String, id:String) {
+case class Project(dir:File, file:File, conf:Conf, name:String, id:String) {
 	val users = (for ((userName, user) <- new Document(conf).scope("project.users.").tree.subtrees) yield {
 		userName -> User(userName, user.leaf("name"), user.leaf("email"))
 	}).toMap

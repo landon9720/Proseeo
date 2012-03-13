@@ -1,15 +1,14 @@
 package com.landonkuhn.proseeo
 
-import access.{Project, Stories, Attachment}
-import java.io.File
+import access.{Project, Stories, Attachment, Plans, User, Group}
 
+import java.io.File
 
 import Logging._
 import Ansi._
 import plan._
 import scriptmodel.RouteState
 import Util._
-import access.{User, Group}
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTime
@@ -32,7 +31,7 @@ object Proseeo {
 		val name = conf.getOrElseUpdate("user.name", System.getenv("USER"))
 		lazy val useStoryName:Option[String] = {
 			def projectUsing = conf.get("projects.%s.using".format(project.id))
-			if (Option(cwd.getCanonicalFile.getParentFile) == Some(project.projectDir.getCanonicalFile)) {
+			if (Option(cwd.getCanonicalFile.getParentFile) == Some(project.dir.getCanonicalFile)) {
 				val storyId = Some(cwd.getCanonicalFile.getName)
 				if (projectUsing != storyId) {
 					doUse(storyId)
@@ -43,20 +42,21 @@ object Proseeo {
 		}
 	}
 
-	lazy val stories = new Stories(project.projectDir)
+	lazy val stories = new Stories(project.dir)
 
-	lazy val (storyDir, scriptFile, script) = this_user.useStoryName match {
-		case Some(storyName) => (
-				stories.storyDir(storyName),
-				stories.scriptFile(storyName),
-				stories.get(storyName).script
-		)
-		case None => die("I don't know what story we're using")
+	lazy val story = new {
+		val (dir, file, script) = this_user.useStoryName match {
+			case Some(storyName) => (
+					stories.storyDir(storyName),
+					stories.scriptFile(storyName),
+					stories.get(storyName).script
+			)
+			case None => die("I don't know what story we're using")
+		}
 	}
 
-	lazy val planFile:File = new File(storyDir, "plan.proseeo")
-	lazy val plan:Plan = new Plan(planFile)
-	def projectPlanFile(name:String):File = new File(project.projectDir, "%s.plan.proseeo".format(name))
+	lazy val plans = new Plans(project.dir, story.dir)
+	lazy val plan = plans.get
 
 	var say_ok = true
 
@@ -126,65 +126,70 @@ object Proseeo {
 	  for ((file, content) <- Seq(
 
 		projectFile -> """
-	    project.name: %s
-	    project.id: %s
-	    project.born.on: %s
-	    project.users.lkuhn.name: Landon Kuhn
-	    project.users.lkuhn.email: landon9720@gmail.com
-	    project.users.example_user.name: Example User
-	    project.users.example_user.email: user@example.com
-	    project.groups.engineering=lkuhn
-	    project.groups.example_group=lkuhn,example_user
-	   """.format(name, Util.id, now.format),
+project.name: %s
+project.id: %s
+project.born.on: %s
+project.users.lkuhn.name: Landon Kuhn
+project.users.lkuhn.email: landon9720@gmail.com
+project.users.example_user.name: Example User
+project.users.example_user.email: user@example.com
+project.groups.engineering=lkuhn
+project.groups.example_group=lkuhn,example_user
+""".format(name, Util.id, now.format),
 
 	   new File(cwd, "bug.plan.proseeo") -> """
-				need title:text
-				need description:text
-				want version_reported_in:enum(2.2, 2.0, 1.5, 1.4, 1.3, 1.2, 1.1, 0.1_beta2, 0.1_beta1)
+need title:text
+need description:text
+want version_reported_in:enum(2.2, 2.0, 1.5, 1.4, 1.3, 1.2, 1.1, 0.1_beta2, 0.1_beta1)
 
-				need scrubbed:gate
-				need due:timestamp
+need scrubbed:gate
+need due:timestamp
 
-				want color:enum(red, blue, green, black, pink, aqua)
-	   """,
+want color:enum(red, blue, green, black, pink, aqua)
+""",
 
 	   new File(cwd, "todo.plan.proseeo") -> """
-				need title:text
-				want description:text
-				need done:gate
-	   """,
+need title:text
+want description:text
+need done:gate
+""",
 
 	   new File(cwd, "release.plan.proseeo") -> """
-				need version:text
-				want summary:text
-				need release_date:text
-				need release_document.md:text
+need version:text
+want summary:text
+need release_date:text
+need release_document.md:text
 
-				need accepted:gate
-	   """,
+need accepted:gate
+""",
 
 	   new File(cwd, ".gitignore") -> """
-	    index.proseeo/
-	   """
+index.proseeo/
+"""
 	  )) {
 	    Files.write(file, content.split("\n"))
 	  }
 	}
 
   def doStart(name:String) {
-		val storyDir = (new File(project.projectDir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(project.projectDir, "%s-%d".format(name, i)))).find(!_.exists).get
+		val storyDir = (new File(project.dir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(project.dir, "%s-%d".format(name, i)))).find(!_.exists).get
 		val scriptFile = new File(storyDir, "script.proseeo")
 	  touch(scriptFile)
 		val planFile = new File(storyDir, "plan.proseeo")
 		touch(planFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(this_user.name, now)).save
-	  i("started story %s".format(storyDir.getName))
 		doUse(Some(storyDir.getName))
+	  if (plans.testProjectPlanFile(name)) {
+		  doPlan(Some(name))
+		  i("started story %s (using plan %s)".format(storyDir.getName, name))
+	  } else {
+			i("started story %s".format(storyDir.getName))
+		}
 	}
 
 	def doEnd {
-		script.append(scriptmodel.Ended(this_user.name, now)).save
+		story.script.append(scriptmodel.Ended(this_user.name, now)).save
 	}
 
 	def doUse(name:Option[String]) {
@@ -204,7 +209,7 @@ object Proseeo {
 	def doTell {
 		import StringUtils._
 
-		val state = script.state
+		val state = story.script.state
 		val _ = plan // force lazy evaluation
 
 		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when(now))
@@ -218,7 +223,7 @@ object Proseeo {
 		def atbyStr(date:Date, name:String) = "%s by %s".format(atStr(date), byStr(name))
 
 		val kvs =
-			(List("story" -> storyDir.getName.bold)
+			(List("story" -> story.dir.getName.bold)
 			) ::: (state.document.get("proseeo.plan") match {
 				case Some(plan) => List("plan" -> plan.bold)
 				case None => List("plan" -> "no plan (use p plan name)".yellow)
@@ -294,7 +299,7 @@ object Proseeo {
 			}
 		}
 
-		val attachments = Attachment(storyDir)
+		val attachments = Attachment(story.dir)
 		if (!attachments.isEmpty) {
 			i("")
 			val kvs = (for (attachment <- attachments.sortBy(_.fileName)) yield {
@@ -306,7 +311,7 @@ object Proseeo {
 	}
 
 	def doSay(message:String) {
-		script.append(scriptmodel.Say(message, this_user.name, now)).save
+		story.script.append(scriptmodel.Say(message, this_user.name, now)).save
 	}
 
 	def doSet(key:String, value:cli.SetValue) {
@@ -315,32 +320,32 @@ object Proseeo {
 			case cli.TextValue(value) => value
 			case cli.TimeStampValue(value) => value.format
 		}
-		script.append(scriptmodel.Set(key, valueString, this_user.name, now)).save
+		story.script.append(scriptmodel.Set(key, valueString, this_user.name, now)).save
 	}
 
 	def doDelete(key:String) {
-		if (!script.state.document.contains(key)) warn("That is not set")
-		script.append(scriptmodel.Delete(key, this_user.name, now)).save
+		if (!story.script.state.document.contains(key)) warn("That is not set")
+		story.script.append(scriptmodel.Delete(key, this_user.name, now)).save
 	}
 
 	def doRoute(actors:Seq[String]) {
-		script.append(scriptmodel.Route(actors, this_user.name, now)).save
+		story.script.append(scriptmodel.Route(actors, this_user.name, now)).save
 	}
 
 	def doPlan(name:Option[String]) {
 		name match {
 			case Some(name) => {
-				val source = projectPlanFile(name)
-				if (!source.isFile) {
-					die("there is no plan file %s".format(source))
+				val source = plans.projectPlanFile(name)
+				if (!source.isFile || !source.canRead) {
+					die("there is no plan file %s (or I can't read it)".format(source))
 				}
-				FileUtils.copyFile(source, planFile)
-				script.append(scriptmodel.Set("proseeo.plan", name, this_user.name, now)).save
+				FileUtils.copyFile(source, plan.file)
+				story.script.append(scriptmodel.Set("proseeo.plan", name, this_user.name, now)).save
 			}
 			case None => {
-				if (planFile.isFile) planFile.delete
-				FileUtils.touch(planFile)
-				script.append(scriptmodel.Delete("proseeo.plan", this_user.name, now)).save
+				if (plan.file.isFile) plan.file.delete
+				FileUtils.touch(plan.file)
+				story.script.append(scriptmodel.Delete("proseeo.plan", this_user.name, now)).save
 			}
 		}
 	}
@@ -350,11 +355,11 @@ object Proseeo {
 	    case "all" => Seq("project", "conf", "story", "script", "plan")
 	    case name => Seq(name)
 	  })) yield name match {
-	    case "project" => name -> project.projectDir
-	    case "conf" => name -> project.projectFile
-	    case "story" => name -> storyDir
-	    case "script" => name -> scriptFile
-	    case "plan" => name -> planFile
+	    case "project" => name -> project.dir
+	    case "conf" => name -> project.file
+	    case "story" => name -> story.dir
+	    case "script" => name -> story.script.file
+	    case "plan" => name -> plan.file
 	    case name => die("that is not something you can locate. try p locate all, project, conf, story, script, or plan")
 	  }
 		if (kvs.length == 1) {
@@ -371,7 +376,7 @@ object Proseeo {
 			if (!file.isFile) warn("%s is not a file".format(file))
 			else if (file.getName.endsWith(".proseeo")) warn("%s is my file and should not be attached".format(file))
 			else {
-				val dest = new File(storyDir, file.getName)
+				val dest = new File(story.dir, file.getName)
 				if (dest.isFile) warn("%s already exists and I am overwriting it".format(dest))
 				copyFile(file, dest)
 				i("attached %s".format(file.getName))

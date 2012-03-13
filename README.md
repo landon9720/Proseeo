@@ -151,6 +151,7 @@ what's next:
   indexer and queries
   disable ansi when not supported or wanted
   brew formula
+  top of plan: starting route, including support for {creator}
   .
   .
   .

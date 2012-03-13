@@ -4,14 +4,17 @@ import com.landonkuhn.proseeo.Logging._
 import com.landonkuhn.proseeo.scriptmodel.Script
 import java.io.{FileFilter, File}
 
-case class Story(name:String, script:Script)
+case class Story(storyDir:File, name:String, script:Script)
 
 class Stories(projectDir:File) {
 	def all:Seq[Story] = for (dir <- (projectDir.listFiles(new FileFilter {
 		def accept(file: File) = file.isDirectory && !file.getName.endsWith(".proseeo")
 	})).view) yield get(dir.getName)
 
-	def get(storyName:String) = Story(storyName, new Script(scriptFile(storyName)))
+	def get(storyName:String) = {
+		val f = scriptFile(storyName)
+		Story(f, storyName, new Script(f))
+	}
 
 	def scriptFile(storyName:String) = {
 		val f = new File(storyDir(storyName), "script.proseeo")
