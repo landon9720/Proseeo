@@ -19,8 +19,10 @@ import org.apache.commons.io.FileUtils._
 
 object Proseeo {
 
+	val cwd = new File(".")
+
 	lazy val projectDir = {
-		val dirs = Seq(new File("."), new File(".."))
+		val dirs = Seq(cwd, cwd.getParentFile)
 		val conf = dirs.find(new File(_, "project.proseeo").isFile)
 		conf.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	}
@@ -43,8 +45,6 @@ object Proseeo {
 		}
 		projectUsing
 	}
-
-
 
 	case class User(userName:String, fullName:Option[String], email:Option[String])
 	lazy val users = (for ((userName, user) <- new Document(projectConf).scope("project.users.").tree.subtrees) yield {
@@ -102,6 +102,7 @@ object Proseeo {
 
 		if (say_ok) ok("ok")
 	} catch {
+		case ex:Logging.Dying => dye_for_real(ex)
 		case ex:Exception => error("sorry, I had an accident"); ex.printStackTrace
 	}
 
@@ -115,12 +116,51 @@ object Proseeo {
 	}
 
   def doInit(name:String) {
-		val projectFile = new File("project.proseeo")
+		val projectFile = new File(cwd, "project.proseeo")
 	  if (projectFile.isFile) die("there is already a project here")
-		touch(projectFile)
-		projectConf += "project.name" -> name
-		projectConf += "project.id" -> Util.id
-		projectConf.save
+	  if (projectFile.isDirectory) die("something fishy")
+
+	  for ((file, content) <- Seq(
+
+		projectFile -> """
+	    project.name: %s
+	    project.id: %s
+	    project.users.lkuhn.name: Landon Kuhn
+	    project.users.lkuhn.email: landon9720@gmail.com
+	    project.users.example_user.name: Example User
+	    project.users.example_user.email: user@example.com
+	    project.groups.engineering=lkuhn
+	    project.groups.example_group=lkuhn,example_user
+	   """.format(name, Util.id),
+
+	   new File(cwd, "bug.plan.proseeo") -> """
+				need title:text
+				need description:text
+				want version_reported_in:enum(2.2, 2.0, 1.5, 1.4, 1.3, 1.2, 1.1, 0.1_beta2, 0.1_beta1)
+
+				need scrubbed:gate
+				need due:timestamp
+
+				want color:enum(red, blue, green, black, pink, aqua)
+	   """,
+
+	   new File(cwd, "todo.plan.proseeo") -> """
+				need title:text
+				want description:text
+				need done:gate
+	   """,
+
+	   new File(cwd, "release.plan.proseeo") -> """
+				need version:text
+				want summary:text
+				need release_date:text
+				need release_document.md:text
+
+				need accepted:gate
+	   """
+	  )) {
+	    Files.write(file, content.split("\n"))
+	  }
 	}
 
   def doStart(name:String) {

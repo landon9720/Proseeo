@@ -1,6 +1,0 @@
-need version:text
-want summary:text
-need release_date:text
-need release_document.md:text
-
-need accepted:gate

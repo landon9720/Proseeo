@@ -12,30 +12,4 @@ import PlanLineParser._
 
 class PlanLineParserTest {
 
-	exception_on_die = true
-
-	@Test
-	def test {
-		val template = """
-need title:text
-need description:text
-want version_reported_in:enum(versions)
-
-need scrubbed:gate
-
-need version_assignment:enum(versions)
-
-need fixed_in_version:enum(versions)
-need release_note:text
-need fixed:gate
-
-need test_note:text
-need tested:gate
-"""
-//		val result = (for (line <- template.split("\n")) yield {
-//			""""%s"\n\t%s\n""".format(line, parseLine(line))
-//		}).mkString("\n")
-//		assertEquals("""
-//""", result)
-	}
 }

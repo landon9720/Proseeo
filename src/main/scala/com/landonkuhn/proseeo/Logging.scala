@@ -11,10 +11,14 @@ object Logging {
 	def error(s:String) { System.err.println(s.split("\n").map("!?".white.bold.bgyellow + " " + _).mkString("\n")) }
 
 	def die(s:String):Nothing = {
-		error(s)
-		if (exception_on_die) sys.error(s)
-		else sys.exit
+		throw new Dying(s)
 	}
 
-  var exception_on_die = false
+	def dye_for_real(ex:Exception):Nothing = {
+		i(ex.getStackTraceString)
+		error(ex.getMessage)
+		sys.exit
+	}
+
+	type Dying = Exception
 }
