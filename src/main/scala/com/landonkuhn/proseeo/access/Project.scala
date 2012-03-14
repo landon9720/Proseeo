@@ -20,6 +20,8 @@ case class Project(dir:File, file:File, conf:Conf, name:String, id:String) {
 			case _ => None
 		}
 	}
+	def isUser(actorName:String) = actor(actorName).map(_.isLeft).getOrElse(false)
+	def isGroup(actorName:String) = actor(actorName).map(_.isRight).getOrElse(false)
 }
 
 case class User(userName:String, fullName:Option[String], email:Option[String])

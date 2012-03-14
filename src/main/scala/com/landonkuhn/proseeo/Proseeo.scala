@@ -231,7 +231,12 @@ index.proseeo/
 			}) ::: (state.route match {
 				case RouteState(past, present, future) => List("route" -> {
 					if ((past ++ present ++ future).isEmpty) "no route (use p route names)".yellow
-					else past.mkString("->") + present.map("=>" + _).getOrElse("").bold + future.map("->" + _).mkString("")
+					else {
+						def annotate(n:String) = if (project.isGroup(n)) {
+							"*" + n + "*"
+						} else n
+						past.map(annotate).mkString("->") + present.map(annotate).map("=>" + _).getOrElse("").bold + future.map("->" + annotate(_)).mkString("")
+					}
 				})
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
