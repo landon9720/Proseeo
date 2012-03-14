@@ -23,3 +23,9 @@ libraryDependencies += "org.apache.lucene" % "lucene-core" % "3.5.0"
 libraryDependencies += "com.ocpsoft" % "ocpsoft-pretty-time" % "1.0.7"
 
 jarName in assembly := "proseeo.jar"
+
+fork in run := true
+
+baseDirectory in run := file("./sandbox/")
+
+outputStrategy in run := Some(StdoutOutput)

@@ -21,7 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../src/test/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.scala-lang_scala-library_2.9.1" level="project" />
     <orderEntry type="library" name="org.apache.commons_commons-lang3_3.1" level="project" />
