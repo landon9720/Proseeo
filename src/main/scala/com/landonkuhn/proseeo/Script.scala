@@ -44,7 +44,10 @@ class Script(val file:File) {
 		var route = RouteState(Nil, None, Nil)
 
 		for (statement <- statements) statement match {
-			case c:Created => if (created.isDefined) die("More than one created") else created = Some(c)
+			case c:Created => if (created.isDefined) die("More than one created") else {
+				created = Some(c)
+				route = RouteState(Nil, Option(c.by), Nil)
+			}
 			case e:Ended => if (ended.isDefined) die("More than one ended") else ended = Some(e)
 			case s:Say => says += s
 			case Set(key, value, _, _) => document += key -> value
