@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils._
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FileUtils._
+import com.eaio.util.text.HumanTime
 
 object Proseeo {
 
@@ -32,7 +33,7 @@ object Proseeo {
 			if (Option(cwd.getCanonicalFile.getParentFile) == Some(project.dir.getCanonicalFile)) {
 				val storyId = Some(cwd.getCanonicalFile.getName)
 				if (projectUsing != storyId) {
-					doUse(storyId)
+					use(storyId)
 					warn("this is a story directory, so we are going to use the story here")
 				}
 			}
@@ -51,31 +52,37 @@ object Proseeo {
 	var say_ok = true
 
 	def main(args:Array[String]):Unit = try {
-
-		args match {
-			case Array("dump") => doDump
-			case _ =>
-		}
-
-		val willOfTheHuman = if (args.isEmpty) {
-			if (this_user.useStoryName.isDefined) cli.Tell()
-			else cli.Status() // later reports
-		} else cli.CommandLineParser.parseCommandLine(args.toList)
-		willOfTheHuman match {
-			case cli.Help() => doHelp
-			case cli.Status() => doStatus
-			case cli.Init(name) => doInit(name)
-			case cli.Start(name) => doStart(name)
-			case cli.End() => doEnd
-			case cli.Use(name) => doUse(name)
-			case cli.Tell() => doTell
-			case cli.Say(message) => doSay(message)
-			case cli.Set(key, value) => doSet(key, value)
-			case cli.Delete(key) => doDelete(key)
-			case r:cli.Route => doRoute(r)
-			case cli.Plan(name) => doPlan(name)
-			case cli.Locate(name) => doLocate(name)
-			case cli.Attach(files) => doAttach(files)
+		args.toList match {
+			case List("dump") => dump
+			case List() if (this_user.useStoryName.isDefined) => tell
+			case List() => status // later reports
+			case "help" :: Nil => help
+			case "status" :: Nil => status
+			case "init" :: name :: Nil => init(name)
+			case "new" :: name :: Nil => start(name)
+			case "create" :: name :: Nil => start(name)
+			case "start" :: name :: Nil => start(name)
+			case "close" :: Nil => end
+			case "end" :: Nil => end
+			case "use" :: name :: Nil => use(Some(name))
+			case "use" :: Nil => use(None)
+			case "tell" :: Nil => tell
+			case "say" :: tail :: Nil => say(tail.mkString(""))
+			case "set" :: key :: "now" :: Nil => set(key, now.format)
+			case "set" :: key :: delta :: Nil if HumanTime.eval(delta).getDelta != 0L => set(key, (new DateTime().plus(HumanTime.eval(delta).getDelta).toDate).format)
+			case "set" :: key :: value :: Nil=> set(key, value)
+			case "delete" :: key :: Nil => delete(key)
+			case "ask" :: actor :: Nil => ask(actor)
+			case "pass" :: Nil => pass
+			case "route" :: actor :: actors => routeInsert((actor :: actors).filter(_ != "to"))
+			case "append" :: actor :: actors => routeAppend((actor :: actors).filter(_ != "to"))
+			case "reroute" :: actor :: actors => reroute((actor :: actors).filter(_ != "to"))
+			case "plan" :: name :: Nil => plan(Some(name))
+			case "unplan" :: Nil => plan(None)
+			case "locate" :: Nil => locate("all")
+			case "locate" :: name :: Nil => locate(name)
+			case "attach" :: files => attach(files)
+			case _ => die("I didn't understand that at all: " + args.mkString(" "))
 		}
 
 		this_user.conf += "stats.count" -> (this_user.conf.get("stats.count").getOrElse("0").optLong.getOrElse(0L) + 1L).toString
@@ -88,7 +95,7 @@ object Proseeo {
 		case ex:Exception => error("sorry, I had an accident"); ex.printStackTrace
 	}
 	
-	def doDump {
+	def dump {
 		for (file <- Seq(
 			new File(new File("."), "project.proseeo").getCanonicalFile,
 			new File(getUserDirectory, ".proseeo.conf").getCanonicalFile
@@ -99,16 +106,16 @@ object Proseeo {
 		sys.exit
 	}
 
-	def doHelp {
+	def help {
 		i("Proseeo 0.01")
 	}
 
-	def doStatus {
+	def status {
 		i("Users:\n" + project.users.values.mkString("\n").indent)
 		i("Groups:\n" + project.groups.values.mkString("\n").indent)
 	}
 
-  def doInit(name:String) {
+  def init(name:String) {
 		val projectFile = new File(cwd, "project.proseeo")
 	  if (projectFile.isFile) die("there is already a project here")
 	  if (projectFile.isDirectory) die("something fishy")
@@ -161,7 +168,7 @@ index.proseeo/
 	  }
 	}
 
-  def doStart(name:String) {
+  def start(name:String) {
 		val storyDir = (new File(project.dir, name) +: (for (i <- (1 to Int.MaxValue).view) yield new File(project.dir, "%s-%d".format(name, i)))).find(!_.exists).get
 		val scriptFile = new File(storyDir, "script.proseeo")
 	  touch(scriptFile)
@@ -169,20 +176,20 @@ index.proseeo/
 		touch(planFile)
 		val script = new scriptmodel.Script(scriptFile)
 		script.append(scriptmodel.Created(this_user.name, now)).save
-		doUse(Some(storyDir.getName))
+		use(Some(storyDir.getName))
 	  if (plans.testProjectPlanFile(name)) {
-		  doPlan(Some(name))
+		  plan(Some(name))
 		  i("started story %s (using plan %s)".format(storyDir.getName, name))
 	  } else {
 			i("started story %s".format(storyDir.getName))
 		}
 	}
 
-	def doEnd {
+	def end {
 		story.script.append(scriptmodel.Ended(this_user.name, now)).save
 	}
 
-	def doUse(name:Option[String]) {
+	def use(name:Option[String]) {
 		name match {
 			case Some(name) => {
 				this_user.conf += "projects.%s.using".format(project.id) -> name // later check it
@@ -196,7 +203,7 @@ index.proseeo/
 		this_user.conf.save
 	}
 
-	def doTell {
+	def tell {
 		import StringUtils._
 
 		val state = story.script.state
@@ -300,7 +307,7 @@ index.proseeo/
 		}
 	}
 
-	def doSay(message:String) {
+	def say(message:String) {
 		def amend(say0:String, say1:String):Boolean = (
 			((getLevenshteinDistance(say0, say1) / ((say0.length + say1.length) / 2.0d)) < 0.1d)
 			|| say1.startsWith(say0)
@@ -317,29 +324,36 @@ index.proseeo/
 		story.script.save
 	}
 
-	def doSet(key:String, value:cli.SetValue) {
+	def set(key:String, value:String) {
 		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("(that is not in the plan)".format(key))
-		val valueString = value match {
-			case cli.TextValue(value) => value
-			case cli.TimeStampValue(value) => value.format
-		}
-		story.script.append(scriptmodel.Set(key, valueString, this_user.name, now)).save
+		story.script.append(scriptmodel.Set(key, value, this_user.name, now)).save
 	}
 
-	def doDelete(key:String) {
+	def delete(key:String) {
 		if (!story.script.state.document.contains(key)) die("(that is not set)")
 		story.script.append(scriptmodel.Delete(key, this_user.name, now)).save
 	}
 
-	def doRoute(route:cli.Route) {
-		val previousRoute = story.script.state.route
-		val actors = (route match {
-			case cli.Ask(actor) => actor +: previousRoute.present.getOrElse(this_user.name) +: previousRoute.future
-			case cli.Pass() => if (previousRoute.present.isEmpty) die("this story doesn't have anywhere to go") else previousRoute.future.drop(1)
-			case cli.RouteInsert(actors) => actors ++ previousRoute.future
-			case cli.RouteAppend(actors) => previousRoute.future ++ actors
-			case cli.Reroute(actors) => actors
-		}).dedupe
+
+	lazy val previousRoute = story.script.state.route
+
+	def ask(actor:String) {
+		doRoute((actor +: previousRoute.present.getOrElse(this_user.name) +: previousRoute.future).dedupe)
+	}
+	def pass {
+		if (previousRoute.present.isEmpty) die("this story doesn't have anywhere to go")
+		else doRoute(previousRoute.future)
+	}
+	def routeInsert(actors:Seq[String]) {
+		doRoute((actors ++ previousRoute.future).dedupe)
+	}
+	def routeAppend(actors:Seq[String]) {
+		doRoute((previousRoute.future ++ actors).dedupe)
+	}
+	def reroute(actors:Seq[String]) {
+		doRoute(actors.dedupe)
+	}
+	def doRoute(actors:Seq[String]) {
 		for (actor <- (previousRoute.future.toSet -- actors)) {
 			warn("%s has been lost from the route".format(actor))
 		}
@@ -349,7 +363,7 @@ index.proseeo/
 		story.script.append(scriptmodel.Route(actors, this_user.name, now)).save
 	}
 
-	def doPlan(name:Option[String]) {
+	def plan(name:Option[String]) {
 		name match {
 			case Some(name) => {
 				val source = plans.projectPlanFile(name)
@@ -367,7 +381,7 @@ index.proseeo/
 		}
 	}
 
-	def doLocate(name:String) {
+	def locate(name:String) {
 	  val kvs = for (name <- (name match {
 	    case "all" => Seq("project", "conf", "story", "script", "plan")
 	    case name => Seq(name)
@@ -388,7 +402,7 @@ index.proseeo/
 		}
 	}
 
-	def doAttach(files:Seq[String]) {
+	def attach(files:Seq[String]) {
 		files.map(new File(_)).foreach { file =>
 			if (!file.isFile) warn("%s is not a file".format(file))
 			else if (file.getName.endsWith(".proseeo")) warn("%s is my file and should not be attached".format(file))
