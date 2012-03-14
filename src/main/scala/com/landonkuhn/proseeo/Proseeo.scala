@@ -79,6 +79,7 @@ object Proseeo {
 			case "locate" :: Nil => locate("all")
 			case "locate" :: name :: Nil => locate(name)
 			case "attach" :: files => attach(files)
+			case "whois" :: actor :: Nil => whois(actor)
 			case _ => die("I didn't understand that at all: " + args.mkString(" "))
 		}
 
@@ -417,6 +418,14 @@ index.proseeo/
 				copyFile(file, dest)
 				i("attached %s".format(file.getName))
 			}
+		}
+	}
+
+	def whois(actor:String) {
+		project.actor(actor) match {
+			case Some(Left(User(userName, fullName, email))) => i("%s<%s>%s".format(fullName.map(_ + " ").getOrElse(""), userName, email.map(" " + _).getOrElse("")))
+			case Some(Right(Group(groupName, members))) => for (user <- members) whois(user.userName)
+			case None => warn("unknown: %s".format(actor))
 		}
 	}
 }
