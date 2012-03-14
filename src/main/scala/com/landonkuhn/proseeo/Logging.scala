@@ -6,8 +6,8 @@ object Logging {
 
 	def ok(s:String)    { println(s.split("\n").map("ok".white.bold.bggreen + " " + _).mkString("\n")) }
 	def i(s:String)  { println(s.split("\n").map("   " + _).mkString("\n")) }
-	def warn(s:String)  { System.err.println(s.split("\n").map("??".white.bold.bgyellow + " " + _).mkString("\n")) }
-	def error(s:String) { System.err.println(s.split("\n").map("!?".white.bold.bgyellow + " " + _).mkString("\n")) }
+	def warn(s:String)  { System.err.println(s.split("\n").map("??".white.bold.bgyellow + " " + _).mkString("\n")); warned = true }
+	def error(s:String) { System.err.println(s.split("\n").map("!?".white.bold.bgyellow + " " + _).mkString("\n")); warned = true }
 
 	def die(s:String):Nothing = {
 		throw new Dying(s)
@@ -20,4 +20,6 @@ object Logging {
 	}
 
 	class Dying(val dyingGasp:String) extends RuntimeException
+
+	var warned = false
 }

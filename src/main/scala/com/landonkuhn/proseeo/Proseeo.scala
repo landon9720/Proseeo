@@ -87,7 +87,7 @@ object Proseeo {
 		this_user.conf += "stats.last" -> now.format
 		this_user.conf.save
 
-		if (say_ok) ok("ok")
+		if (say_ok) ok(if (warned) "but ok" else "ok")
 	} catch {
 		case ex:Logging.Dying => dye_for_real(ex)
 		case ex:Exception => error("sorry, I had an accident"); ex.printStackTrace
