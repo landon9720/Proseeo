@@ -1,7 +1,7 @@
 package com.landonkuhn.proseeo.access
 
 import com.landonkuhn.proseeo.Logging._
-import com.landonkuhn.proseeo.scriptmodel.Script
+import com.landonkuhn.proseeo.Script
 import java.io.{FileFilter, File}
 
 case class Story(dir:File, name:String, script:Script)

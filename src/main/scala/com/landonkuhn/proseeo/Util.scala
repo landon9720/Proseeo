@@ -3,13 +3,8 @@ package com.landonkuhn.proseeo
 import java.util.Date
 import org.joda.time.format.ISODateTimeFormat
 import java.io._
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils.copy
-import org.joda.time.{Duration, DateTimeZone, DateTime}
+import org.joda.time.{DateTimeZone, DateTime}
 import com.eaio.util.text.HumanTime
-import Files._
-import Logging._
-import scala.sys.process._
 
 object Util {
 

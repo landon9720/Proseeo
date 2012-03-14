@@ -6,8 +6,6 @@ import java.io.File
 
 import Logging._
 import Ansi._
-import plan._
-import scriptmodel.RouteState
 import Util._
 import java.util.Date
 import org.joda.time.format.DateTimeFormat
@@ -174,8 +172,8 @@ index.proseeo/
 	  touch(scriptFile)
 		val planFile = new File(storyDir, "plan.proseeo")
 		touch(planFile)
-		val script = new scriptmodel.Script(scriptFile)
-		script.append(scriptmodel.Created(this_user.name, now)).save
+		val script = new Script(scriptFile)
+		script.append(Created(this_user.name, now)).save
 		use(Some(storyDir.getName))
 	  if (plans.testProjectPlanFile(name)) {
 		  plan(Some(name))
@@ -186,7 +184,7 @@ index.proseeo/
 	}
 
 	def end {
-		story.script.append(scriptmodel.Ended(this_user.name, now)).save
+		story.script.append(Ended(this_user.name, now)).save
 	}
 
 	def use(name:Option[String]) {
@@ -225,10 +223,10 @@ index.proseeo/
 				case Some(plan) => List("plan" -> plan.bold)
 				case None => List("plan" -> "no plan (use p plan name)".yellow)
 			}) ::: (state.created match {
-				case Some(scriptmodel.Created(by, at)) => List("created" -> atbyStr(at, by))
+				case Some(Created(by, at)) => List("created" -> atbyStr(at, by))
 				case None => Nil
 			}) ::: (state.ended match {
-				case Some(scriptmodel.Ended(by, at)) => List("closed" -> atbyStr(at, by))
+				case Some(Ended(by, at)) => List("closed" -> atbyStr(at, by))
 				case None => Nil
 			}) ::: (state.route match {
 				case RouteState(past, present, future) => List("route" -> {
@@ -313,8 +311,8 @@ index.proseeo/
 			|| say1.startsWith(say0)
 			|| say1.endsWith(say0)
 		)
-		val say = scriptmodel.Say(message, this_user.name, now)
-		story.script.statements.collect({ case x@scriptmodel.Say(text, this_user.name, _) => x }).lastOption match {
+		val say = Say(message, this_user.name, now)
+		story.script.statements.collect({ case x@Say(text, this_user.name, _) => x }).lastOption match {
 			case Some(last) if amend(last.text, message) => {
 				warn("(amending your last say)")
 				story.script.replace(last, say)
@@ -326,12 +324,12 @@ index.proseeo/
 
 	def set(key:String, value:String) {
 		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("(that is not in the plan)".format(key))
-		story.script.append(scriptmodel.Set(key, value, this_user.name, now)).save
+		story.script.append(Set(key, value, this_user.name, now)).save
 	}
 
 	def delete(key:String) {
 		if (!story.script.state.document.contains(key)) die("(that is not set)")
-		story.script.append(scriptmodel.Delete(key, this_user.name, now)).save
+		story.script.append(Delete(key, this_user.name, now)).save
 	}
 
 
@@ -360,7 +358,7 @@ index.proseeo/
 		for (actor <- actors if project.actor(actor) == None) {
 			warn("%s is not in the project".format(actor))
 		}
-		story.script.append(scriptmodel.Route(actors, this_user.name, now)).save
+		story.script.append(Route(actors, this_user.name, now)).save
 	}
 
 	def plan(name:Option[String]) {
@@ -371,12 +369,12 @@ index.proseeo/
 					die("there is no plan file %s (or I can't read it)".format(source))
 				}
 				FileUtils.copyFile(source, plan.file)
-				story.script.append(scriptmodel.Set("proseeo.plan", name, this_user.name, now)).save
+				story.script.append(Set("proseeo.plan", name, this_user.name, now)).save
 			}
 			case None => {
 				if (plan.file.isFile) plan.file.delete
 				FileUtils.touch(plan.file)
-				story.script.append(scriptmodel.Delete("proseeo.plan", this_user.name, now)).save
+				story.script.append(Delete("proseeo.plan", this_user.name, now)).save
 			}
 		}
 	}

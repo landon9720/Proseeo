@@ -1,7 +1,6 @@
 package com.landonkuhn.proseeo
 
 import Ansi._
-import Util._
 
 object Logging {
 

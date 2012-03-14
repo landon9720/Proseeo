@@ -1,14 +1,11 @@
-package com.landonkuhn.proseeo.scriptmodel
+package com.landonkuhn.proseeo
 
 import collection.mutable.ListBuffer
 import org.apache.commons.lang3.StringUtils._
 import java.io.File
 
-import com.landonkuhn.proseeo._
 import Logging._
 import Files._
-import Util._
-import scriptmodel.ScriptStatementParser._
 
 class Script(val file:File) {
 
@@ -30,10 +27,11 @@ class Script(val file:File) {
 		this
 	}
 
-	val statements:ListBuffer[Statement] = { // later how to make this private?
+	val statements:ListBuffer[Statement] = {
+		// later how to make this private?
 		val result = new ListBuffer[Statement]
 		result ++= (for (line <- read(file).map(trim) if line.length > 0 && !startsWith(line, "#")) yield {
-			parseScriptStatement(line)
+			ScriptStatementParser.parseScriptStatement(line)
 		})
 		result
 	}
@@ -67,14 +65,15 @@ class Script(val file:File) {
 }
 
 case class State(
-	created:Option[Created],
-	ended:Option[Ended],
-	says:Seq[Say],
-	document:Document,
-	route:RouteState
-)
+	                created:Option[Created],
+	                ended:Option[Ended],
+	                says:Seq[Say],
+	                document:Document,
+	                route:RouteState
+	                )
+
 case class RouteState(
-	past:Seq[String],
-	present:Option[String],
-	future:Seq[String]
-)
+	                     past:Seq[String],
+	                     present:Option[String],
+	                     future:Seq[String]
+	                     )

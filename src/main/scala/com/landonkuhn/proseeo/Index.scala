@@ -1,4 +1,4 @@
-package com.landonkuhn.proseeo.index
+package com.landonkuhn.proseeo
 
 import org.apache.lucene.store.FSDirectory
 import java.io.File
@@ -14,5 +14,5 @@ object Index {
 	val iwc = new IndexWriterConfig(Version.LUCENE_35, analyzer)
 	iwc.setOpenMode(OpenMode.CREATE_OR_APPEND)
 	val writer = new IndexWriter(dir, iwc)
-	
+
 }

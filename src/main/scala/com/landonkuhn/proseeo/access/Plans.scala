@@ -1,8 +1,7 @@
 package com.landonkuhn.proseeo.access
 
 import java.io.File
-import com.landonkuhn.proseeo.plan.Plan
-import com.landonkuhn.proseeo.Logging
+import com.landonkuhn.proseeo.{Plan, Logging}
 import Logging._
 
 class Plans(projectDir:File, storyDir:File) {

@@ -7,9 +7,7 @@ import Files._
 import collection.Iterator
 import org.apache.commons.lang3.StringUtils
 import StringUtils._
-import collection.mutable.{ListBuffer, Map, HashMap}
-
-import Util._
+import collection.mutable.{Map, HashMap}
 
 class Conf(file: File) extends Map[String, String] {
 
