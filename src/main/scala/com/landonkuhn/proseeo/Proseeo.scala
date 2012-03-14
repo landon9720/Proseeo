@@ -238,6 +238,9 @@ index.proseeo/
 						past.map(annotate).mkString("->") + present.map(annotate).map("=>" + _).getOrElse("").bold + future.map("->" + annotate(_)).mkString("")
 					}
 				})
+			}) ::: (state.touched match {
+				case Some(touched) => List("sat" -> HumanTime.exactly(now.getTime - touched.getTime))
+				case None => Nil
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
