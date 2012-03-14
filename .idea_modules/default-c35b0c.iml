@@ -29,6 +29,7 @@
     <orderEntry type="library" name="org.joda_joda-convert_1.2" level="project" />
     <orderEntry type="library" name="joda-time_joda-time_2.1" level="project" />
     <orderEntry type="library" name="org.apache.lucene_lucene-core_3.5.0" level="project" />
+    <orderEntry type="library" name="com.ocpsoft_ocpsoft-pretty-time_1.0.7" level="project" />
     <orderEntry type="library" scope="TEST" name="com.novocode_junit-interface_0.8" level="project" />
     <orderEntry type="library" scope="TEST" name="junit_junit_4.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="org.scala-tools.testing_test-interface_0.5" level="project" />

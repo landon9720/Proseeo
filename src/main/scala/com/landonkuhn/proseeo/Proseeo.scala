@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils._
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FileUtils._
-import com.eaio.util.text.HumanTime
 
 object Proseeo {
 
@@ -67,7 +66,7 @@ object Proseeo {
 			case "tell" :: Nil => tell
 			case "say" :: tail :: Nil => say(tail.mkString(""))
 			case "set" :: key :: "now" :: Nil => set(key, now.format)
-			case "set" :: key :: delta :: Nil if HumanTime.eval(delta).getDelta != 0L => set(key, (new DateTime().plus(HumanTime.eval(delta).getDelta).toDate).format)
+			case "set" :: key :: delta :: Nil if delta.toDuration != 0L => set(key, new Date(now.getTime + delta.toDuration).format)
 			case "set" :: key :: value :: Nil=> set(key, value)
 			case "delete" :: key :: Nil => delete(key)
 			case "ask" :: actor :: Nil => ask(actor)
@@ -207,7 +206,7 @@ index.proseeo/
 		val state = story.script.state
 		val _ = plan // force lazy evaluation
 
-		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when(now))
+		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when)
 
 		def byStr(name:String) = project.users.get(name) match {
 			case Some(User(_, fullName, email)) =>
@@ -239,7 +238,7 @@ index.proseeo/
 					}
 				})
 			}) ::: (state.touched match {
-				case Some(touched) => List("sat" -> HumanTime.exactly(now.getTime - touched.getTime))
+				case Some(touched) => List("touched" -> touched.when)
 				case None => Nil
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
@@ -247,7 +246,7 @@ index.proseeo/
 
 		for (say <- state.says) {
 			i("")
-			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when(now)))
+			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when))
 		}
 
 		var future = false
@@ -265,7 +264,7 @@ index.proseeo/
 					case g:Gate if field.test(state.document) => Some("[*]")
 					case ts:TimeStamp if field.test(state.document) => {
 						val date = state.document(field.key).toDate
-						Some("%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when(now)))
+						Some("%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when))
 					}
 					case _ => state.document.get(field.key)
 				}
@@ -290,7 +289,7 @@ index.proseeo/
 		if (!state.document.isEmpty) {
 			def value(s:String):String = {
 				s.optDate match {
-					case Some(date) => "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when(now))
+					case Some(date) => "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when)
 					case None => s
 				}
 			}

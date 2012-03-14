@@ -20,4 +20,6 @@ libraryDependencies += "joda-time" % "joda-time" % "2.1"
 
 libraryDependencies += "org.apache.lucene" % "lucene-core" % "3.5.0"
 
+libraryDependencies += "com.ocpsoft" % "ocpsoft-pretty-time" % "1.0.7"
+
 jarName in assembly := "proseeo.jar"
