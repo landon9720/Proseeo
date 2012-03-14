@@ -14,11 +14,11 @@ object Logging {
 		throw new Dying(s)
 	}
 
-	def dye_for_real(ex:Exception):Nothing = {
+	def dye_for_real(ex:Dying):Nothing = {
 		i(ex.getStackTraceString)
-		error(ex.getMessage)
+		error(ex.dyingGasp)
 		sys.exit
 	}
 
-	type Dying = Exception
+	class Dying(val dyingGasp:String) extends RuntimeException
 }
