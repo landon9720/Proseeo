@@ -58,6 +58,8 @@ later
 * brew formula
 * top of plan: starting route, including support for {creator}
 * prevent p start . from "working"
+* prevent p use . from "working"
+* p use should report current story and/or select story in cwd
 * man page
 * command line parsing error messages
 * p locate needs to work even when located resources are invalid
