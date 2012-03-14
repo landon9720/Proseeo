@@ -9,8 +9,7 @@ object Files {
   def read(fileName: String): Seq[String] = read(new File(fileName))
   def read(file: File): Seq[String] = {
     if (! file.canRead) {
-      error("Cannot read file [%s]".format(file))
-      sys.exit
+      die("Cannot read file [%s]".format(file))
     }
     lines(file)
   }
