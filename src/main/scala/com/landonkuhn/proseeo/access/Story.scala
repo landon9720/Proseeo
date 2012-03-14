@@ -13,6 +13,8 @@ class Stories(projectDir:File) {
 
 	def get(storyName:String) = Story(storyDir(storyName), storyName, new Script(scriptFile(storyName)))
 
+	def test(storyName:String) = try { get(storyName); true } catch { case _:Dying => false }
+
 	def scriptFile(storyName:String) = {
 		val f = new File(storyDir(storyName), "script.proseeo")
 		if (!f.canRead || !f.isFile) die("script file %s is not a readable file".format(f))

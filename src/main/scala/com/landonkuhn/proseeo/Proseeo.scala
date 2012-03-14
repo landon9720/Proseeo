@@ -21,6 +21,7 @@ object Proseeo {
 		Seq(cwd, cwd.getCanonicalFile.getParentFile).find(Project.test(_))
 			.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	})
+	lazy val stories = new Stories(project.dir)
 
 	lazy val this_user = new {
 		val conf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
@@ -34,12 +35,19 @@ object Proseeo {
 					warn("this is a story directory, so we are going to use the story here")
 				}
 			}
-			projectUsing
+			projectUsing.filter(projectUsing => {
+				val t = stories.test(projectUsing)
+				if (!t) {
+					use(None)
+					warn("no longer using story %s".format(projectUsing))
+				}
+				t
+			})
 		}
 	}
 
 	lazy val story = this_user.useStoryName match {
-		case Some(storyName) => new Stories(project.dir).get(storyName)
+		case Some(storyName) => stories.get(storyName)
 		case None => die("I don't know what story we're using")
 	}
 
@@ -339,7 +347,6 @@ index.proseeo/
 		if (!story.script.state.document.contains(key)) die("(that is not set)")
 		story.script.append(Delete(key, this_user.name, now)).save
 	}
-
 
 	lazy val previousRoute = story.script.state.route
 

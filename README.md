@@ -61,10 +61,8 @@ later
 * man page
 * command line parsing error messages
 * p locate needs to work even when located resources are invalid
-* handle case: p start xxx; rm -rf xxx; p;
-* p use foo needs to work even when current story contains invalid resources
 * newlines in windows, and other windows validation
-* whois command
+* p status needs work
 
 ## what's next for future release
 
