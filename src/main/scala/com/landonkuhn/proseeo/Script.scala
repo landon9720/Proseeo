@@ -40,7 +40,7 @@ class Script(val file:File) {
 	lazy val state:State = {
 		var created:Option[Created] = None
 		var ended:Option[Ended] = None
-		var touched:Option[Date] = None
+		var tail:Option[Statement] = None
 		val says = new ListBuffer[Say]
 		val document = new Document
 		var route = RouteState(Nil, None, Nil)
@@ -65,17 +65,17 @@ class Script(val file:File) {
 					future = actors.drop(1)
 				)
 			}
-			touched = Some(statement.at)
+			tail = Some(statement)
 		}
 
-		State(created, ended, touched, says, document, route)
+		State(created, ended, tail, says, document, route)
 	}
 }
 
 case class State(
 	created:Option[Created],
 	ended:Option[Ended],
-	touched:Option[Date],
+	tail:Option[Statement],
 	says:Seq[Say],
 	document:Document,
 	route:RouteState

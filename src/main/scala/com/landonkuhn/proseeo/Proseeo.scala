@@ -254,8 +254,8 @@ index.proseeo/
 						past.map(annotate).mkString("->") + present.map(annotate).map("=>" + _).getOrElse("").bold + future.map("->" + annotate(_)).mkString("")
 					}
 				})
-			}) ::: (state.touched match {
-				case Some(touched) => List("touched" -> touched.when)
+			}) ::: (state.tail match {
+				case Some(tail) => List("touched" -> tail.at.when)
 				case None => Nil
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
@@ -378,7 +378,7 @@ index.proseeo/
 		for (actor <- (previousRoute.future.toSet -- actors)) {
 			warn("%s has been lost from the route".format(actor))
 		}
-		for (actor <- actors if project.actor(actor) == None) {
+		for (actor <- actors if project.resolve(actor) == None) {
 			warn("%s is not in the project".format(actor))
 		}
 		story.script.append(Route(actors, this_user.name, now)).save
@@ -437,7 +437,7 @@ index.proseeo/
 	}
 
 	def whois(actor:String) {
-		project.actor(actor) match {
+		project.resolve(actor) match {
 			case Some(Left(User(userName, fullName, email))) => i("%s<%s>%s".format(fullName.map(_ + " ").getOrElse(""), userName, email.map(" " + _).getOrElse("")))
 			case Some(Right(Group(groupName, members))) => for (user <- members) whois(user.userName)
 			case None => warn("unknown: %s".format(actor))
@@ -459,12 +459,33 @@ index.proseeo/
 			val state = story.script.state
 			writer.addDocument {
 				val d = new D
-				d.add(
-					new F("story.name", story.name, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-				for (created <- state.created) {
-					d.add(new F("story.script.created.at", created.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-					d.add(new F("story.script.created.by", created.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				d.add(new F("name", story.name, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				for (plan <- state.document.get("proseeo.plan")) {
+					d.add(new F("plan", plan, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
+				for (created <- state.created) {
+					d.add(new F("script.created.at", created.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("script.created.by", created.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				for (ended <- state.ended) {
+					d.add(new F("script.ended.at", ended.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("script.ended.by", ended.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				for (tail <- state.tail) {
+					d.add(new F("script.tail.at", tail.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("script.tail.by", tail.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				val route = state.route
+				for (user <- project.flattenGroups(route.past)) {
+					d.add(new F("route.past", user, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				for (user <- project.flattenGroups(route.present.toSeq)) {
+					d.add(new F("route.present", user, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				for (user <- project.flattenGroups(route.future)) {
+					d.add(new F("route.future", user, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+
 				println(d.toString)
 				d
 			}

@@ -13,15 +13,22 @@ case class Project(dir:File, file:File, conf:Conf, name:String, id:String) {
 	val groups = (for ((group, members) <- new Document(conf).scope("project.groups.").tree.leafs) yield {
 		group -> Group(group, members.split(",").map(trim).map(users(_)).toSet)
 	}).toMap
-	def actor(actorName:String):Option[Either[User, Group]] = users.get(actorName) match {
+	def resolve(actorName:String):Option[Either[User, Group]] = users.get(actorName) match {
 		case Some(user) => Some(Left(user))
 		case _ => groups.get(actorName) match {
 			case Some(group) => Some(Right(group))
 			case _ => None
 		}
 	}
-	def isUser(actorName:String) = actor(actorName).map(_.isLeft).getOrElse(false)
-	def isGroup(actorName:String) = actor(actorName).map(_.isRight).getOrElse(false)
+	def isUser(actorName:String) = resolve(actorName).map(_.isLeft).getOrElse(false)
+	def isGroup(actorName:String) = resolve(actorName).map(_.isRight).getOrElse(false)
+	def flattenGroups(actors:Seq[String]):Seq[String] = (List[String]() /: actors) { (result, actor) =>
+		resolve(actor) match {
+			case Some(Left(User(userName, _, _))) => result :+ userName
+			case Some(Right(Group(_, members))) => result ++ members.map(_.userName).toSeq
+			case None => result :+ actor
+		}
+	}
 }
 
 case class User(userName:String, fullName:Option[String], email:Option[String])
