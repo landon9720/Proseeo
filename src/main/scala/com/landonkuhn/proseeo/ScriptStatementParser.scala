@@ -47,33 +47,3 @@ object ScriptStatementParser {
 		}
 	}
 }
-
-trait Statement {
-	def by:String
-
-	def at:Date
-}
-
-case class Created(by:String, at:Date) extends Statement {
-	override def toString = "created by %s @ %s".format(by, at.format)
-}
-
-case class Ended(by:String, at:Date) extends Statement {
-	override def toString = "ended by %s @ %s".format(by, at.format)
-}
-
-case class Say(text:String, by:String, at:Date) extends Statement {
-	override def toString = "say \"%s\" by %s @ %s".format(text, by, at.format)
-}
-
-case class Set(key:String, value:String, by:String, at:Date) extends Statement {
-	override def toString = "set %s \"%s\" by %s @ %s".format(key, value, by, at.format)
-}
-
-case class Delete(key:String, by:String, at:Date) extends Statement {
-	override def toString = "delete %s by %s @ %s".format(key, by, at.format)
-}
-
-case class Route(actors:Seq[String], by:String, at:Date) extends Statement {
-	override def toString = "route (%s) by %s @ %s".format(actors.mkString(", "), by, at.format)
-}

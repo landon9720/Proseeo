@@ -1,6 +1,6 @@
 package com.landonkuhn.proseeo
 
-import access.{Project, Stories, Attachment, Plans, User, Group}
+import access.{Project, ScriptStories, Attachment, Plans, User, Group}
 
 import java.io.File
 
@@ -27,7 +27,7 @@ object Proseeo {
 		Seq(cwd, cwd.getCanonicalFile.getParentFile).find(Project.test(_))
 			.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	})
-	lazy val stories = new Stories(project)
+	lazy val stories = new ScriptStories(project)
 
 	lazy val this_user = new {
 		val conf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
@@ -45,7 +45,7 @@ object Proseeo {
 				val t = stories.test(projectUsing)
 				if (!t) {
 					use(None)
-					warn("no longer using story %s".format(projectUsing))
+					warn("no longer using story %s (it does not exist)".format(projectUsing))
 				}
 				t
 			})
@@ -188,7 +188,7 @@ index.proseeo/
 	  touch(scriptFile)
 		val planFile = new File(storyDir, "plan.proseeo")
 		touch(planFile)
-		val script = new Script(scriptFile)
+		val script = new ScriptStory(storyDir.getName, scriptFile, storyDir)
 		script.append(Created(this_user.name, now)).save
 		use(Some(storyDir.getName))
 	  if (plans.testProjectPlanFile(name)) {
@@ -200,27 +200,28 @@ index.proseeo/
 	}
 
 	def end {
-		story.script.append(Ended(this_user.name, now)).save
+		story.append(Ended(this_user.name, now)).save
 	}
 
 	def use(name:Option[String]) {
 		name match {
-			case Some(name) => {
-				this_user.conf += "projects.%s.using".format(project.id) -> name // later check it
-				this_user.conf += "projects.%s.name".format(project.id) -> project.name // nice touch
+			case Some(name) => this_user.conf += "projects.%s.using".format(project.id) -> {
+				if (!stories.test(name)) warn("that story does not exist")
+				name
 			}
-			case None => {
-				this_user.conf -= "projects.%s.using".format(project.id)
-				this_user.conf -= "projects.%s.name".format(project.id)
-			}
+			case None => this_user.conf -= "projects.%s.using".format(project.id)
 		}
+		this_user.conf += "projects.%s.name".format(project.id) -> project.name // nice touch
 		this_user.conf.save
 	}
 
 	def tell {
+		tellImpl(story)
+	}
+
+	def tellImpl(story:Story) {
 		import StringUtils._
 
-		val state = story.script.state
 		val _ = plan // force lazy evaluation
 
 		def atStr(date:Date) = "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime(date)).bold, date.when)
@@ -234,17 +235,17 @@ index.proseeo/
 		def atbyStr(date:Date, name:String) = "%s by %s".format(atStr(date), byStr(name))
 
 		val kvs =
-			(List("story" -> story.dir.getName.bold)
-			) ::: (state.document.get("proseeo.plan") match {
+			(List("story" -> story.name.bold)
+			) ::: (story.plan match {
 				case Some(plan) => List("plan" -> plan.bold)
 				case None => List("plan" -> "no plan (use p plan name)".yellow)
-			}) ::: (state.created match {
+			}) ::: (story.created match {
 				case Some(Created(by, at)) => List("created" -> atbyStr(at, by))
 				case None => Nil
-			}) ::: (state.ended match {
+			}) ::: (story.ended match {
 				case Some(Ended(by, at)) => List("closed" -> atbyStr(at, by))
 				case None => Nil
-			}) ::: (state.route match {
+			}) ::: (story.route match {
 				case RouteState(past, present, future) => List("route" -> {
 					if ((past ++ present ++ future).isEmpty) "no route (use p route names)".yellow
 					else {
@@ -254,39 +255,43 @@ index.proseeo/
 						past.map(annotate).mkString("->") + present.map(annotate).map("=>" + _).getOrElse("").bold + future.map("->" + annotate(_)).mkString("")
 					}
 				})
-			}) ::: (state.tail match {
+			}) ::: (story.tail match {
 				case Some(tail) => List("touched" -> tail.at.when)
 				case None => Nil
 			}) ::: Nil
 		val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
 		i((for ((k, v) <- kvs) yield "%s : %s".format(rightPad(k, kw), v)).mkString("\n"))
 
-		for (say <- state.says) {
+		val says = story match {
+			case ss:ScriptStory => ss.says
+			case ds:DocumentStory => Seq()
+		}
+		for (say <- says) {
 			i("")
 			i("%s\n  by %s\n  %s".format(say.text.bold, byStr(say.by), say.at.when))
 		}
 
 		var future = false
 		for (group <- plan.groups) {
-			val active = ! group.collect({ case x:Need => x }).forall(_.test(state.document))
+			val active = ! group.collect({ case x:Need => x }).forall(_.test(story.document))
 			val fw = if (group.isEmpty) 0 else group.map(_.key.size).max
 			if (!group.isEmpty) i("")
 			for (field <- group) {
 				val prefix = field match {
-					case w@Want(key, kind) if !w.test(state.document) => "want"
-					case n@Need(Want(key, kind)) if !n.test(state.document) => "need"
+					case w@Want(key, kind) if !w.test(story.document) => "want"
+					case n@Need(Want(key, kind)) if !n.test(story.document) => "need"
 					case _ => "    "
 				}
 				val value = field.kind match {
-					case g:Gate if field.test(state.document) => Some("[*]")
-					case ts:TimeStamp if field.test(state.document) => {
-						val date = state.document(field.key).toDate
+					case g:Gate if field.test(story.document) => Some("[*]")
+					case ts:TimeStamp if field.test(story.document) => {
+						val date = story.document(field.key).toDate
 						Some("%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when))
 					}
-					case _ => state.document.get(field.key)
+					case _ => story.document.get(field.key)
 				}
 				val hint = field match {
-					case field:Field if field.test(state.document) => ""
+					case field:Field if field.test(story.document) => ""
 					case field:Field => field.kind match {
 						case _:Text => "____"
 						case Enum(values) => values.take(4).mkString(", ") + (values.drop(4).size match {
@@ -297,20 +302,20 @@ index.proseeo/
 						case _:TimeStamp => "timestamp"
 					}
 				}
-				val cursor = if (active && !future && !field.test(state.document)) ">" else " "
+				val cursor = if (active && !future && !field.test(story.document)) ">" else " "
 				i("%s %s | %s  %s%s".format(cursor.bold, prefix, rightPad(field.key, fw), value.map(_ + " ").getOrElse("").bold, hint.yellow))
 			}
 			if (active) future = true
 		}
 
-		if (!state.document.isEmpty) {
+		if (!story.document.isEmpty) {
 			def value(s:String):String = {
 				s.optDate match {
 					case Some(date) => "%s %s".format(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss").print(new DateTime(date)).bold, date.when)
 					case None => s
 				}
 			}
-			val kvs = (for (k <- state.document.keys.toSeq.sorted if !k.startsWith("proseeo.") && (plan.fields.isEmpty || ! plan.fields.contains(k))) yield k -> state.document(k))
+			val kvs = (for (k <- story.document.keys.toSeq.sorted if !k.startsWith("proseeo.") && (plan.fields.isEmpty || ! plan.fields.contains(k))) yield k -> story.document(k))
 			if (!kvs.isEmpty) {
 				i("")
 				val kw = if (kvs.isEmpty) 0 else kvs.map(_._1.length).max
@@ -318,14 +323,16 @@ index.proseeo/
 			}
 		}
 
-		val attachments = Attachment(story.dir)
-		if (!attachments.isEmpty) {
-			i("")
-			val kvs = (for (attachment <- attachments.sortBy(_.fileName)) yield {
-				attachment.fileName -> attachment.size
-			})
-			val kw = kvs.map(_._1.length).max
-			i((for ((k, v) <- kvs) yield "%s  %s".format(rightPad(k, kw).bold, v)).mkString("\n"))
+		Some(story).collect({case x:ScriptStory => x}).map { story =>
+			val attachments = Attachment(story.dir)
+			if (!attachments.isEmpty) {
+				i("")
+				val kvs = (for (attachment <- attachments.sortBy(_.fileName)) yield {
+					attachment.fileName -> attachment.size
+				})
+				val kw = kvs.map(_._1.length).max
+				i((for ((k, v) <- kvs) yield "%s  %s".format(rightPad(k, kw).bold, v)).mkString("\n"))
+			}
 		}
 	}
 
@@ -336,27 +343,27 @@ index.proseeo/
 			|| say1.endsWith(say0)
 		)
 		val say = Say(message, this_user.name, now)
-		story.script.statements.collect({ case x@Say(text, this_user.name, _) => x }).lastOption match {
+		story.statements.collect({ case x@Say(text, this_user.name, _) => x }).lastOption match {
 			case Some(last) if amend(last.text, message) => {
 				warn("(amending your last say)")
-				story.script.replace(last, say)
+				story.replace(last, say)
 			}
-			case _=> story.script.append(say)
+			case _=> story.append(say)
 		}
-		story.script.save
+		story.save
 	}
 
 	def set(key:String, value:String) {
 		if (!plan.fields.isEmpty && !plan.fields.contains(key)) warn("(that is not in the plan)".format(key))
-		story.script.append(Set(key, value, this_user.name, now)).save
+		story.append(Set(key, value, this_user.name, now)).save
 	}
 
 	def delete(key:String) {
-		if (!story.script.state.document.contains(key)) die("(that is not set)")
-		story.script.append(Delete(key, this_user.name, now)).save
+		if (!story.document.contains(key)) die("(that is not set)")
+		story.append(Delete(key, this_user.name, now)).save
 	}
 
-	lazy val previousRoute = story.script.state.route
+	lazy val previousRoute = story.route
 
 	def ask(actor:String) {
 		doRoute((actor +: previousRoute.present.getOrElse(this_user.name) +: previousRoute.future).dedupe)
@@ -381,7 +388,7 @@ index.proseeo/
 		for (actor <- actors if project.resolve(actor) == None) {
 			warn("%s is not in the project".format(actor))
 		}
-		story.script.append(Route(actors, this_user.name, now)).save
+		story.append(Route(actors, this_user.name, now)).save
 	}
 
 	def plan(name:Option[String]) {
@@ -392,12 +399,12 @@ index.proseeo/
 					die("there is no plan file %s (or I can't read it)".format(source))
 				}
 				FileUtils.copyFile(source, plan.file)
-				story.script.append(Set("proseeo.plan", name, this_user.name, now)).save
+				story.append(Set("proseeo.plan", name, this_user.name, now)).save
 			}
 			case None => {
 				if (plan.file.isFile) plan.file.delete
 				FileUtils.touch(plan.file)
-				story.script.append(Delete("proseeo.plan", this_user.name, now)).save
+				story.append(Delete("proseeo.plan", this_user.name, now)).save
 			}
 		}
 	}
@@ -410,7 +417,7 @@ index.proseeo/
 	    case "project" => name -> project.dir
 	    case "conf" => name -> project.file
 	    case "story" => name -> story.dir
-	    case "script" => name -> story.script.file
+	    case "script" => name -> story.file
 	    case "plan" => name -> plan.file
 	    case name => die("that is not something you can locate. try p locate all, project, conf, story, script, or plan")
 	  }
@@ -454,28 +461,27 @@ index.proseeo/
 		val iwc = new IndexWriterConfig(Version.LUCENE_35, lucene.analyzer)
 		iwc.setOpenMode(OpenMode.CREATE)
 		val writer = new IndexWriter(lucene.dir, iwc)
-		val stories = new Stories(project)
+		val stories = new ScriptStories(project)
 		for (story <- stories.all) {
-			val state = story.script.state
 			writer.addDocument {
 				val d = new D
 				d.add(new F("name", story.name, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-				for (plan <- state.document.get("proseeo.plan")) {
+				for (plan <- story.plan) {
 					d.add(new F("plan", plan, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
-				for (created <- state.created) {
-					d.add(new F("script.created.at", created.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-					d.add(new F("script.created.by", created.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				for (created <- story.created) {
+					d.add(new F("created.at", created.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("created.by", created.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
-				for (ended <- state.ended) {
-					d.add(new F("script.ended.at", ended.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-					d.add(new F("script.ended.by", ended.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				for (ended <- story.ended) {
+					d.add(new F("ended.at", ended.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("ended.by", ended.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
-				for (tail <- state.tail) {
-					d.add(new F("script.tail.at", tail.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
-					d.add(new F("script.tail.by", tail.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				for (tail <- story.tail) {
+					d.add(new F("tail.at", tail.at.format, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+					d.add(new F("tail.by", tail.by, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
-				val route = state.route
+				val route = story.route
 				for (user <- project.flattenGroups(route.past)) {
 					d.add(new F("route.past", user, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
@@ -484,6 +490,11 @@ index.proseeo/
 				}
 				for (user <- project.flattenGroups(route.future)) {
 					d.add(new F("route.future", user, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
+				}
+				for ((k, v) <- story.document) {
+					// later handle multivalues
+					// analysis
+					d.add(new F("document.%s".format(k), v, F.Store.YES, F.Index.NOT_ANALYZED_NO_NORMS, F.TermVector.NO))
 				}
 
 				println(d.toString)
@@ -502,12 +513,12 @@ index.proseeo/
 		val docs = searcher.search(query, 100)
 		println("totalHits " + docs.totalHits)
 		for (doc <- docs.scoreDocs) {
-			println(doc.score)
+			println("score: " + doc.score)
 			import collection.JavaConversions._
 			val map = (Map[String, String]() /: reader.document(doc.doc).getFields) { (map, f) =>
 				map + (f.name -> f.stringValue)
 			}
-			println(new Document(map).toString)
+			tellImpl(new DocumentStory(new Document(map)))
 		}
 		searcher.close
 		reader.close
