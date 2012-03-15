@@ -5,6 +5,11 @@ import collection.Iterator
 
 class Document(map:collection.mutable.Map[String, String] = new collection.mutable.HashMap[String, String]) extends collection.mutable.Map[String, String] {
 
+	def this(_map:Map[String,String]) {
+		this()
+		map ++= _map
+	}
+
 	def get(key:String):Option[String] = map.get(key)
 
 	def iterator:Iterator[(String, String)] = map.iterator
@@ -38,7 +43,7 @@ class Document(map:collection.mutable.Map[String, String] = new collection.mutab
 		("" /: keys.toList.sorted)({
 			(s, key) =>
 				s + (key.indexOf(".") match {
-					case -1 => "%s %s\n".format(rightPad("%s%s ".format(pad, key), 100, "."), apply(key))
+					case -1 => "%s %s\n".format(rightPad("%s%s ".format(pad, key), 30, "."), apply(key))
 					case i => {
 						val nextkey = key.substring(0, i)
 						if (!scopes.contains(nextkey)) {

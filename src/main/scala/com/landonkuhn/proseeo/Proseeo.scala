@@ -21,7 +21,7 @@ object Proseeo {
 		Seq(cwd, cwd.getCanonicalFile.getParentFile).find(Project.test(_))
 			.getOrElse(die("I don't see a project here. change to a project directory, or create one here using p init"))
 	})
-	lazy val stories = new Stories(project.dir)
+	lazy val stories = new Stories(project)
 
 	lazy val this_user = new {
 		val conf = new Conf(new File(getUserDirectory, ".proseeo.conf"))
@@ -88,6 +88,8 @@ object Proseeo {
 			case "locate" :: name :: Nil => locate(name)
 			case "attach" :: files => attach(files)
 			case "whois" :: actor :: Nil => whois(actor)
+			case "index" :: Nil => index
+			case "report" :: Nil => report
 			case _ => die("I didn't understand that at all: " + args.mkString(" "))
 		}
 
@@ -434,5 +436,13 @@ index.proseeo/
 			case Some(Right(Group(groupName, members))) => for (user <- members) whois(user.userName)
 			case None => warn("unknown: %s".format(actor))
 		}
+	}
+
+	def index {
+		new Index(project)
+	}
+
+	def report {
+		new Report(project)
 	}
 }

@@ -6,8 +6,8 @@ import java.io.{FileFilter, File}
 
 case class Story(dir:File, name:String, script:Script)
 
-class Stories(projectDir:File) {
-	def all:Seq[Story] = for (dir <- (projectDir.listFiles(new FileFilter {
+class Stories(project:Project) {
+	def all:Seq[Story] = for (dir <- (project.dir.listFiles(new FileFilter {
 		def accept(file: File) = file.isDirectory && !file.getName.endsWith(".proseeo")
 	})).view) yield get(dir.getName)
 
@@ -22,7 +22,7 @@ class Stories(projectDir:File) {
 	}
 
 	def storyDir(storyName:String) = {
-		val f = new File(projectDir, storyName)
+		val f = new File(project.dir, storyName)
 		if (!f.canRead || !f.isDirectory) die("story directory %s is not a readable directory".format(f))
 		f
 	}
