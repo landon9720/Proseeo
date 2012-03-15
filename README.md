@@ -78,3 +78,24 @@ later
 * egit integration
 * group member pinning
 * command suggestions, undo
+
+## report result
+
+$ p report
+bug-174   title goes here                               red
+          description goes here and can cotain        green
+          multi lines                                  blue
+
+bug-174   title goes here                               red
+          description goes here and can cotain        green
+          multi lines                                  blue
+
+bug-174   title goes here                               red
+          description goes here and can cotain        green
+          multi lines                                  blue
+
+### to do this:
+
+* title and description need to be promoted to the story
+* taging needs to be added: cli, story models, tell
+* implement def report
